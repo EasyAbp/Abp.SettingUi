@@ -1,0 +1,26 @@
+﻿@using EasyAbp.Abp.SettingUi
+@model EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingHtmlInfo
+
+@{
+    string optionStr;
+    if (Model.SettingDefinition.Properties.TryGetValue(SettingUiConst.Options, out var optionList))
+    {
+        optionStr = optionList.ToString();
+    }
+    else
+    {
+        optionStr = String.Empty;
+    }
+}
+
+@if (!Model.Description.IsResourceNotFound)
+{
+<p class="form-text">@Model.Description</p>
+}
+<select id="@Model.Name" name="@Model.FormName" class="form-control">
+    @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
+    {
+        string selected = option == Model.Value ? "selected" : "";
+    <!option value="@option" @selected>@option</!option>
+    }
+</select>

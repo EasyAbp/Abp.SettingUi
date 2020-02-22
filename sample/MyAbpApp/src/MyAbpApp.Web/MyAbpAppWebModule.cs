@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using EasyAbp.Abp.SettingUi.Web;
 using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -49,7 +50,8 @@ namespace MyAbpApp.Web
         typeof(AbpAspNetCoreMvcUiBasicThemeModule),
         typeof(AbpAspNetCoreAuthenticationJwtBearerModule),
         typeof(AbpTenantManagementWebModule),
-        typeof(AbpAspNetCoreSerilogModule)
+        typeof(AbpAspNetCoreSerilogModule),
+        typeof(SettingUiWebModule)
         )]
     public class MyAbpAppWebModule : AbpModule
     {

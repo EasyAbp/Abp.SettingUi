@@ -1,0 +1,9 @@
+﻿﻿.card,
+.card-body input,
+.card-body .custom-control-label {
+    margin-bottom: 20px;
+}
+
+.card-body > label {
+    font-weight: bold;
+}

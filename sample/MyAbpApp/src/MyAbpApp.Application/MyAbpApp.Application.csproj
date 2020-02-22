@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\EasyAbp.Abp.SettingUi.Application\EasyAbp.Abp.SettingUi.Application.csproj" />
     <ProjectReference Include="..\MyAbpApp.Domain\MyAbpApp.Domain.csproj" />
     <ProjectReference Include="..\MyAbpApp.Application.Contracts\MyAbpApp.Application.Contracts.csproj" />
   </ItemGroup>
