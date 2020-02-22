@@ -1,0 +1,8 @@
+{
+  "name": "setting-ui",
+  "version": "0.0.1",
+  "dependencies": {
+    "@abp/ng.theme.shared": "^2.1.0",
+    "setting-ui.config": "^0.0.1"
+  }
+}

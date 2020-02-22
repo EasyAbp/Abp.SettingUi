@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>EasyAbp.Abp.SettingUi</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EasyAbp.Abp.SettingUi.Application\EasyAbp.Abp.SettingUi.Application.csproj" />
+    <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Tests\EasyAbp.Abp.SettingUi.Domain.Tests.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+  </ItemGroup>
+
+</Project>
