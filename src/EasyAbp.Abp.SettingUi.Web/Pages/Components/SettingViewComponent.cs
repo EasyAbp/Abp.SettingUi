@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using EasyAbp.Abp.SettingUi.Extensions;
-using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.SettingUi.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.Extensions.Localization;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
 using Volo.Abp.Settings;
@@ -14,12 +13,12 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
     [Widget(StyleFiles = new[] { "/Pages/Components/Default.css" })]
     public class SettingViewComponent : AbpViewComponent
     {
-        private readonly IHtmlLocalizer<SettingUiResource> _localizer;
+        private readonly IStringLocalizerFactory _factory;
         private readonly ISettingProvider _settingProvider;
 
-        public SettingViewComponent(IHtmlLocalizer<SettingUiResource> localizer, ISettingProvider settingProvider)
+        public SettingViewComponent(IStringLocalizerFactory factory, ISettingProvider settingProvider)
         {
-            _localizer = localizer;
+            _factory = factory;
             _settingProvider = settingProvider;
         }
 
@@ -27,8 +26,8 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
         {
             var settingInfos = parameter.SettingDefinitions.Select((sd, index) => new SettingHtmlInfo(
                 sd,
-                _localizer["DisplayName:" + sd.Name],
-                _localizer["Description:" + sd.Name],
+                sd.DisplayName.Localize(_factory),
+                sd.Description.Localize(_factory),
                 AsyncHelper.RunSync(() => _settingProvider.GetOrNullAsync(sd.Name))
                 ));
             return View("~/Pages/Components/Default.cshtml", settingInfos);
@@ -38,8 +37,8 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
     public class SettingHtmlInfo
     {
         public string Name { get; }
-        public LocalizedHtmlString DisplayName { get; }
-        public LocalizedHtmlString Description { get; }
+        public LocalizedString DisplayName { get; }
+        public LocalizedString Description { get; }
         public string Value { get; }
         public string Group1 { get; }
         public string Group2 { get; }
@@ -48,7 +47,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
         public SettingDefinition SettingDefinition { get; }
 
         public SettingHtmlInfo(SettingDefinition settingDefinition,
-            LocalizedHtmlString displayName, LocalizedHtmlString description,
+            LocalizedString displayName, LocalizedString description,
             string value)
         {
             Name = settingDefinition.Name;

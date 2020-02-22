@@ -3,18 +3,18 @@
 @model IEnumerable<EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingHtmlInfo>
 @inject IHtmlLocalizer<SettingUiResource> L
 
-    @foreach (var group in Model.GroupBy(sd => sd.Group2))
-    {
-        <abp-card>
-            <abp-card-header>
-                <h4>@L[group.Key]</h4>
-            </abp-card-header>
-            <abp-card-body>
-                @foreach (var settingHtmlInfo in group)
-                {
-                    <label for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
-                    @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
-                }
-            </abp-card-body>
-        </abp-card>
-    }
+@foreach (var group in Model.GroupBy(sd => sd.Group2))
+{
+    <abp-card>
+        <abp-card-header>
+            <h4>@L[group.Key]</h4>
+        </abp-card-header>
+        <abp-card-body>
+            @foreach (var settingHtmlInfo in group)
+            {
+                <label for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
+                @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
+            }
+        </abp-card-body>
+    </abp-card>
+}
