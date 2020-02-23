@@ -5,12 +5,25 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>EasyAbp.Abp.SettingUi</RootNamespace>
+    <Authors>EasyAbp Team</Authors>
+    <Description>An ABP UI module used to manage ABP settings</Description>
+    <PackageProjectUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</RepositoryUrl>
+    <PackageTags>abp module settingmanagement easyabp</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Ddd.Application" Version="2.1.1" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Application.Contracts\EasyAbp.Abp.SettingUi.Application.Contracts.csproj" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain\EasyAbp.Abp.SettingUi.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
 </Project>
