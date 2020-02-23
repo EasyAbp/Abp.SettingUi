@@ -1,0 +1,17 @@
+{
+  "culture": "zh-Hans",
+  "texts": {
+    "Settings": "设置",
+    "System": "系统",
+    "Localization": "本地化",
+    "Password": "密码",
+    "Lockout": "锁定",
+    "SignIn": "登录",
+    "User": "用户",
+    "Account": "帐户",
+    "Mail": "邮件",
+    "Smtp": "SMTP",
+    "Others": "其它",
+    "Permission:SettingUi": "设置UI"
+  }
+}

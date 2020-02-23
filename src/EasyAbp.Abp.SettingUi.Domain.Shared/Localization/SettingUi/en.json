@@ -1,6 +1,17 @@
 {
   "culture": "en",
   "texts": {
-    "ManageYourProfile":  "Manage your profile" 
+    "Settings": "Settings",
+    "System": "System",
+    "Localization": "Localization",
+    "Password": "Password",
+    "Lockout": "Lockout",
+    "SignIn": "Sign In",
+    "User": "User",
+    "Account": "Account",
+    "Mail": "Mail",
+    "Smtp": "SMTP",
+    "Others": "Others",
+    "Permission:SettingUi": "Setting UI"
   }
 }
