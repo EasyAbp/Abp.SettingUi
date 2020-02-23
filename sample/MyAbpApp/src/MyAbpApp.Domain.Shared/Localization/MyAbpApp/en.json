@@ -3,6 +3,17 @@
   "texts": {
     "Menu:Home": "Home",
     "Welcome": "Welcome",
-    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io."
+    "LongWelcomeMessage": "Welcome to the application. This is a startup project based on the ABP framework. For more information, visit abp.io.",
+
+    "Server": "Server",
+    "Connection": "Connection",
+
+    "DisplayName:Connection.Ip": "IP",
+    "DisplayName:Connection.Port": "Port",
+    "DisplayName:Connection.Protocol": "Protocol",
+    
+    "Description:Connection.Ip": "The IP address of the server.",
+    "Description:Connection.Port": "The Port number of the server.",
+    "Description:Connection.Protocol": "The protocol of the connection."
   }
 }

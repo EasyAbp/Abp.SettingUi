@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.Web.Pages;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
@@ -18,11 +17,6 @@ namespace EasyAbp.Abp.SettingUi.Web
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.PreConfigure<AbpMvcDataAnnotationsLocalizationOptions>(options =>
-            {
-                options.AddAssemblyResource(typeof(SettingUiResource), typeof(SettingUiWebModule).Assembly);
-            });
-
             PreConfigure<IMvcBuilder>(mvcBuilder =>
             {
                 mvcBuilder.AddApplicationPartIfNotExists(typeof(SettingUiWebModule).Assembly);

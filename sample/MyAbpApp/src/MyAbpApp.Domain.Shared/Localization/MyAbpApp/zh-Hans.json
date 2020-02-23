@@ -3,6 +3,17 @@
     "texts": {
       "Menu:Home": "首页",
       "Welcome": "欢迎",
-      "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io."
+      "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io.",
+
+      "Server": "服务器",
+      "Connection": "连接",
+
+      "DisplayName:Connection.Ip": "IP",
+      "DisplayName:Connection.Port": "端口",
+      "DisplayName:Connection.Protocol": "协议",
+      
+      "Description:Connection.Ip": "服务器的IP地址.",
+      "Description:Connection.Port": "服务器的端口号.",
+      "Description:Connection.Protocol": "连接的协议."
     }
   }

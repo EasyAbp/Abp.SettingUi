@@ -6,6 +6,7 @@ using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
+using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
@@ -14,6 +15,7 @@ using Volo.Abp.Authorization;
 using Volo.Abp.Json;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
+using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi

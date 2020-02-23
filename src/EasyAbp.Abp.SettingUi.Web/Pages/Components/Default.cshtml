@@ -3,7 +3,6 @@
 @model IEnumerable<EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingHtmlInfo>
 @inject IHtmlLocalizer<SettingUiResource> L
 
-
 @foreach (var group in Model.GroupBy(sd => sd.Group2))
 {
     <form method="post" id="@(group.Key)SettingGroup">
