@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
-using EasyAbp.Abp.SettingUi.SettingUi.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Volo.Abp.AspNetCore.Mvc;

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using EasyAbp.Abp.SettingUi.SettingUi.Dto;
+using EasyAbp.Abp.SettingUi.Dto;
 using Volo.Abp.Application.Services;
 
-namespace EasyAbp.Abp.SettingUi.SettingUi
+namespace EasyAbp.Abp.SettingUi
 {
     public interface ISettingUiAppService : IApplicationService
     {

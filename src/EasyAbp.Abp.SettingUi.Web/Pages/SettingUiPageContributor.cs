@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using EasyAbp.Abp.SettingUi.SettingUi;
 using EasyAbp.Abp.SettingUi.Web.Pages.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;

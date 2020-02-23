@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using EasyAbp.Abp.SettingUi;
 using EasyAbp.Abp.SettingUi.Web;
 using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore;
@@ -52,7 +53,7 @@ namespace MyAbpApp.Web
         typeof(AbpTenantManagementWebModule),
         typeof(AbpAspNetCoreSerilogModule),
         typeof(SettingUiWebModule)
-        )]
+    )]
     public class MyAbpAppWebModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -87,10 +88,7 @@ namespace MyAbpApp.Web
 
         private void ConfigureUrls(IConfiguration configuration)
         {
-            Configure<AppUrlOptions>(options =>
-            {
-                options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
-            });
+            Configure<AppUrlOptions>(options => { options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"]; });
         }
 
         private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
@@ -106,11 +104,7 @@ namespace MyAbpApp.Web
 
         private void ConfigureAutoMapper()
         {
-            Configure<AbpAutoMapperOptions>(options =>
-            {
-                options.AddMaps<MyAbpAppWebModule>();
-
-            });
+            Configure<AbpAutoMapperOptions>(options => { options.AddMaps<MyAbpAppWebModule>(); });
         }
 
         private void ConfigureVirtualFileSystem(IWebHostEnvironment hostingEnvironment)
@@ -151,10 +145,7 @@ namespace MyAbpApp.Web
 
         private void ConfigureNavigationServices()
         {
-            Configure<AbpNavigationOptions>(options =>
-            {
-                options.MenuContributors.Add(new MyAbpAppMenuContributor());
-            });
+            Configure<AbpNavigationOptions>(options => { options.MenuContributors.Add(new MyAbpAppMenuContributor()); });
         }
 
         private void ConfigureAutoApiControllers()
@@ -162,6 +153,7 @@ namespace MyAbpApp.Web
             Configure<AbpAspNetCoreMvcOptions>(options =>
             {
                 options.ConventionalControllers.Create(typeof(MyAbpAppApplicationModule).Assembly);
+                options.ConventionalControllers.Create(typeof(SettingUiApplicationModule).Assembly);
             });
         }
 
@@ -170,7 +162,7 @@ namespace MyAbpApp.Web
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAbpApp API", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo {Title = "MyAbpApp API", Version = "v1"});
                     options.DocInclusionPredicate((docName, description) => true);
                     options.CustomSchemaIds(type => type.FullName);
                 }
@@ -192,6 +184,7 @@ namespace MyAbpApp.Web
             {
                 app.UseErrorPage();
             }
+
             app.UseVirtualFiles();
             app.UseRouting();
             app.UseAuthentication();
@@ -201,14 +194,12 @@ namespace MyAbpApp.Web
             {
                 app.UseMultiTenancy();
             }
+
             app.UseIdentityServer();
             app.UseAuthorization();
             app.UseAbpRequestLocalization();
             app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAbpApp API");
-            });
+            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAbpApp API"); });
             app.UseAuditing();
             app.UseAbpSerilogEnrichers();
             app.UseMvcWithDefaultRouteAndArea();

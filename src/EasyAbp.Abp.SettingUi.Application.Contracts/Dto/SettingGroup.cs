@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Volo.Abp.Settings;
 
-namespace EasyAbp.Abp.SettingUi.SettingUi.Dto
+namespace EasyAbp.Abp.SettingUi.Dto
 {
     public class SettingGroup
     {
