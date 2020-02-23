@@ -8,6 +8,8 @@
     <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
     <RootNamespace>EasyAbp.Abp.SettingUi.Web</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    
   </PropertyGroup>
 
   <ItemGroup>

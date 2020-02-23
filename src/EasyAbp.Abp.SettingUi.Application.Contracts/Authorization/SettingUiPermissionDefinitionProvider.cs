@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Authorization.Permissions;
+﻿using EasyAbp.Abp.SettingUi.Localization;
+using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Localization;
 using Volo.Abp.UI;
 
@@ -14,7 +15,7 @@ namespace EasyAbp.Abp.SettingUi.Authorization
 
         private static LocalizableString L(string name)
         {
-            return LocalizableString.Create<AbpUiModule>(name);
+            return LocalizableString.Create<SettingUiResource>(name);
         }
     }
 }
