@@ -119,11 +119,13 @@ namespace MyAbpApp.Web
             {
                 Configure<AbpVirtualFileSystemOptions>(options =>
                 {
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}MyAbpApp.Domain.Shared"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}MyAbpApp.Domain"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}MyAbpApp.Application.Contracts"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{Path.DirectorySeparatorChar}MyAbpApp.Application"));
+                    char sept = Path.DirectorySeparatorChar;
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain.Shared"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application.Contracts"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppWebModule>(hostingEnvironment.ContentRootPath);
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiWebModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}..{sept}..{sept}..{sept}src{sept}EasyAbp.Abp.SettingUi.Web"));
                 });
             }
         }

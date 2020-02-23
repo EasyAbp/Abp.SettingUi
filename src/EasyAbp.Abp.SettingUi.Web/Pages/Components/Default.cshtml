@@ -17,8 +17,8 @@
                     <label for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
                     @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
                 }
+                <abp-button type="submit" button-type="Primary" text="@L["Save"].Value" class="float-right"/>
             </abp-card-body>
         </abp-card>
-        <abp-button type="submit" button-type="Primary" text="@L["Save"].Value"/>
     </form>
 }

@@ -1,11 +1,9 @@
-﻿﻿.card,
+﻿.card {
+    margin-top: 20px;
+}
 .card-body input,
 .card-body .custom-control-label {
     margin-bottom: 20px;
-}
-
-.card-body button {
-    margin-top: 20px;
 }
 
 .card-body > label {
