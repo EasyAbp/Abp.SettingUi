@@ -12,6 +12,7 @@
     "Mail": "邮件",
     "Smtp": "SMTP",
     "Others": "其它",
-    "Permission:SettingUi": "设置UI"
+    "Permission:SettingUi": "设置UI",
+    "Permission:SettingUi.Global": "全局"
   }
 }

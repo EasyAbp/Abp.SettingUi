@@ -8,7 +8,8 @@ namespace EasyAbp.Abp.SettingUi.Authorization
     {
         public override void Define(IPermissionDefinitionContext context)
         {
-            //var moduleGroup = context.AddGroup(SettingUiPermissions.GroupName, L("Permission:SettingUi"));
+            var moduleGroup = context.AddGroup(SettingUiPermissions.GroupName, L("Permission:SettingUi"));
+            moduleGroup.AddPermission(SettingUiPermissions.Global, L("Permission:SettingUi.Global"));
         }
 
         private static LocalizableString L(string name)

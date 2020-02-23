@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Authorization;
 using Volo.Abp.Json;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
@@ -34,14 +37,10 @@ namespace EasyAbp.Abp.SettingUi
 
         public async Task<IEnumerable<SettingGroup>> GroupSettingDefinitions()
         {
-            /*
-            if (!(await AuthorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.Global) ||
-                await AuthorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.Tenant) ||
-                await AuthorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.User)))
+            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Global))
             {
-                throw new AbpAuthorizationException("Authorization failed! No SettingManagementUI policy granted.");
+                throw new AbpAuthorizationException("Authorization failed! No SettingUi policy granted.");
             }
-            */
 
             // Merge all the setting properties in to one dictionary
             var settingProperties = GetMergedSettingProperties();
@@ -74,7 +73,6 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 string name = pascalCaseName.RemovePreFix(SettingUiConst.FormNamePrefix).UnderscoreToDot();
-                // TODO: support setting providers
                 await _settingManager.SetGlobalAsync(name, kv.Value);
             }
         }

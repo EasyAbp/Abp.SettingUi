@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
+using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Web.Pages.Components;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages
 {
-    public class SettingUiPageContributor: ISettingPageContributor
+    public class SettingUiPageContributor : ISettingPageContributor
     {
         public async Task ConfigureAsync(SettingPageCreationContext context)
         {
@@ -19,18 +21,8 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
 
         public async Task<bool> CheckPermissionsAsync(SettingPageCreationContext context)
         {
-            return true;
-            /*
             var authorizationService = context.ServiceProvider.GetRequiredService<IAuthorizationService>();
-            if (await authorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.Global) ||
-                await authorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.Tenant) ||
-                await authorizationService.IsGrantedAsync(AbpSettingManagementMvcUIPermissions.User))
-            {
-                return true;
-            }
-
-            return false;
-        */
+            return await authorizationService.IsGrantedAsync(SettingUiPermissions.Global);
         }
     }
 }
