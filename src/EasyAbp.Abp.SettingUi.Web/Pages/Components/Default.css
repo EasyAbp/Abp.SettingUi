@@ -4,6 +4,10 @@
     margin-bottom: 20px;
 }
 
+.card-body button {
+    margin-top: 20px;
+}
+
 .card-body > label {
     font-weight: bold;
 }
