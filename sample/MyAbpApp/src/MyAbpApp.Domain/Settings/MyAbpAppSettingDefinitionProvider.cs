@@ -6,8 +6,17 @@ namespace MyAbpApp.Settings
     {
         public override void Define(ISettingDefinitionContext context)
         {
-            //Define your own settings here. Example:
-            //context.Add(new SettingDefinition(MyAbpAppSettings.MySetting1));
+            context.Add(
+                // Set properties with "WithProperty" method
+                new SettingDefinition("Connection.Ip", "127.0.0.1")
+                    .WithProperty("Group1", "Server")
+                    .WithProperty("Group2", "Connection"),
+
+                // The properties are defined in the "MyAbpAppSettingProperties.json" file
+                new SettingDefinition("Connection.Port", 8080.ToString()),
+                
+                new SettingDefinition("Connection.Protocol")
+            );
         }
     }
 }

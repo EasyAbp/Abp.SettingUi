@@ -1,0 +1,13 @@
+﻿{
+  "Connection.Port": {
+    "Group1": "Server",
+    "Group2": "Connection",
+    "Type": "number"
+  },
+  "Connection.Protocol": {
+    "Group1": "Server",
+    "Group2": "Connection",
+    "Type": "select",
+    "Options": "|HTTP|TCP|RDP|FTP|SFTP"
+  }
+}

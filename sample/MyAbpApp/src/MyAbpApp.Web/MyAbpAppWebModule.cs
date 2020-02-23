@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using EasyAbp.Abp.SettingUi;
+using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.Web;
 using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore;
@@ -133,6 +134,10 @@ namespace MyAbpApp.Web
                     .AddBaseTypes(
                         typeof(AbpUiResource)
                     );
+                
+                options.Resources
+                    .Get<SettingUiResource>()
+                    .AddVirtualJson("/Localization/SettingResources");
 
                 options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
                 options.Languages.Add(new LanguageInfo("en", "en", "English"));

@@ -1,0 +1,15 @@
+﻿{
+  "culture": "en",
+  "texts": {
+    "Server": "Server",
+    "Connection": "Connection",
+    
+    "DisplayName:Connection.Ip": "IP",
+    "DisplayName:Connection.Port": "Port",
+    "DisplayName:Connection.Protocol": "Protocol",
+
+    "Description:Connection.Ip": "The IP address of the server.",
+    "Description:Connection.Port": "The Port number of the server.",
+    "Description:Connection.Protocol": "The protocol of the connection."
+  }
+}

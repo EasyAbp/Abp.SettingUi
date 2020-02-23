@@ -1,7 +1,7 @@
 ﻿.card {
     margin-top: 20px;
 }
-.card-body input,
+.card-body .form-control,
 .card-body .custom-control-label {
     margin-bottom: 20px;
 }
