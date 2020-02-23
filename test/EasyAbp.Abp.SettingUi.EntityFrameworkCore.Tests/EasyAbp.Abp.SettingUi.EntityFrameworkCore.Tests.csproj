@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.0" />
-    <ProjectReference Include="..\..\src\EasyAbp.Abp.SettingUi.EntityFrameworkCore\EasyAbp.Abp.SettingUi.EntityFrameworkCore.csproj" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="2.1.1" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.TestBase\EasyAbp.Abp.SettingUi.TestBase.csproj" />
   </ItemGroup>
 

@@ -9,10 +9,12 @@ namespace EasyAbp.Abp.SettingUi.EntityFrameworkCore
 {
     [DependsOn(
         typeof(SettingUiTestBaseModule),
-        typeof(SettingUiEntityFrameworkCoreModule)
-        )]
+        typeof(SettingUiDomainModule),
+        typeof(AbpEntityFrameworkCoreModule)
+    )]
     public class SettingUiEntityFrameworkCoreTestModule : AbpModule
     {
+        /*
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             var sqliteConnection = CreateDatabaseAndGetConnection();
@@ -37,5 +39,6 @@ namespace EasyAbp.Abp.SettingUi.EntityFrameworkCore
             
             return connection;
         }
+    */
     }
 }

@@ -1,0 +1,7 @@
+{
+  "Test.Setting2": {
+    "Group1": "TestGroup1",
+    "Group2": "TestGroup2",
+    "Type": "checkbox"
+  }
+}

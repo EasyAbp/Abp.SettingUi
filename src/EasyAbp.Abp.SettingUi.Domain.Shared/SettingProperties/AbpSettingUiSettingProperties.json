@@ -1,0 +1,127 @@
+{
+  "Abp.Localization.DefaultLanguage": {
+    "Group1": "System",
+    "Group2": "Localization",
+    "Type": "text"
+  },
+  "Abp.Identity.Password.RequiredLength": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "number"
+  },
+  "Abp.Identity.Password.RequiredUniqueChars": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "number"
+  },
+  "Abp.Identity.Password.RequireNonAlphanumeric": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.Password.RequireLowercase": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.Password.RequireUppercase": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.Password.RequireDigit": {
+    "Group1": "System",
+    "Group2": "Password",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.Lockout.AllowedForNewUsers": {
+    "Group1": "System",
+    "Group2": "Lockout",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.Lockout.LockoutDuration": {
+    "Group1": "System",
+    "Group2": "Lockout",
+    "Type": "number"
+  },
+  "Abp.Identity.Lockout.MaxFailedAccessAttempts": {
+    "Group1": "System",
+    "Group2": "Lockout",
+    "Type": "number"
+  },
+  "Abp.Identity.SignIn.RequireConfirmedEmail": {
+    "Group1": "System",
+    "Group2": "SignIn",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.SignIn.RequireConfirmedPhoneNumber": {
+    "Group1": "System",
+    "Group2": "SignIn",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.User.IsUserNameUpdateEnabled": {
+    "Group1": "System",
+    "Group2": "User",
+    "Type": "checkbox"
+  },
+  "Abp.Identity.User.IsEmailUpdateEnabled": {
+    "Group1": "System",
+    "Group2": "User",
+    "Type": "checkbox"
+  },
+  "Abp.Account.IsSelfRegistrationEnabled": {
+    "Group1": "System",
+    "Group2": "Account",
+    "Type": "checkbox"
+  },
+  "Abp.Account.EnableLocalLogin": {
+    "Group1": "System",
+    "Group2": "Account",
+    "Type": "checkbox"
+  },
+  "Abp.Mailing.Smtp.Host": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "text"
+  },
+  "Abp.Mailing.Smtp.Port": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "number"
+  },
+  "Abp.Mailing.Smtp.UserName": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "text"
+  },
+  "Abp.Mailing.Smtp.Password": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "text"
+  },
+  "Abp.Mailing.Smtp.Domain": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "text"
+  },
+  "Abp.Mailing.Smtp.EnableSsl": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "checkbox"
+  },
+  "Abp.Mailing.Smtp.UseDefaultCredentials": {
+    "Group1": "Mail",
+    "Group2": "Smtp",
+    "Type": "checkbox"
+  },
+  "Abp.Mailing.DefaultFromAddress": {
+    "Group1": "Mail",
+    "Group2": "Others",
+    "Type": "text"
+  },
+  "Abp.Mailing.DefaultFromDisplayName": {
+    "Group1": "Mail",
+    "Group2": "Others",
+    "Type": "text"
+  }
+}

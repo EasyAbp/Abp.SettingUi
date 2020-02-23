@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Modularity;
+﻿using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.SettingUi
 {
@@ -6,6 +7,11 @@ namespace EasyAbp.Abp.SettingUi
      * You can switch to MongoDB, however your domain tests should be
      * database independent anyway.
      */
+    [DependsOn(
+        typeof(SettingUiTestBaseModule),
+        typeof(SettingUiDomainModule),
+        typeof(AbpEntityFrameworkCoreModule)
+    )]
     public class SettingUiDomainTestModule : AbpModule
     {
         
