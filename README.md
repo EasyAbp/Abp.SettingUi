@@ -312,7 +312,7 @@ No need to relaunch the application, just press F5 to refresh the browser, you s
 
 ![type-number](doc/images/type-number.png)
 
-Now the input type changed to "number", and the frontend validations also works.
+Now the input type changed to "number", and the frontend validations also work.
 
 > The setting types can also be configured through `WithProperty` method, like `WithProperty("Type", "number")`
 
