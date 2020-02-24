@@ -41,12 +41,12 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
 1. Add module dependencies
 
-    * `MyAbpApp.Domain` project:
+    * `MyAbpApp.Domain.Shared` project:
 
         ``` csharp
         ...
-        [DependsOn(typeof(SettingUiDomainModule))]
-        public class MyAbpAppDomainModule : AbpModule
+        [DependsOn(typeof(SettingUiDomainSharedModule))]
+        public class MyAbpAppDomainSharedModule : AbpModule
         {
             ...
         }
