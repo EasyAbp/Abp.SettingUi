@@ -126,11 +126,6 @@ namespace MyAbpApp.Web
                         typeof(AbpUiResource)
                     );
 
-                options.Resources
-                    .Get<SettingUiResource>()
-                    .AddVirtualJson("/Localization/MyAbpApp")
-                    ;
-
                 options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
                 options.Languages.Add(new LanguageInfo("en", "en", "English"));
                 options.Languages.Add(new LanguageInfo("pt-BR", "pt-BR", "Português"));

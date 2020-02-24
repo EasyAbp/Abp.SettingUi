@@ -1,4 +1,6 @@
-﻿using MyAbpApp.Localization;
+﻿using EasyAbp.Abp.SettingUi;
+using EasyAbp.Abp.SettingUi.Localization;
+using MyAbpApp.Localization;
 using Volo.Abp.AuditLogging;
 using Volo.Abp.BackgroundJobs;
 using Volo.Abp.FeatureManagement;
@@ -24,6 +26,7 @@ namespace MyAbpApp
         typeof(AbpSettingManagementDomainSharedModule),
         typeof(AbpTenantManagementDomainSharedModule)
         )]
+    [DependsOn(typeof(SettingUiDomainSharedModule))]
     public class MyAbpAppDomainSharedModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
@@ -38,6 +41,10 @@ namespace MyAbpApp
                 options.Resources
                     .Add<MyAbpAppResource>("en")
                     .AddBaseTypes(typeof(AbpValidationResource))
+                    .AddVirtualJson("/Localization/MyAbpApp");
+                
+                options.Resources
+                    .Get<SettingUiResource>()
                     .AddVirtualJson("/Localization/MyAbpApp");
             });
         }
