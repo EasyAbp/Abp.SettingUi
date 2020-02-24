@@ -334,7 +334,11 @@ For now SettingUi support following setting types:
 
     ```
 
-This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi.
+    The render result:
+
+    ![selection](doc/images/selet.png)
+
+This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
 
 # Localization
 
