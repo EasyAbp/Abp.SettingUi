@@ -13,6 +13,7 @@
     "Smtp": "SMTP",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
-    "Permission:SettingUi.Global": "Global"
+    "Permission:SettingUi.Global": "Global",
+    "Save": "Save"
   }
 }
