@@ -54,6 +54,11 @@
     "Group2": "SignIn",
     "Type": "checkbox"
   },
+  "Abp.Identity.SignIn.EnablePhoneNumberConfirmation": {
+    "Group1": "System",
+    "Group2": "SignIn",
+    "Type": "checkbox"
+  },
   "Abp.Identity.SignIn.RequireConfirmedPhoneNumber": {
     "Group1": "System",
     "Group2": "SignIn",
