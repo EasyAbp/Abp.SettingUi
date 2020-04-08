@@ -8,13 +8,21 @@
     <Description>An ABP UI module used to manage ABP settings</Description>
     <PackageProjectUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</RepositoryUrl>
-    <PackageTags>abp module settingmanagement easyabp</PackageTags>
+    <PackageTags>abp module easyabp setting settingmanagement</PackageTags>
     <Company>EasyAbp</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.1" />
+    <PackageReference Include="Fody" Version="6.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
