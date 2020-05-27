@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
+using Volo.Abp;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Security.Claims;
 
@@ -34,6 +36,16 @@ namespace MyAbpApp.Security
             }
 
             return _principal;
+        }
+
+        public IDisposable Change(ClaimsPrincipal principal)
+        {
+            var parent = Principal;
+            _principal = principal;
+            return new DisposeAction(() =>
+            {
+                _principal = parent;
+            });
         }
     }
 }
