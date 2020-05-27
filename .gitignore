@@ -256,3 +256,4 @@ host/EasyAbp.Abp.SettingUi.IdentityServer/Logs/logs.txt
 host/EasyAbp.Abp.SettingUi.HttpApi.Host/Logs/logs.txt
 host/EasyAbp.Abp.SettingUi.Web.Host/Logs/logs.txt
 host/EasyAbp.Abp.SettingUi.Web.Unified/Logs/logs.txt
+**/wwwroot/libs/
