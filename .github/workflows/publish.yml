@@ -1,0 +1,47 @@
+name: publish to nuget
+on:
+  push:
+    branches:
+      - master # Default release branch
+jobs:
+  publish:
+    name: list on nuget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Publish
+      - name: publish EasyAbp.Abp.SettingUi.Application.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application/EasyAbp.Abp.SettingUi.Application.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          
+      - name: publish EasyAbp.Abp.SettingUi.Application.Contracts.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application.Contracts/EasyAbp.Abp.SettingUi.Application.Contracts.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+      - name: publish EasyAbp.Abp.SettingUi.Domain.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain/EasyAbp.Abp.SettingUi.Domain.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+      - name: publish EasyAbp.Abp.SettingUi.Domain.Shared.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain.Shared/EasyAbp.Abp.SettingUi.Domain.Shared.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+      - name: publish EasyAbp.Abp.SettingUi.Web.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
