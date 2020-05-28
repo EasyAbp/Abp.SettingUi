@@ -88,11 +88,11 @@ namespace MyAbpApp
             });
 
             app.UseVirtualFiles();
-            app.UseRouting();
+            app.UseRouting();          
             app.UseAuthentication();
+            app.UseAbpRequestLocalization();
             app.UseAuthorization();
 
-            app.UseAbpRequestLocalization();
 
             app.Use(async (ctx, next) =>
             {
@@ -107,7 +107,7 @@ namespace MyAbpApp
                 }
             });
 
-            app.UseMvcWithDefaultRouteAndArea();
+            app.UseConfiguredEndpoints();
         }
     }
 }

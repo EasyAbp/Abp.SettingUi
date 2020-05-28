@@ -1,6 +1,10 @@
 ﻿@page
-@inherits MyAbpApp.Web.Pages.MyAbpAppPage
+@using Microsoft.AspNetCore.Mvc.Localization
+@using MyAbpApp.Localization
+@using Volo.Abp.Users
 @model MyAbpApp.Web.Pages.IndexModel
+@inject IHtmlLocalizer<MyAbpAppResource> L
+@inject ICurrentUser CurrentUser
 @section styles {
     <abp-style-bundle>
         <abp-style src="/Pages/Index.css" />

@@ -80,7 +80,10 @@ namespace MyAbpApp.Web
 
         private void ConfigureUrls(IConfiguration configuration)
         {
-            Configure<AppUrlOptions>(options => { options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"]; });
+            Configure<AppUrlOptions>(options =>
+            {
+                options.Applications["MVC"].RootUrl = configuration["App:SelfUrl"];
+            });
         }
 
         private void ConfigureAuthentication(ServiceConfigurationContext context, IConfiguration configuration)
@@ -96,7 +99,11 @@ namespace MyAbpApp.Web
 
         private void ConfigureAutoMapper()
         {
-            Configure<AbpAutoMapperOptions>(options => { options.AddMaps<MyAbpAppWebModule>(); });
+            Configure<AbpAutoMapperOptions>(options =>
+            {
+                options.AddMaps<MyAbpAppWebModule>();
+
+            });
         }
 
         private void ConfigureVirtualFileSystem(IWebHostEnvironment hostingEnvironment)
@@ -126,9 +133,11 @@ namespace MyAbpApp.Web
                         typeof(AbpUiResource)
                     );
 
+                options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
                 options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
                 options.Languages.Add(new LanguageInfo("en", "en", "English"));
                 options.Languages.Add(new LanguageInfo("pt-BR", "pt-BR", "Português"));
+                options.Languages.Add(new LanguageInfo("ru", "ru", "Русский"));
                 options.Languages.Add(new LanguageInfo("tr", "tr", "Türkçe"));
                 options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
                 options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
@@ -137,7 +146,10 @@ namespace MyAbpApp.Web
 
         private void ConfigureNavigationServices()
         {
-            Configure<AbpNavigationOptions>(options => { options.MenuContributors.Add(new MyAbpAppMenuContributor()); });
+            Configure<AbpNavigationOptions>(options =>
+            {
+                options.MenuContributors.Add(new MyAbpAppMenuContributor());
+            });
         }
 
         private void ConfigureAutoApiControllers()
@@ -166,8 +178,6 @@ namespace MyAbpApp.Web
             var app = context.GetApplicationBuilder();
             var env = context.GetEnvironment();
 
-            app.UseCorrelationId();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -177,6 +187,7 @@ namespace MyAbpApp.Web
                 app.UseErrorPage();
             }
 
+            app.UseCorrelationId();
             app.UseVirtualFiles();
             app.UseRouting();
             app.UseAuthentication();
@@ -187,11 +198,14 @@ namespace MyAbpApp.Web
                 app.UseMultiTenancy();
             }
 
+            app.UseAbpRequestLocalization();
             app.UseIdentityServer();
             app.UseAuthorization();
-            app.UseAbpRequestLocalization();
             app.UseSwagger();
-            app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAbpApp API"); });
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "MyAbpApp API");
+            });
             app.UseAuditing();
             app.UseAbpSerilogEnrichers();
             app.UseConfiguredEndpoints();

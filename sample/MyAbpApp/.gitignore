@@ -257,3 +257,4 @@ src/MyAbpApp.Web.Host/Logs/*
 src/MyAbpApp.IdentityServer/Logs/*
 src/MyAbpApp.HttpApi.Host/Logs/*
 src/MyAbpApp.HttpApi.HostWithIds/Logs/*
+src/MyAbpApp.DbMigrator/Logs/*

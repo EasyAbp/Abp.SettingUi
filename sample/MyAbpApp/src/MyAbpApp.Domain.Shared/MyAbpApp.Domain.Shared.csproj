@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Localization\**\*.json" />
-    <Content Remove="Localization\**\*.json" />
+    <EmbeddedResource Include="Localization\MyAbpApp\*.json" />
+    <Content Remove="Localization\MyAbpApp\*.json" />
   </ItemGroup>
 
 </Project>

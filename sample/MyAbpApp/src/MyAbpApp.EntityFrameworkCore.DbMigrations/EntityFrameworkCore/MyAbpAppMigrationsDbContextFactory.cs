@@ -11,6 +11,8 @@ namespace MyAbpApp.EntityFrameworkCore
     {
         public MyAbpAppMigrationsDbContext CreateDbContext(string[] args)
         {
+            MyAbpAppEfCoreEntityExtensionMappings.Configure();
+
             var configuration = BuildConfiguration();
 
             var builder = new DbContextOptionsBuilder<MyAbpAppMigrationsDbContext>()

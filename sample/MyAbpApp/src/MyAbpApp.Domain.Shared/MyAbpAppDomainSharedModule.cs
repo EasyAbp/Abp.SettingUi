@@ -46,6 +46,8 @@ namespace MyAbpApp
                 options.Resources
                     .Get<SettingUiResource>()
                     .AddVirtualJson("/Localization/MyAbpApp");
+					
+				 options.DefaultResourceType = typeof(MyAbpAppResource);
             });
         }
     }
