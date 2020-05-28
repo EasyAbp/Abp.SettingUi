@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EasyAbp.Abp.SettingUi.Domain.Shared" Version="1.0.0" />
     <PackageReference Include="Volo.Abp.Identity.Domain.Shared" Version="2.8.0" />
     <PackageReference Include="Volo.Abp.IdentityServer.Domain.Shared" Version="2.8.0" />
     <PackageReference Include="Volo.Abp.BackgroundJobs.Domain.Shared" Version="2.8.0" />
@@ -22,6 +21,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Localization\MyAbpApp\*.json" />
     <Content Remove="Localization\MyAbpApp\*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\EasyAbp.Abp.SettingUi.Domain.Shared\EasyAbp.Abp.SettingUi.Domain.Shared.csproj" />
   </ItemGroup>
 
 </Project>
