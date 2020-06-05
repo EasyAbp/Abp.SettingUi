@@ -26,9 +26,9 @@ namespace MyAbpApp.Web.Menus
                 administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
             }
 
-            var l = context.ServiceProvider.GetRequiredService<IStringLocalizer<MyAbpAppResource>>();
+            var l = context.GetLocalizer<MyAbpAppResource>();
 
-            context.Menu.Items.Insert(0, new ApplicationMenuItem("MyAbpApp.Home", l["Menu:Home"], "/"));
+            context.Menu.Items.Insert(0, new ApplicationMenuItem("MyAbpApp.Home", l["Menu:Home"], "~/"));
         }
     }
 }

@@ -166,7 +166,7 @@ namespace MyAbpApp.Web
             services.AddSwaggerGen(
                 options =>
                 {
-                    options.SwaggerDoc("v1", new OpenApiInfo {Title = "MyAbpApp API", Version = "v1"});
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAbpApp API", Version = "v1" });
                     options.DocInclusionPredicate((docName, description) => true);
                     options.CustomSchemaIds(type => type.FullName);
                 }

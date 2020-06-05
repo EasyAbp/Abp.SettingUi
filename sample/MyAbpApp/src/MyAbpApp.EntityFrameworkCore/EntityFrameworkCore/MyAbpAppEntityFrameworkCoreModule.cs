@@ -27,6 +27,11 @@ namespace MyAbpApp.EntityFrameworkCore
         )]
     public class MyAbpAppEntityFrameworkCoreModule : AbpModule
     {
+        public override void PreConfigureServices(ServiceConfigurationContext context)
+        {
+            MyAbpAppEfCoreEntityExtensionMappings.Configure();
+        }
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             context.Services.AddAbpDbContext<MyAbpAppDbContext>(options =>

@@ -128,5 +128,10 @@
     "Group1": "Mail",
     "Group2": "Others",
     "Type": "text"
+  },
+  "Abp.Timing.TimeZone": {
+    "Group1": "System",
+    "Group2": "TimeZone",
+    "Type": "text"
   }
 }

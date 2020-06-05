@@ -11,6 +11,7 @@
     "Account": "帐户",
     "Mail": "邮件",
     "Smtp": "SMTP",
+    "Timing": "时间",
     "Others": "其它",
     "Permission:SettingUi": "设置UI",
     "Permission:SettingUi.Global": "全局",

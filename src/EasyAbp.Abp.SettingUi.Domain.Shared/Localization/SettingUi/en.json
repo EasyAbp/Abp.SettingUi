@@ -11,6 +11,7 @@
     "Account": "Account",
     "Mail": "Mail",
     "Smtp": "SMTP",
+    "Timing": "Timing",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
     "Permission:SettingUi.Global": "Global",
