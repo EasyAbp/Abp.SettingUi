@@ -40,10 +40,4 @@
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Shared\EasyAbp.Abp.SettingUi.Domain.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Components\Default.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\SettingUi\Index.cshtml" />
-    <_ContentIncludedByDefault Remove="Pages\SettingUi\_ViewImports.cshtml" />
-  </ItemGroup>
-
 </Project>
