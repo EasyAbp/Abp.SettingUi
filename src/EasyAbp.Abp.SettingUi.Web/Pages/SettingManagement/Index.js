@@ -23,7 +23,10 @@
             l("ResetConfirm", $(form).find("h4").text()),
             function (result) {
                 if (result) {
-                    var input = $(form).map(function() {return this.id;}).get();
+                    var input = $(form)
+                        .find(":input[id]")
+                        .map(function() {return this.id;})
+                        .get();
                     abp.log.debug(input);
                     service.resetSettingValues(input)
                         .then(function (result) {
