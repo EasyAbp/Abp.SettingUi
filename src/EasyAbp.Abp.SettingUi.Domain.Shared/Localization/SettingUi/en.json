@@ -17,6 +17,8 @@
     "Permission:SettingUi": "Setting UI",
     "Permission:SettingUi.Global": "Global",
     "Save": "Save",
-    "Reset": "Reset"
+    "Reset": "Reset",
+    "SuccessfullySaved": "Successfully saved",
+    "ResetConfirm" : "Reset the settings in group '{0}' to default"
   }
 }

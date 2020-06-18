@@ -17,6 +17,8 @@
     "Permission:SettingUi": "设置UI",
     "Permission:SettingUi.Global": "全局",
     "Save": "保存",
-    "Reset": "重置"
+    "Reset": "重置",
+    "SuccessfullySaved": "保存成功",
+    "ResetConfirm" : "重置组 '{0}' 中的设置为默认值"
   }
 }
