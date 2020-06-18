@@ -27,13 +27,21 @@
                         .find(":input[id]")
                         .map(function() {return this.id;})
                         .get();
-                    abp.log.debug(input);
                     service.resetSettingValues(input)
                         .then(function (result) {
+                            // get the index of current selected tab
+                            var index = $("a.nav-link.active").parents().index()
+                            location.href = "#" + index;
                             location.reload();
                         });
                 }
             }
         );
     })
+
+
+    if (location.hash) {
+        var index = location.hash.substring(1);
+        $("#SettingManagementWrapper li.nav-item > a.nav-link")[index].click();
+    }
 })(jQuery);
