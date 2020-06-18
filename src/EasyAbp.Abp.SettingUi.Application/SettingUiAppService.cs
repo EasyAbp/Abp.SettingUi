@@ -66,7 +66,7 @@ namespace EasyAbp.Abp.SettingUi
         {
             foreach (var kv in settingValues)
             {
-                // The key of the settingValues is in camelCase, like "setting_Abp_Localization_DefaultLanguage",
+                // The key of the settingValues is in camel_Case, like "setting_Abp_Localization_DefaultLanguage",
                 // change it to "Abp.Localization.DefaultLanguage" form
                 string pascalCaseName = kv.Key.ToPascalCase();
                 if (!pascalCaseName.StartsWith(SettingUiConst.FormNamePrefix))
@@ -76,6 +76,17 @@ namespace EasyAbp.Abp.SettingUi
 
                 string name = pascalCaseName.RemovePreFix(SettingUiConst.FormNamePrefix).UnderscoreToDot();
                 await _settingManager.SetGlobalAsync(name, kv.Value);
+            }
+        }
+
+        public async Task ResetSettingValues(List<string> settingNames)
+        {
+            foreach (var name in settingNames)
+            {
+                var setting = _settingDefinitionManager.GetOrNull(name);
+                if (setting == null) continue;
+
+                await _settingManager.SetGlobalAsync(name, setting.DefaultValue);
             }
         }
 

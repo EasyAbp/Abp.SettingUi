@@ -9,5 +9,6 @@ namespace EasyAbp.Abp.SettingUi
     {
         Task<IEnumerable<SettingGroup>> GroupSettingDefinitions();
         Task SetSettingValues(IDictionary<string, string> settingValues);
+        Task ResetSettingValues(List<string> settingNames);
     }
 }

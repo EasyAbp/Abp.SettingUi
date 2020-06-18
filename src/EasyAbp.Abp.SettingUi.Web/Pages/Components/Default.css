@@ -5,6 +5,9 @@
 .card-body .custom-control-label {
     margin-bottom: 20px;
 }
+.card-body button {
+    margin: 5px;
+}
 
 .card-body > label {
     font-weight: bold;
