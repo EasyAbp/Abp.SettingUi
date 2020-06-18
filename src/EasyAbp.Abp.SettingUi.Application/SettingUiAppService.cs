@@ -75,6 +75,9 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 string name = pascalCaseName.RemovePreFix(SettingUiConst.FormNamePrefix).UnderscoreToDot();
+                var setting = _settingDefinitionManager.GetOrNull(name);
+                if (setting == null) continue;
+
                 await _settingManager.SetGlobalAsync(name, kv.Value);
             }
         }
