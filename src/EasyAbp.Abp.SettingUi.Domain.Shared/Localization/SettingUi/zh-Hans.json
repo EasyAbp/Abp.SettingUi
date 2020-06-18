@@ -8,13 +8,15 @@
     "Lockout": "锁定",
     "SignIn": "登录",
     "User": "用户",
+    "OrganizationUnit": "组织单元",
     "Account": "帐户",
     "Mail": "邮件",
     "Smtp": "SMTP",
-    "Timing": "时间",
+    "TimeZone": "时区",
     "Others": "其它",
     "Permission:SettingUi": "设置UI",
     "Permission:SettingUi.Global": "全局",
-    "Save": "保存"
+    "Save": "保存",
+    "Reset": "重置"
   }
 }

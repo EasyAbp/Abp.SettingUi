@@ -74,6 +74,11 @@
     "Group2": "User",
     "Type": "checkbox"
   },
+  "Abp.Identity.OrganizationUnit.MaxUserMembershipCount": {
+    "Group1": "System",
+    "Group2": "OrganizationUnit",
+    "Type": "number"
+  },
   "Abp.Account.IsSelfRegistrationEnabled": {
     "Group1": "System",
     "Group2": "Account",

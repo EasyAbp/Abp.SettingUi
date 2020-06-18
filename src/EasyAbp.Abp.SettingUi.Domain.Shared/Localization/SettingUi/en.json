@@ -8,13 +8,15 @@
     "Lockout": "Lockout",
     "SignIn": "Sign In",
     "User": "User",
+    "OrganizationUnit": "Organization Unit",
     "Account": "Account",
     "Mail": "Mail",
     "Smtp": "SMTP",
-    "Timing": "Timing",
+    "TimeZone": "TimeZone",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
     "Permission:SettingUi.Global": "Global",
-    "Save": "Save"
+    "Save": "Save",
+    "Reset": "Reset"
   }
 }
