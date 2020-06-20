@@ -15,7 +15,7 @@
     "TimeZone": "时区",
     "Others": "其它",
     "Permission:SettingUi": "设置UI",
-    "Permission:SettingUi.Global": "全局",
+    "Permission:SettingUi.Tenant": "租户",
     "Save": "保存",
     "Reset": "重置",
     "SuccessfullySaved": "保存成功",
