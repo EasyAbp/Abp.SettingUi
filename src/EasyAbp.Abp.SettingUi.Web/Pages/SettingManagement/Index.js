@@ -43,5 +43,6 @@
     if (location.hash) {
         var index = location.hash.substring(1);
         $("#SettingManagementWrapper li.nav-item > a.nav-link")[index].click();
+        history.replaceState(null, null, ' ');  // remove hash from the location url
     }
 })(jQuery);
