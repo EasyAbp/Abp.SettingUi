@@ -15,7 +15,7 @@
     "TimeZone": "TimeZone",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
-    "Permission:SettingUi.Global": "Global",
+    "Permission:SettingUi.Tenant": "Tenant",
     "Save": "Save",
     "Reset": "Reset",
     "SuccessfullySaved": "Successfully saved",

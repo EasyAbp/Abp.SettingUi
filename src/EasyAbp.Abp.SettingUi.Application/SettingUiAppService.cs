@@ -39,7 +39,7 @@ namespace EasyAbp.Abp.SettingUi
 
         public async Task<IEnumerable<SettingGroup>> GroupSettingDefinitions()
         {
-            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Global))
+            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Tenant))
             {
                 throw new AbpAuthorizationException("Authorization failed! No SettingUi policy granted.");
             }
@@ -78,7 +78,7 @@ namespace EasyAbp.Abp.SettingUi
                 var setting = _settingDefinitionManager.GetOrNull(name);
                 if (setting == null) continue;
 
-                await _settingManager.SetGlobalAsync(name, kv.Value);
+                await _settingManager.SetForCurrentTenantAsync(name, kv.Value);
             }
         }
 
@@ -89,7 +89,7 @@ namespace EasyAbp.Abp.SettingUi
                 var setting = _settingDefinitionManager.GetOrNull(name);
                 if (setting == null) continue;
 
-                await _settingManager.SetGlobalAsync(name, setting.DefaultValue);
+                await _settingManager.SetForCurrentTenantAsync(name, setting.DefaultValue);
             }
         }
 
