@@ -7,8 +7,8 @@ namespace EasyAbp.Abp.SettingUi
 {
     public interface ISettingUiAppService : IApplicationService
     {
-        Task<IEnumerable<SettingGroup>> GroupSettingDefinitions();
-        Task SetSettingValues(IDictionary<string, string> settingValues);
+        Task<List<SettingGroup>> GroupSettingDefinitions();
+        Task SetSettingValues(Dictionary<string, string> settingValues);
         Task ResetSettingValues(List<string> settingNames);
     }
 }
