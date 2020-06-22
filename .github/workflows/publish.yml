@@ -49,7 +49,7 @@ jobs:
       - name: publish EasyAbp.Abp.SettingUi.HttpApi.Client.dll
         uses: brandedoutcast/publish-nuget@v2
         with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.Client.csproj
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi.Client/EasyAbp.Abp.SettingUi.HttpApi.Client.csproj
           VERSION_FILE_PATH: common.props
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 
