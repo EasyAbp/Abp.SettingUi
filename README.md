@@ -31,13 +31,17 @@ Here is a step-by-step tutorial to show you the usage of this module.
     There are three packages need to be installed:
 
     * `MyAbpApp.Domain.Shared` project:
-  
+
         `Install-Package EasyAbp.Abp.SettingUi.Domain.Shared`
 
     * `MyAbpApp.Application` project:
-    
+
         `Install-Package EasyAbp.Abp.SettingUi.Application`
-    
+
+    * `MyAbpApp.HttpApi` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.HttpApi`
+
     * `MyAbpApp.Web` project:
 
         `Install-Package EasyAbp.Abp.SettingUi.Web`
@@ -60,6 +64,17 @@ Here is a step-by-step tutorial to show you the usage of this module.
         ...
         [DependsOn(typeof(SettingUiApplicationModule))]
         public class MyAbpAppApplicationModule : AbpModule
+        {
+            ...
+        }
+        ```
+
+    * `MyAbpApp.HttpApi` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiHttpApiModule))]
+        public class MyAbpAppHttpApiModule : AbpModule
         {
             ...
         }
@@ -93,25 +108,6 @@ Here is a step-by-step tutorial to show you the usage of this module.
         });
         ```
 
-1. Configure auto api controller
-
-    * `MyAbpApp.Web` project:
-  
-        ``` csharp
-        ...
-        public class MyAbpAppWebModule : AbpModule
-        {
-            private void ConfigureAutoApiControllers()
-            {
-                Configure<AbpAspNetCoreMvcOptions>(options =>
-                {
-                    ...
-                    options.ConventionalControllers.Create(typeof(SettingUiApplicationModule).Assembly);
-                });
-            }
-        }
-        ```
-
 ## Startup
 
 1. Run `MyAbpApp.DbMigrator` to seed database
@@ -119,7 +115,7 @@ Here is a step-by-step tutorial to show you the usage of this module.
 1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Global" to admin:
 
     ![permission](./doc/images/permission.png)
-  
+
 1. Refresh the browser then you can use "Administration" - "Settings" menu to see all ABP built-in settings
 
 ## Manage custom settings
@@ -159,7 +155,7 @@ Beside ABP built-in settings, you can also use this module to manage your own se
 
 1. Define localization resources for the setting, for demostration purpose, we defined English and Chinese localization resources
 
-    * `MyAbpApp.Domain.Shared` project 
+    * `MyAbpApp.Domain.Shared` project
 
       * `Localization/MyAbpApp/en.json`
 
@@ -220,10 +216,10 @@ So how can we custom the group of the setting? There are two ways:
 
         * The consts `Group1` and `Group2` are defined in the `SettingUiConst` class
         * Set the "Group1" to "Server", and "Group2" to "Connection"
-    
+
     Then we should provide the localization resource for these two group names:
 
-    * `MyAbpApp.Domain.Shared` project 
+    * `MyAbpApp.Domain.Shared` project
 
       * `Localization/MyAbpApp/en.json`
 
@@ -272,7 +268,7 @@ So how can we custom the group of the setting? There are two ways:
         )
         ```
     > The steps of adding localization for this setting are omitted.
-    
+
     Then we need to create a new json file with arbitrary filename, however the path must be "/SettingProperties", because SettingUi module will look for the setting property files from this path.
 
     * `MyAbpApp.Domain.Shared` project - `/SettingProperties/MySettingProperties.json` file
@@ -326,7 +322,7 @@ For now SettingUi support following setting types:
 * checkbox
 * select
   * Needs an additional property "Options" to provide select options, which is a string delimitted by vertical bar (|)
-  
+
     ``` json
     "Connection.Protocol": {
         "Group1": "Server",
@@ -349,8 +345,8 @@ The SettingUI module uses ABP's localization system to display the localization 
 
 * en
 * zh-Hans
-  
-The localization resource files are under `/Localization/SettingUi` of the `EasyAbp.Abp.SettingUi.Domain.Shared` project. 
+
+The localization resource files are under `/Localization/SettingUi` of the `EasyAbp.Abp.SettingUi.Domain.Shared` project.
 
 You can add more resource files to make this module support more languages. Welcome PRs :blush: .
 > For ABP's localization system, please see [the document](https://docs.abp.io/en/abp/latest/Localization)
