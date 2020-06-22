@@ -8,7 +8,7 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace EasyAbp.Abp.SettingUi
 {
-    [RemoteService(Name = "settingUi")]
+    [RemoteService(Name = "SettingUi")]
     [Area("settingUi")]
     [Route("api/settingUi")] 
     public class SettingUiController : AbpController, ISettingUiAppService
