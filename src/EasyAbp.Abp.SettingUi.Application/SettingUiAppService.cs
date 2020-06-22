@@ -6,7 +6,6 @@ using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
-using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
@@ -15,7 +14,6 @@ using Volo.Abp.Authorization;
 using Volo.Abp.Json;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
-using Volo.Abp.UI;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
@@ -44,10 +42,10 @@ namespace EasyAbp.Abp.SettingUi
                 throw new AbpAuthorizationException("Authorization failed! No SettingUi policy granted.");
             }
 
-            // Merge all the setting properties in to one dictionary
+            // Merge all setting properties into one dictionary
             var settingProperties = GetMergedSettingProperties();
 
-            // Set the properties of the setting definitions
+            // Set properties of the setting definitions
             var settingDefinitions = SetSettingDefinitionProperties(settingProperties);
 
             // Group the setting definitions
