@@ -112,7 +112,7 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
 1. Run `MyAbpApp.DbMigrator` to seed database
 1. Launch `MyAbpApp.Web`
-1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Global" to admin:
+1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Tenant" to admin:
 
     ![permission](./doc/images/permission.png)
 
