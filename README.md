@@ -30,13 +30,13 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
     There are three packages need to be installed:
 
-    * `MyAbpApp.Domain.Shared` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.Domain.Shared`
-
     * `MyAbpApp.Application` project:
 
         `Install-Package EasyAbp.Abp.SettingUi.Application`
+
+    * `MyAbpApp.Domain.Shared` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.Domain.Shared`
 
     * `MyAbpApp.HttpApi` project:
 
@@ -48,16 +48,6 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
 1. Add module dependencies
 
-    * `MyAbpApp.Domain.Shared` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiDomainSharedModule))]
-        public class MyAbpAppDomainSharedModule : AbpModule
-        {
-            ...
-        }
-
     * `MyAbpApp.Application` project:
 
         ``` csharp
@@ -68,6 +58,16 @@ Here is a step-by-step tutorial to show you the usage of this module.
             ...
         }
         ```
+
+    * `MyAbpApp.Domain.Shared` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiDomainSharedModule))]
+        public class MyAbpAppDomainSharedModule : AbpModule
+        {
+            ...
+        }
 
     * `MyAbpApp.HttpApi` project:
 
