@@ -46,6 +46,10 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
         `Install-Package EasyAbp.Abp.SettingUi.Web`
 
+    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need install one more package to your `MyAbpApp.HttpApi.Client` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.HttpApi.Client`
+
 1. Add module dependencies
 
     * `MyAbpApp.Application` project:
@@ -90,6 +94,18 @@ Here is a step-by-step tutorial to show you the usage of this module.
             ...
         }
         ```
+
+    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need add one more dependency to your `MyAbpApp.HttpApi.Client` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiHttpApiClientModule))]
+        public class MyAbpAppHttpApiClientModule : AbpModule
+        {
+            ...
+        }
+        ```
+
 
 1. Add localization resource to SettingUi
 

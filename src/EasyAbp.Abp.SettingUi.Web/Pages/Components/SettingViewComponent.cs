@@ -5,30 +5,16 @@ using EasyAbp.Abp.SettingUi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
-using Volo.Abp.Settings;
-using Volo.Abp.Threading;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
 {
     [Widget(StyleFiles = new[] {"/Pages/Components/Default.css"})]
     public class SettingViewComponent : AbpViewComponent
     {
-        private readonly ISettingProvider _settingProvider;
-
-        public SettingViewComponent(ISettingProvider settingProvider)
-        {
-            _settingProvider = settingProvider;
-        }
-
         public IViewComponentResult Invoke(SettingGroup parameter)
         {
-            var settingInfos = parameter.SettingInfos.Select(CreateSettingHtmlInfo);
+            var settingInfos = parameter.SettingInfos.Select(si => new SettingHtmlInfo(si));
             return View("~/Pages/Components/Default.cshtml", settingInfos);
-        }
-
-        private SettingHtmlInfo CreateSettingHtmlInfo(SettingInfo settingInfo)
-        {
-            return new SettingHtmlInfo(settingInfo, AsyncHelper.RunSync(() => _settingProvider.GetOrNullAsync(settingInfo.Name)));
         }
     }
 
@@ -44,12 +30,12 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
         public string Type { get; }
         public Dictionary<string, object> Properties { get; }
 
-        public SettingHtmlInfo(SettingInfo settingInfo, string value)
+        public SettingHtmlInfo(SettingInfo settingInfo)
         {
             Name = settingInfo.Name;
             DisplayName = settingInfo.DisplayName;
             Description = settingInfo.Description;
-            Value = value;
+            Value = settingInfo.Value;
             Group1 = (string) settingInfo.Properties[SettingUiConst.Group1];
             Group2 = (string) settingInfo.Properties[SettingUiConst.Group2];
             FormName = SettingUiConst.FormNamePrefix + Name.DotToUnderscore();
