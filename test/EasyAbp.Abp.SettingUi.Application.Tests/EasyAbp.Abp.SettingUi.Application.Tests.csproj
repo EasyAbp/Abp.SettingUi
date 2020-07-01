@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\EasyAbp.Abp.SettingUi.Application\EasyAbp.Abp.SettingUi.Application.csproj" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Tests\EasyAbp.Abp.SettingUi.Domain.Tests.csproj" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
   </ItemGroup>
 
   <ItemGroup>
