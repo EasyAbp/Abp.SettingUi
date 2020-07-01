@@ -157,7 +157,6 @@ namespace MyAbpApp.Web
             Configure<AbpAspNetCoreMvcOptions>(options =>
             {
                 options.ConventionalControllers.Create(typeof(MyAbpAppApplicationModule).Assembly);
-                options.ConventionalControllers.Create(typeof(SettingUiApplicationModule).Assembly);
             });
         }
 

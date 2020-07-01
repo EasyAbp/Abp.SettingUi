@@ -17,7 +17,7 @@ jobs:
           PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application/EasyAbp.Abp.SettingUi.Application.csproj
           VERSION_FILE_PATH: common.props
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          
+
       - name: publish EasyAbp.Abp.SettingUi.Application.Contracts.dll
         uses: brandedoutcast/publish-nuget@v2
         with:
@@ -36,6 +36,20 @@ jobs:
         uses: brandedoutcast/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain.Shared/EasyAbp.Abp.SettingUi.Domain.Shared.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+      - name: publish EasyAbp.Abp.SettingUi.HttpApi.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.csproj
+          VERSION_FILE_PATH: common.props
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+      - name: publish EasyAbp.Abp.SettingUi.HttpApi.Client.dll
+        uses: brandedoutcast/publish-nuget@v2
+        with:
+          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi.Client/EasyAbp.Abp.SettingUi.HttpApi.Client.csproj
           VERSION_FILE_PATH: common.props
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 

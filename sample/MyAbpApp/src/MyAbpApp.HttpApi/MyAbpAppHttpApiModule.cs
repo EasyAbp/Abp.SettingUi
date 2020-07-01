@@ -1,4 +1,5 @@
-﻿using Volo.Abp.Account;
+﻿using EasyAbp.Abp.SettingUi;
+using Volo.Abp.Account;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
@@ -15,6 +16,7 @@ namespace MyAbpApp
         typeof(AbpTenantManagementHttpApiModule),
         typeof(AbpFeatureManagementHttpApiModule)
         )]
+    [DependsOn(typeof(SettingUiHttpApiModule))]
     public class MyAbpAppHttpApiModule : AbpModule
     {
         

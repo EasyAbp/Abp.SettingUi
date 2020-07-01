@@ -3,7 +3,7 @@
 
 @{
     string optionStr;
-    if (Model.SettingDefinition.Properties.TryGetValue(SettingUiConst.Options, out var optionList))
+    if (Model.Properties.TryGetValue(SettingUiConst.Options, out var optionList))
     {
         optionStr = optionList.ToString();
     }
@@ -13,10 +13,7 @@
     }
 }
 
-@if (!Model.Description.ResourceNotFound)
-{
 <p class="form-text">@Model.Description</p>
-}
 <select id="@Model.Name" name="@Model.FormName" class="form-control">
     @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
     {

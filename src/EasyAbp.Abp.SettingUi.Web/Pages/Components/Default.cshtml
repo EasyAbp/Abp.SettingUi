@@ -17,6 +17,7 @@
                     @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
                 }
                 <abp-button type="submit" button-type="Primary" text="@L["Save"].Value" class="float-right"/>
+                <abp-button button-type="Warning" text="@L["Reset"].Value" class="float-right reset"/>
             </abp-card-body>
         </abp-card>
     </form>

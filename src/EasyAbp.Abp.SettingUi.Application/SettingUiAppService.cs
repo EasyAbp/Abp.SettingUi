@@ -6,16 +6,16 @@ using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
-using Localization.Resources.AbpUi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
 using Volo.Abp.Json;
+using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
-using Volo.Abp.UI;
+using Volo.Abp.Threading;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
@@ -23,31 +23,38 @@ namespace EasyAbp.Abp.SettingUi
     public class SettingUiAppService : ApplicationService, ISettingUiAppService
     {
         private readonly IStringLocalizer<SettingUiResource> _localizer;
+        private readonly IStringLocalizerFactory _factory;
         private readonly IVirtualFileProvider _fileProvider;
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISettingDefinitionManager _settingDefinitionManager;
         private readonly ISettingManager _settingManager;
 
-        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer, IVirtualFileProvider fileProvider, IJsonSerializer jsonSerializer, ISettingDefinitionManager settingDefinitionManager, ISettingManager settingManager)
+        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer, 
+            IStringLocalizerFactory factory,
+            IVirtualFileProvider fileProvider,
+            IJsonSerializer jsonSerializer,
+            ISettingDefinitionManager settingDefinitionManager,
+            ISettingManager settingManager)
         {
             _localizer = localizer;
+            _factory = factory;
             _fileProvider = fileProvider;
             _jsonSerializer = jsonSerializer;
             _settingDefinitionManager = settingDefinitionManager;
             _settingManager = settingManager;
         }
 
-        public async Task<IEnumerable<SettingGroup>> GroupSettingDefinitions()
+        public async Task<List<SettingGroup>> GroupSettingDefinitions()
         {
-            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Global))
+            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Tenant))
             {
                 throw new AbpAuthorizationException("Authorization failed! No SettingUi policy granted.");
             }
 
-            // Merge all the setting properties in to one dictionary
+            // Merge all setting properties into one dictionary
             var settingProperties = GetMergedSettingProperties();
 
-            // Set the properties of the setting definitions
+            // Set properties of the setting definitions
             var settingDefinitions = SetSettingDefinitionProperties(settingProperties);
 
             // Group the setting definitions
@@ -57,16 +64,17 @@ namespace EasyAbp.Abp.SettingUi
                     {
                         GroupName = grp.Key,
                         GroupDisplayName = _localizer[grp.Key],
-                        SettingDefinitions = grp
+                        SettingInfos = grp.ToList(),
                     })
+                    .ToList()
                 ;
         }
 
-        public async Task SetSettingValues(IDictionary<string, string> settingValues)
+        public async Task SetSettingValues(Dictionary<string, string> settingValues)
         {
             foreach (var kv in settingValues)
             {
-                // The key of the settingValues is in camelCase, like "setting_Abp_Localization_DefaultLanguage",
+                // The key of the settingValues is in camel_Case, like "setting_Abp_Localization_DefaultLanguage",
                 // change it to "Abp.Localization.DefaultLanguage" form
                 string pascalCaseName = kv.Key.ToPascalCase();
                 if (!pascalCaseName.StartsWith(SettingUiConst.FormNamePrefix))
@@ -75,7 +83,27 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 string name = pascalCaseName.RemovePreFix(SettingUiConst.FormNamePrefix).UnderscoreToDot();
-                await _settingManager.SetGlobalAsync(name, kv.Value);
+                var setting = _settingDefinitionManager.GetOrNull(name);
+                if (setting == null)
+                {
+                    continue;
+                }
+
+                await _settingManager.SetForCurrentTenantAsync(name, kv.Value);
+            }
+        }
+
+        public async Task ResetSettingValues(List<string> settingNames)
+        {
+            foreach (var name in settingNames)
+            {
+                var setting = _settingDefinitionManager.GetOrNull(name);
+                if (setting == null)
+                {
+                    continue;
+                }
+
+                await _settingManager.SetForCurrentTenantAsync(name, setting.DefaultValue);
             }
         }
 
@@ -89,45 +117,73 @@ namespace EasyAbp.Abp.SettingUi
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
-        private IEnumerable<SettingDefinition> SetSettingDefinitionProperties(IDictionary<string, IDictionary<string, string>> settingProperties)
+        private List<SettingInfo> SetSettingDefinitionProperties(IDictionary<string, IDictionary<string, string>> settingProperties)
         {
+            var settingInfos = new List<SettingInfo>();
             var settingDefinitions = _settingDefinitionManager.GetAll();
             foreach (var settingDefinition in settingDefinitions)
             {
-                if (settingProperties.ContainsKey(settingDefinition.Name))
+                var si = CreateSettingInfo(settingDefinition);
+                if (settingProperties.ContainsKey(si.Name))
                 {
-                    // This SettingDefinition is defined in the property file,
+                    // This Setting is defined in the property file,
                     // set its property values from the dictionary
-                    var properties = settingProperties[settingDefinition.Name];
+                    var properties = settingProperties[si.Name];
                     foreach (var kv in properties)
                     {
-                        settingDefinition.WithProperty(kv.Key, kv.Value);
+                        si.WithProperty(kv.Key, kv.Value);
                     }
                 }
 
                 // Default group1: Others
-                if (!settingDefinition.Properties.ContainsKey(SettingUiConst.Group1))
+                if (!si.Properties.ContainsKey(SettingUiConst.Group1))
                 {
-                    settingDefinition.WithProperty(SettingUiConst.Group1,
-                        SettingUiConst.DefaultGroup);
+                    si.WithProperty(SettingUiConst.Group1, SettingUiConst.DefaultGroup);
                 }
 
                 // Default group2: Others
-                if (!settingDefinition.Properties.ContainsKey(SettingUiConst.Group2))
+                if (!si.Properties.ContainsKey(SettingUiConst.Group2))
                 {
-                    settingDefinition.WithProperty(SettingUiConst.Group2,
-                        SettingUiConst.DefaultGroup);
+                    si.WithProperty(SettingUiConst.Group2, SettingUiConst.DefaultGroup);
                 }
 
                 // Default type: text
-                if (!settingDefinition.Properties.ContainsKey(SettingUiConst.Type))
+                if (!si.Properties.ContainsKey(SettingUiConst.Type))
                 {
-                    settingDefinition.WithProperty(SettingUiConst.Type,
-                        SettingUiConst.DefaultType);
+                    si.WithProperty(SettingUiConst.Type, SettingUiConst.DefaultType);
                 }
+
+                settingInfos.Add(si);
             }
 
-            return settingDefinitions;
+            return settingInfos;
+        }
+
+        private SettingInfo CreateSettingInfo(SettingDefinition settingDefinition)
+        {
+            string name = settingDefinition.Name;
+            string displayName;
+            if (settingDefinition.DisplayName is FixedLocalizableString fls && fls.Value == settingDefinition.Name)
+            {
+                displayName = _localizer[$"DisplayName:{settingDefinition.Name}"];
+            }
+            else
+            {
+                displayName = settingDefinition.DisplayName.Localize(_factory);
+            }
+
+            string description = settingDefinition.Description == null ? _localizer[$"Description:{settingDefinition.Name}"] : settingDefinition.Description.Localize(_factory);
+            string value = AsyncHelper.RunSync(() => SettingProvider.GetOrNullAsync(name));
+
+            var si = new SettingInfo(name, displayName, description, value);
+            
+            // Copy properties from SettingDefinition
+            foreach (var property in settingDefinition.Properties)
+            {
+                si.WithProperty(property.Key, property.Value);
+            }
+
+            return si;
         }
     }
 }

@@ -29,20 +29,33 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
             // Mock ISettingDefinitionManager
             var settingDefinitionManager = Substitute.For<ISettingDefinitionManager>();
+            var setting1 = new SettingDefinition("Test.Setting1", "1")
+                .WithProperty(SettingUiConst.Group1, "TestGroup1")
+                .WithProperty(SettingUiConst.Group2, "TestGroup2")
+                .WithProperty(SettingUiConst.Type, "number");
+            var setting2 = new SettingDefinition("Test.Setting2", "2");
+            var setting3 = new SettingDefinition("Test.Setting3", "3");
             settingDefinitionManager.GetAll().Returns(new List<SettingDefinition>
             {
-                new SettingDefinition("Test.Setting1", "1")
-                    .WithProperty(SettingUiConst.Group1, "TestGroup1")
-                    .WithProperty(SettingUiConst.Group2, "TestGroup2")
-                    .WithProperty(SettingUiConst.Type, "number"),
-                new SettingDefinition("Test.Setting2", "2"),
-                new SettingDefinition("Test.Setting3", "3")
+                setting1,
+                setting2,
+                setting3
             });
+            settingDefinitionManager.GetOrNull("Test.Setting1").Returns(setting1);
+            settingDefinitionManager.GetOrNull("Test.Setting2").Returns(setting2);
+            settingDefinitionManager.GetOrNull("Test.Setting3").Returns(setting3);
             services.AddSingleton(settingDefinitionManager);
 
             // Mock ISettingManager
             _settingManager = Substitute.For<ISettingManager>();
             services.AddSingleton(_settingManager);
+            
+            // Mock ISettingProvider
+            var settingProvider = Substitute.For<ISettingProvider>();
+            settingProvider.GetOrNullAsync("Test.Setting1").Returns(Task.FromResult("1"));
+            settingProvider.GetOrNullAsync("Test.Setting2").Returns(Task.FromResult("2"));
+            settingProvider.GetOrNullAsync("Test.Setting3").Returns(Task.FromResult("3"));
+            services.AddSingleton(settingProvider);
         }
 
         [Fact]
@@ -57,16 +70,16 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             // Assert
             var group = groups.Single(g => g.GroupName == "TestGroup1");
             group.GroupDisplayName.ShouldBe("TestGroup1");
-            group.SettingDefinitions.Count().ShouldBe(2);
+            group.SettingInfos.Count().ShouldBe(2);
 
             // The property values of the Test.Setting1 are set with "WithProperty" method
-            var setting1 = group.SettingDefinitions.Single(sd => sd.Name == "Test.Setting1");
+            var setting1 = group.SettingInfos.Single(si => si.Name == "Test.Setting1");
             setting1.Properties[SettingUiConst.Group1].ShouldBe("TestGroup1");
             setting1.Properties[SettingUiConst.Group2].ShouldBe("TestGroup2");
             setting1.Properties[SettingUiConst.Type].ShouldBe("number");
 
             // The property values of the Test.Setting2 are from the TestSettingProperties.json file
-            var setting2 = group.SettingDefinitions.Single(sd => sd.Name == "Test.Setting2");
+            var setting2 = group.SettingInfos.Single(si => si.Name == "Test.Setting2");
             setting2.Properties[SettingUiConst.Group1].ShouldBe("TestGroup1");
             setting2.Properties[SettingUiConst.Group2].ShouldBe("TestGroup2");
             setting2.Properties[SettingUiConst.Type].ShouldBe("checkbox");
@@ -83,7 +96,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
             // Assert
             // The property values of the Test.Setting3 are default
-            var setting3 = groups.SelectMany(grp => grp.SettingDefinitions).Single(sd => sd.Name == "Test.Setting3");
+            var setting3 = groups.SelectMany(grp => grp.SettingInfos).Single(si => si.Name == "Test.Setting3");
             setting3.Properties[SettingUiConst.Group1].ShouldBe(SettingUiConst.DefaultGroup);
             setting3.Properties[SettingUiConst.Group2].ShouldBe(SettingUiConst.DefaultGroup);
             setting3.Properties[SettingUiConst.Type].ShouldBe(SettingUiConst.DefaultType);
@@ -97,16 +110,16 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             {
                 {"setting_Test_Setting1", "value1" },
                 {"setting_Test_Setting2", "value2" },
-                {"RequestToken", "value3" },
+                {"RequestToken", "value3" },    // This is a invalid setting name from frontend
             };
 
             // Act
             await _service.SetSettingValues(settingValues);
 
             // Assert
-            await _settingManager.Received().SetGlobalAsync("Test.Setting1", "value1");
-            await _settingManager.Received().SetGlobalAsync("Test.Setting2", "value2");
-            await _settingManager.DidNotReceive().SetGlobalAsync("RequestToken", "value3");
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting2", "value2");
+            await _settingManager.DidNotReceive().SetForCurrentTenantAsync("RequestToken", "value3");
         }
     }
 }

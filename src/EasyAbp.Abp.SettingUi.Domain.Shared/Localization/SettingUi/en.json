@@ -8,13 +8,17 @@
     "Lockout": "Lockout",
     "SignIn": "Sign In",
     "User": "User",
+    "OrganizationUnit": "Organization Unit",
     "Account": "Account",
     "Mail": "Mail",
     "Smtp": "SMTP",
-    "Timing": "Timing",
+    "TimeZone": "TimeZone",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
-    "Permission:SettingUi.Global": "Global",
-    "Save": "Save"
+    "Permission:SettingUi.Tenant": "Tenant",
+    "Save": "Save",
+    "Reset": "Reset",
+    "SuccessfullySaved": "Successfully saved",
+    "ResetConfirm" : "Reset the settings in group '{0}' to default"
   }
 }

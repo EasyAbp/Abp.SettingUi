@@ -22,7 +22,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
         public async Task<bool> CheckPermissionsAsync(SettingPageCreationContext context)
         {
             var authorizationService = context.ServiceProvider.GetRequiredService<IAuthorizationService>();
-            return await authorizationService.IsGrantedAsync(SettingUiPermissions.Global);
+            return await authorizationService.IsGrantedAsync(SettingUiPermissions.Tenant);
         }
     }
 }
