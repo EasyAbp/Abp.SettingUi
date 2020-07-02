@@ -29,11 +29,16 @@ namespace MyAbpApp
     [DependsOn(typeof(SettingUiDomainSharedModule))]
     public class MyAbpAppDomainSharedModule : AbpModule
     {
+        public override void PreConfigureServices(ServiceConfigurationContext context)
+        {
+            MyAbpAppModulePropertyConfigurator.Configure();
+        }
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                options.FileSets.AddEmbedded<MyAbpAppDomainSharedModule>("MyAbpApp");
+                options.FileSets.AddEmbedded<MyAbpAppDomainSharedModule>();
             });
 
             Configure<AbpLocalizationOptions>(options =>

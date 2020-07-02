@@ -14,7 +14,7 @@ namespace MyAbpApp.EntityFrameworkCore
             //builder.Entity<YourEntity>(b =>
             //{
             //    b.ToTable(MyAbpAppConsts.DbTablePrefix + "YourEntities", MyAbpAppConsts.DbSchema);
-
+            //    b.ConfigureByConvention(); //auto configure for the base class props
             //    //...
             //});
         }
