@@ -116,12 +116,13 @@ namespace MyAbpApp.IdentityServer
                  * solution. Otherwise, you can delete this client. */
 
                 await CreateClientAsync(
-                    webClientId,
-                    commonScopes,
-                    new[] { "hybrid" },
-                    (configurationSection["MyAbpApp_Web:ClientSecret"] ?? "1q2w3e*").Sha256(),
+                    name: webClientId,
+                    scopes: commonScopes,
+                    grantTypes: new[] {"hybrid"},
+                    secret: (configurationSection["MyAbpApp_Web:ClientSecret"] ?? "1q2w3e*").Sha256(),
                     redirectUri: $"{webClientRootUrl}signin-oidc",
-                    postLogoutRedirectUri: $"{webClientRootUrl}signout-callback-oidc"
+                    postLogoutRedirectUri: $"{webClientRootUrl}signout-callback-oidc",
+                    frontChannelLogoutUri: $"{webClientRootUrl}Account/FrontChannelLogout"
                 );
             }
 
@@ -130,10 +131,10 @@ namespace MyAbpApp.IdentityServer
             if (!consoleClientId.IsNullOrWhiteSpace())
             {
                 await CreateClientAsync(
-                    consoleClientId,
-                    commonScopes,
-                    new[] { "password", "client_credentials" },
-                    (configurationSection["MyAbpApp_App:ClientSecret"] ?? "1q2w3e*").Sha256()
+                    name: consoleClientId,
+                    scopes: commonScopes,
+                    grantTypes: new[] {"password", "client_credentials"},
+                    secret: (configurationSection["MyAbpApp_App:ClientSecret"] ?? "1q2w3e*").Sha256()
                 );
             }
         }
@@ -145,6 +146,7 @@ namespace MyAbpApp.IdentityServer
             string secret,
             string redirectUri = null,
             string postLogoutRedirectUri = null,
+            string frontChannelLogoutUri = null,
             IEnumerable<string> permissions = null)
         {
             var client = await _clientRepository.FindByCliendIdAsync(name);
@@ -165,7 +167,8 @@ namespace MyAbpApp.IdentityServer
                         AccessTokenLifetime = 31536000, //365 days
                         AuthorizationCodeLifetime = 300,
                         IdentityTokenLifetime = 300,
-                        RequireConsent = false
+                        RequireConsent = false,
+                        FrontChannelLogoutUri = frontChannelLogoutUri
                     },
                     autoSave: true
                 );
