@@ -131,7 +131,11 @@ namespace EasyAbp.Abp.SettingUi
                     var properties = settingProperties[si.Name];
                     foreach (var kv in properties)
                     {
-                        si.WithProperty(kv.Key, kv.Value);
+                        // Do not assign the property if it has already been set by the user.
+                        if (!si.Properties.ContainsKey(kv.Key))
+                        {
+                            si.WithProperty(kv.Key, kv.Value);
+                        }
                     }
                 }
 
