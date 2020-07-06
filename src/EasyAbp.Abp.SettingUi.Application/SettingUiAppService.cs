@@ -29,7 +29,7 @@ namespace EasyAbp.Abp.SettingUi
         private readonly ISettingDefinitionManager _settingDefinitionManager;
         private readonly ISettingManager _settingManager;
 
-        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer, 
+        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer,
             IStringLocalizerFactory factory,
             IVirtualFileProvider fileProvider,
             IJsonSerializer jsonSerializer,
@@ -124,14 +124,18 @@ namespace EasyAbp.Abp.SettingUi
             foreach (var settingDefinition in settingDefinitions)
             {
                 var si = CreateSettingInfo(settingDefinition);
-                if (settingProperties.ContainsKey(si.Name))
+                string settingName = si.Name;
+                if (settingProperties.ContainsKey(settingName))
                 {
                     // This Setting is defined in the property file,
                     // set its property values from the dictionary
-                    var properties = settingProperties[si.Name];
+                    var properties = settingProperties[settingName];
                     foreach (var kv in properties)
                     {
-                        si.WithProperty(kv.Key, kv.Value);
+                        if (!si.Properties.ContainsKey(kv.Key))
+                        {
+                            si.WithProperty(kv.Key, kv.Value);
+                        }
                     }
                 }
 
@@ -176,7 +180,7 @@ namespace EasyAbp.Abp.SettingUi
             string value = AsyncHelper.RunSync(() => SettingProvider.GetOrNullAsync(name));
 
             var si = new SettingInfo(name, displayName, description, value);
-            
+
             // Copy properties from SettingDefinition
             foreach (var property in settingDefinition.Properties)
             {
