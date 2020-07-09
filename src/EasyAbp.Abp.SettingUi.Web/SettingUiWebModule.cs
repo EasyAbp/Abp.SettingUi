@@ -13,6 +13,7 @@ namespace EasyAbp.Abp.SettingUi.Web
         typeof(AbpAspNetCoreMvcUiThemeSharedModule),
         typeof(AbpSettingManagementWebModule)
         )]
+    [DependsOn(typeof(SettingUiHttpApiModule))]
     public class SettingUiWebModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)

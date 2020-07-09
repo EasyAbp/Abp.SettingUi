@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Application.Contracts\EasyAbp.Abp.SettingUi.Application.Contracts.csproj" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Shared\EasyAbp.Abp.SettingUi.Domain.Shared.csproj" />
+    <ProjectReference Include="..\EasyAbp.Abp.SettingUi.HttpApi\EasyAbp.Abp.SettingUi.HttpApi.csproj" />
   </ItemGroup>
 
 </Project>
