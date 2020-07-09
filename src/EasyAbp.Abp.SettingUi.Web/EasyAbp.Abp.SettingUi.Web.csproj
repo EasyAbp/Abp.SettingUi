@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared" Version="3.0.1" />
-    <PackageReference Include="Volo.Abp.SettingManagement.Web" Version="3.0.1" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared" Version="3.0.3" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Web" Version="3.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +38,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Application.Contracts\EasyAbp.Abp.SettingUi.Application.Contracts.csproj" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Shared\EasyAbp.Abp.SettingUi.Domain.Shared.csproj" />
+    <ProjectReference Include="..\EasyAbp.Abp.SettingUi.HttpApi\EasyAbp.Abp.SettingUi.HttpApi.csproj" />
   </ItemGroup>
 
 </Project>
