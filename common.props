@@ -7,8 +7,8 @@
     <Authors>EasyAbp Team</Authors>
     <Description>An ABP UI module used to manage ABP settings</Description>
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/58311641?s=128</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/EasyAbp/Abp.SettingUi</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/EasyAbp/Abp.SettingUi</RepositoryUrl>
     <PackageTags>abp module easyabp setting settingmanagement</PackageTags>
     <Company>EasyAbp</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
