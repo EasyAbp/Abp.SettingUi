@@ -5,57 +5,33 @@ on:
       - master # Default release branch
 jobs:
   publish:
-    name: list on nuget
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      # Publish
-      - name: publish EasyAbp.Abp.SettingUi.Application.dll
-        uses: brandedoutcast/publish-nuget@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
         with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application/EasyAbp.Abp.SettingUi.Application.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          dotnet-version: 3.1.200
+          source-url: https://nuget.pkg.github.com/EasyAbp/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: publish EasyAbp.Abp.SettingUi.Application.Contracts.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application.Contracts/EasyAbp.Abp.SettingUi.Application.Contracts.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet build
+        run: dotnet build -c Release
 
-      - name: publish EasyAbp.Abp.SettingUi.Domain.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain/EasyAbp.Abp.SettingUi.Domain.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet pack
+        run: dotnet pack -c Release --no-build -o dest
 
-      - name: publish EasyAbp.Abp.SettingUi.Domain.Shared.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain.Shared/EasyAbp.Abp.SettingUi.Domain.Shared.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: remove unused packages
+        run: |
+          cd dest
+          ls | grep -v EasyAbp. | xargs rm -f
+          ls | grep HttpApi.Client.ConsoleTestApp | xargs rm -f
+          ls
 
-      - name: publish EasyAbp.Abp.SettingUi.HttpApi.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet nuget push to GitHub
+        run: dotnet nuget push ./dest/**/*.nupkg --skip-duplicate --no-symbols true
 
-      - name: publish EasyAbp.Abp.SettingUi.HttpApi.Client.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi.Client/EasyAbp.Abp.SettingUi.HttpApi.Client.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-
-      - name: publish EasyAbp.Abp.SettingUi.Web.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet nuget push to NuGet
+        run: dotnet nuget push ./dest/**/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate --no-symbols true

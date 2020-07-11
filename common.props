@@ -1,11 +1,12 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <Version>1.1.6</Version>
+    <Version>1.1.7</Version>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>EasyAbp Team</Authors>
     <Description>An ABP UI module used to manage ABP settings</Description>
+    <PackageIconUrl>https://avatars3.githubusercontent.com/u/58311641?s=128</PackageIconUrl>
     <PackageProjectUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/EasyAbp/EasyAbp.Abp.SettingUi</RepositoryUrl>
     <PackageTags>abp module easyabp setting settingmanagement</PackageTags>
