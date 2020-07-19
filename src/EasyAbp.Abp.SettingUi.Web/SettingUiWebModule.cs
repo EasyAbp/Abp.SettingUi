@@ -28,7 +28,7 @@ namespace EasyAbp.Abp.SettingUi.Web
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                options.FileSets.AddEmbedded<SettingUiWebModule>("EasyAbp.Abp.SettingUi.Web");
+                options.FileSets.AddEmbedded<SettingUiWebModule>();
             });
 
             Configure<SettingManagementPageOptions>(options =>
