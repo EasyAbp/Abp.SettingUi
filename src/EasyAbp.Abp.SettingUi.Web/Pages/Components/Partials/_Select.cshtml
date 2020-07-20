@@ -13,7 +13,10 @@
     }
 }
 
+@if (!Model.Description.IsNullOrEmpty())
+{
 <p class="form-text">@Model.Description</p>
+}
 <select id="@Model.Name" name="@Model.FormName" class="form-control">
     @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
     {
