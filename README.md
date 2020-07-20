@@ -28,7 +28,7 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
 1. Install nuget packages
 
-    There are three packages need to be installed:
+    There are 4~5 packages need to be installed:
 
     * `MyAbpApp.Application` project:
 
