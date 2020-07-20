@@ -12,12 +12,6 @@ namespace EasyAbp.Abp.SettingUi
         )]
     public class SettingUiApplicationContractsModule : AbpModule
     {
-        public override void ConfigureServices(ServiceConfigurationContext context)
-        {
-            Configure<AbpVirtualFileSystemOptions>(options =>
-            {
-                options.FileSets.AddEmbedded<SettingUiApplicationContractsModule>("EasyAbp.Abp.SettingUi");
-            });
-        }
+
     }
 }

@@ -18,7 +18,7 @@ namespace EasyAbp.Abp.SettingUi
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<AbpVirtualFileSystemOptions>(options => { options.FileSets.AddEmbedded<SettingUiDomainSharedModule>("EasyAbp.Abp.SettingUi"); });
+            Configure<AbpVirtualFileSystemOptions>(options => { options.FileSets.AddEmbedded<SettingUiDomainSharedModule>(); });
 
             Configure<AbpLocalizationOptions>(options =>
             {

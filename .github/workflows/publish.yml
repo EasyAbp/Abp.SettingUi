@@ -5,57 +5,59 @@ on:
       - master # Default release branch
 jobs:
   publish:
-    name: list on nuget
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: warrenbuckley/Setup-Nuget@v1
 
-      # Publish
-      - name: publish EasyAbp.Abp.SettingUi.Application.dll
-        uses: brandedoutcast/publish-nuget@v2
+      - name: read common.props
+        id: commonProps
+        uses: juliangruber/read-file-action@v1
         with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application/EasyAbp.Abp.SettingUi.Application.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          path: ./common.props
 
-      - name: publish EasyAbp.Abp.SettingUi.Application.Contracts.dll
-        uses: brandedoutcast/publish-nuget@v2
+      - name: get version
+        id: getVersion
+        uses: AsasInnab/regex-action@v1
         with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Application.Contracts/EasyAbp.Abp.SettingUi.Application.Contracts.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          regex_pattern: '(?<=>)[^<>]+(?=</Version>)'
+          regex_flags: 'gim'
+          search_string: '${{ steps.commonProps.outputs.content }}'
 
-      - name: publish EasyAbp.Abp.SettingUi.Domain.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain/EasyAbp.Abp.SettingUi.Domain.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet build
+        run: dotnet build -c Release
 
-      - name: publish EasyAbp.Abp.SettingUi.Domain.Shared.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Domain.Shared/EasyAbp.Abp.SettingUi.Domain.Shared.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet pack
+        run: dotnet pack -c Release --no-build -o dest
 
-      - name: publish EasyAbp.Abp.SettingUi.HttpApi.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: remove unused packages
+        run: |
+          cd dest
+          del * -Exclude EasyAbp.*
+          del * -Exclude *.${{ steps.getVersion.outputs.first_match }}.nupkg
+          del *.HttpApi.Client.ConsoleTestApp*
+          del *.Host.Shared*
+          dir -name
 
-      - name: publish EasyAbp.Abp.SettingUi.HttpApi.Client.dll
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.HttpApi.Client/EasyAbp.Abp.SettingUi.HttpApi.Client.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: dotnet nuget push to GitHub
+        run: |
+          dotnet nuget add source https://nuget.pkg.github.com/EasyAbp/index.json -n github -u EasyAbp -p ${{secrets.GITHUB_TOKEN}} 
+          dotnet nuget push dest\*.nupkg -s "github" --skip-duplicate
 
-      - name: publish EasyAbp.Abp.SettingUi.Web.dll
-        uses: brandedoutcast/publish-nuget@v2
+      - name: dotnet nuget push to NuGet
+        run: dotnet nuget push dest\*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: determine if the tag exists
+        uses: mukunku/tag-exists-action@v1.0.0
+        id: checkTag
         with:
-          PROJECT_FILE_PATH: src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj
-          VERSION_FILE_PATH: common.props
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+          tag: ${{ steps.getVersion.outputs.first_match }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: add git tag
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        uses: tvdias/github-tagger@v0.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.getVersion.outputs.first_match }}
