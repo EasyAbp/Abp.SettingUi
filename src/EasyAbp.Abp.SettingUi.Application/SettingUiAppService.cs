@@ -29,7 +29,7 @@ namespace EasyAbp.Abp.SettingUi
         private readonly ISettingDefinitionManager _settingDefinitionManager;
         private readonly ISettingManager _settingManager;
 
-        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer, 
+        public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer,
             IStringLocalizerFactory factory,
             IVirtualFileProvider fileProvider,
             IJsonSerializer jsonSerializer,
@@ -176,11 +176,26 @@ namespace EasyAbp.Abp.SettingUi
                 displayName = settingDefinition.DisplayName.Localize(_factory);
             }
 
-            string description = settingDefinition.Description == null ? _localizer[$"Description:{settingDefinition.Name}"] : settingDefinition.Description.Localize(_factory);
+            string description;
+            if (settingDefinition.Description == null)
+            {
+                string descName = $"Description:{settingDefinition.Name}";
+                description = _localizer[descName];
+                if (description == descName)
+                {
+                    // No localized description found
+                    description = String.Empty;
+                }
+            }
+            else
+            {
+                description = settingDefinition.Description.Localize(_factory);
+            }
+
             string value = AsyncHelper.RunSync(() => SettingProvider.GetOrNullAsync(name));
 
             var si = new SettingInfo(name, displayName, description, value);
-            
+
             // Copy properties from SettingDefinition
             foreach (var property in settingDefinition.Properties)
             {
