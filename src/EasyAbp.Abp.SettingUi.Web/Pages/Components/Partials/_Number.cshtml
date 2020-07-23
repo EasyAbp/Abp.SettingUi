@@ -1,4 +1,7 @@
 ﻿@model EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingHtmlInfo
 
-    <p class="form-text">@Model.Description</p>
+@if (!Model.Description.IsNullOrEmpty())
+{
+<p class="form-text">@Model.Description</p>
+}
 <input type="number" id="@Model.Name" name="@Model.FormName" value="@Model.Value" class="form-control"/>
