@@ -2,6 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
+[![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.SettingUi?style=social)](https://www.github.com/EasyAbp/Abp.SettingUi)
 
 An [ABP](http://abp.io) module used to manage ABP settings
 
@@ -16,101 +17,23 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Group settings
 * Display settings with appropriate input controls
 
-# How to use
+## Installation
 
-Here is a step-by-step tutorial to show you the usage of this module.
+1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-nuget-packages))
 
-## Install module
+    * EasyAbp.Abp.SettingUi.Application
+    * EasyAbp.Abp.SettingUi.Domain.Shared
+    * EasyAbp.Abp.SettingUi.HttpApi
+    * (Optional) EasyAbp.Abp.SettingUi.HttpApi.Client
+    * (Optional) EasyAbp.Abp.SettingUi.Web
 
-1. Create an ABP app by using [ABP CLI](https://docs.abp.io/en/abp/latest/CLI)
+> The `EasyAbp.Abp.SettingUi.HttpApi.Client` package should be installed if your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure).
 
-    `abp new MyAbpApp`
-
-1. Install nuget packages
-
-    There are 4~5 packages need to be installed:
-
-    * `MyAbpApp.Application` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.Application`
-
-    * `MyAbpApp.Domain.Shared` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.Domain.Shared`
-
-    * `MyAbpApp.HttpApi` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.HttpApi`
-
-    * `MyAbpApp.Web` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.Web`
-
-    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need install one more package to your `MyAbpApp.HttpApi.Client` project:
-
-        `Install-Package EasyAbp.Abp.SettingUi.HttpApi.Client`
-
-1. Add module dependencies
-
-    * `MyAbpApp.Application` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiApplicationModule))]
-        public class MyAbpAppApplicationModule : AbpModule
-        {
-            ...
-        }
-        ```
-
-    * `MyAbpApp.Domain.Shared` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiDomainSharedModule))]
-        public class MyAbpAppDomainSharedModule : AbpModule
-        {
-            ...
-        }
-
-    * `MyAbpApp.HttpApi` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiHttpApiModule))]
-        public class MyAbpAppHttpApiModule : AbpModule
-        {
-            ...
-        }
-        ```
-
-    * `MyAbpApp.Web` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiWebModule))]
-        public class MyAbpAppWebModule : AbpModule
-        {
-            ...
-        }
-        ```
-
-    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need add one more dependency to your `MyAbpApp.HttpApi.Client` project:
-
-        ``` csharp
-        ...
-        [DependsOn(typeof(SettingUiHttpApiClientModule))]
-        public class MyAbpAppHttpApiClientModule : AbpModule
-        {
-            ...
-        }
-        ```
-
+1. Add `DependsOn(typeof(Abp.SettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 
 1. Add localization resource to SettingUi
 
     In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResouce`:
-
 
     * `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
 
@@ -124,11 +47,9 @@ Here is a step-by-step tutorial to show you the usage of this module.
         });
         ```
 
-## Startup
+## Usage
 
-1. Run `MyAbpApp.DbMigrator` to seed database
-1. Launch `MyAbpApp.Web`
-1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Tenant" to admin:
+1. Add permissions ("Setting UI" - "Tenant") to the roles you want.
 
     ![permission](/docs/images/permission.png)
 
