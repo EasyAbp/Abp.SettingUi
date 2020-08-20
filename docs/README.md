@@ -33,7 +33,7 @@ We have launched an online demo for this module: [https://settingui.samples.easy
 
 > The `EasyAbp.Abp.SettingUi.HttpApi.Client` package should be installed if your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure).
 
-1. Add `DependsOn(typeof(Abp.SettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
+1. Add `DependsOn(typeof(AbpSettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 
 1. Add localization resource to SettingUi
 
