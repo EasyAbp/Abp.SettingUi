@@ -10,7 +10,7 @@ An [ABP](http://abp.io) module used to manage ABP settings
 
 > If you are using ABP version <2.1.1, please see [Abp.SettingManagement.Mvc.UI](https://github.com/wakuflair/Abp.SettingManagement.Mvc.UI)
 
-# Features
+## Features
 
 * Manage ABP setting values via UI
 * Support localization
