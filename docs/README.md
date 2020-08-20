@@ -17,6 +17,10 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Group settings
 * Display settings with appropriate input controls
 
+## Online Demo
+
+We have launched an online demo for this module: [https://settingui.samples.easyabp.io](https://settingui.samples.easyabp.io)
+
 ## Installation
 
 1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-nuget-packages))
