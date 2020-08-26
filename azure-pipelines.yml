@@ -26,7 +26,7 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: |
+    script: | 
       echo commands
       sed -i '0,/Default[^,]*/s//$(ConnectionStrings)"/g' sample/MyAbpApp/src/MyAbpApp.Web/appsettings.json
       echo commands executed
