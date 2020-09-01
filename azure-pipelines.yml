@@ -91,7 +91,7 @@ stages:
           
           drop DATABASE  MyAbpApp
         ServerName: $(ServerName)
-        DatabaseName: 'MyAbpApp'
+        DatabaseName: $(DatabaseName)
         AuthScheme: 'sqlServerAuthentication'
         SqlUsername: $(SqlUsername)
         SqlPassword: $(SqlPassword)
