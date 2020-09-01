@@ -2,13 +2,14 @@
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-# schedules:
-# - cron: "0 */6 * * *"
-#   displayName: Daily midnight build
-#   branches:
-#     include:
-#     - master
-#   always: true
+schedules:
+- cron: "0 */6 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - master
+  always: true
+  
 trigger:
   branches:
    include:
@@ -107,6 +108,12 @@ stages:
             
             dotnet run
 
+- stage: Stage3
+  jobs:
+  - job: Job1
+    pool:
+      vmImage: ubuntu-latest
+    steps:
      - task: Docker@2
        displayName: 'build and push docker'
        inputs:
