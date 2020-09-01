@@ -96,6 +96,7 @@ stages:
         SqlUsername: $(SqlUsername)
         SqlPassword: $(SqlPassword)
        continueOnError: true
+
      - task: CmdLine@2
        displayName: 'update database'
        inputs:
