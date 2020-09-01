@@ -66,6 +66,11 @@ stages:
     pool:
       vmImage: windows-2019
     steps:
+     - task: UseDotNet@2
+       inputs:
+        packageType: 'sdk'
+        version: '3.x'
+
      - task: SqlDacpacDeploymentOnMachineGroup@0
        displayName: 'drop database'
        inputs:
