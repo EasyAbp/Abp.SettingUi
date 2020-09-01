@@ -66,6 +66,16 @@ stages:
     pool:
       vmImage: windows-2019
     steps:
+     - task: UseDotNet@2
+       inputs:
+        packageType: 'sdk'
+        version: '3.x'
+     
+     - task: CmdLine@2
+       displayName: 'install dotnet-ef'
+       inputs:
+        script: 'dotnet tool install -g dotnet-ef'
+
      - task: SqlDacpacDeploymentOnMachineGroup@0
        displayName: 'drop database'
        inputs:
@@ -85,24 +95,11 @@ stages:
         SqlUsername: $(SqlUsername)
         SqlPassword: $(SqlPassword)
        continueOnError: true
-
-- stage: Stage3
-  jobs:
-  - job: Job1
-    pool:
-          vmImage: ubuntu-latest
-    steps:
-     - task: UseDotNet@2
-       inputs:
-        packageType: 'sdk'
-        version: '3.x'
-
      - task: CmdLine@2
        displayName: 'update database'
        inputs:
         script: | 
           dotnet ef database update --project sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj -s sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj
-
      - task: CmdLine@2
        inputs:
           script: |
