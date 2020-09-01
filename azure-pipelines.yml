@@ -60,11 +60,31 @@ steps:
   inputs:
    script: |
     dotnet publish
-- task: CmdLine@2
+
+- task: SqlDacpacDeploymentOnMachineGroup@0
   displayName: 'drop database'
   inputs:
-    script: |
-      dotnet ef database drop --project sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj -s sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj -f
+     TaskType: 'sqlInline'
+     InlineSql: |
+       DECLARE @SQL VARCHAR(MAX);
+       SET @SQL=''
+       SELECT @SQL=@SQL+'; KILL '+RTRIM(SPID)
+       FROM master..sysprocesses
+       WHERE dbid=DB_ID('MyAbpApp');
+       EXEC(@SQL);
+       
+       drop DATABASE  MyAbpApp
+     ServerName: $(ServerName)
+     DatabaseName: 'MyAbpApp'
+     AuthScheme: 'sqlServerAuthentication'
+     SqlUsername: $(SqlUsername)
+     SqlPassword: $(SqlPassword)
+     
+# - task: CmdLine@2
+#   displayName: 'drop database'
+#   inputs:
+#     script: |
+#       dotnet ef database drop --project sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj -s sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj -f
       
 - task: CmdLine@2
   displayName: 'update database'
