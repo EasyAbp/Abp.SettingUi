@@ -22,21 +22,21 @@ namespace EasyAbp.Abp.SettingUi
         }
 
         [HttpGet]
-        public Task<List<SettingGroup>> GroupSettingDefinitions()
+        public virtual Task<List<SettingGroup>> GroupSettingDefinitions()
         {
             return _service.GroupSettingDefinitions();
         }
 
         [HttpPut]
         [Route("setSettingValues")]
-        public Task SetSettingValues(Dictionary<string, string> settingValues)
+        public virtual Task SetSettingValues(Dictionary<string, string> settingValues)
         {
             return _service.SetSettingValues(settingValues);
         }
 
         [HttpPut]
         [Route("resetSettingValues")]
-        public Task ResetSettingValues(List<string> settingNames)
+        public virtual Task ResetSettingValues(List<string> settingNames)
         {
             return _service.ResetSettingValues(settingNames);
         }
