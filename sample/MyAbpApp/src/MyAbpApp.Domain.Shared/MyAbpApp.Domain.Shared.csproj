@@ -22,6 +22,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Localization\MyAbpApp\*.json" />
     <Content Remove="Localization\MyAbpApp\*.json" />
+    <EmbeddedResource Include="SettingProperties\**\*.json" />
+    <Content Remove="SettingProperties\**\*.json" />
   </ItemGroup>
 
   <ItemGroup>
