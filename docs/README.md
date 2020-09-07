@@ -5,7 +5,7 @@
 
 An [ABP](http://abp.io) module used to manage ABP settings
 
-![demo](./doc/images/demo.png)
+![demo](/doc/images/demo.png)
 
 > If you are using ABP version <2.1.1, please see [Abp.SettingManagement.Mvc.UI](https://github.com/wakuflair/Abp.SettingManagement.Mvc.UI)
 
@@ -130,7 +130,7 @@ Here is a step-by-step tutorial to show you the usage of this module.
 1. Launch `MyAbpApp.Web`
 1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Tenant" to admin:
 
-    ![permission](./doc/images/permission.png)
+    ![permission](/doc/images/permission.png)
 
 1. Refresh the browser then you can use "Administration" - "Settings" menu to see all ABP built-in settings
 
@@ -201,7 +201,7 @@ Beside ABP built-in settings, you can also use this module to manage your own se
 
 1. Relaunch the application, we can see the setting displayed, and the localization also works
 
-    ![custom-setting](./doc/images/custom-setting.png)
+    ![custom-setting](/doc/images/custom-setting.png)
 
 ## Grouping
 
