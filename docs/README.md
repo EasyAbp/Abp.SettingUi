@@ -109,7 +109,7 @@ Here is a step-by-step tutorial to show you the usage of this module.
 
 1. Add localization resource to SettingUi
 
-    In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResouce`:
+    In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResource`:
 
 
     * `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
@@ -169,7 +169,7 @@ Beside ABP built-in settings, you can also use this module to manage your own se
 
         > For ABP setting system, please see [Settings document](https://docs.abp.io/en/abp/latest/Settings)
 
-1. Define localization resources for the setting, for demostration purpose, we defined English and Chinese localization resources
+1. Define localization resources for the setting, for demonstration purpose, we defined English and Chinese localization resources
 
     * `MyAbpApp.Domain.Shared` project
 
@@ -213,7 +213,7 @@ So how can we custom the group of the setting? There are two ways:
 
 1. Use `WithProperty` method
 
-    The `WithProperty` method is a mehtod prvoided by ABP `SettingDefinition` class, we can directly use it in setting defining:
+    The `WithProperty` method is a method provided by ABP `SettingDefinition` class, we can directly use it in setting defining:
 
     * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
 
@@ -230,8 +230,8 @@ So how can we custom the group of the setting? There are two ways:
         );
         ```
 
-        * The consts `Group1` and `Group2` are defined in the `SettingUiConst` class
-        * Set the "Group1" to "Server", and "Group2" to "Connection"
+        * The constants `Group1` and `Group2` are defined in the `SettingUiConst` class
+        * Set the "Server" to "Group1", and "Connection" to "Group2"
 
     Then we should provide the localization resource for these two group names:
 
@@ -263,15 +263,15 @@ So how can we custom the group of the setting? There are two ways:
         }
         ```
 
-    Relaunch the applciation and see if the group names is correctly set
+    Relaunch the application and see if the group names are correctly set
 
     ![group-name](/docs/images/group-name.png)
 
 1. Use setting property file
 
-    Antoher way of setting group is use the setting property file, which is provided by the SettingUi module. It's useful when you can not easily modify the setting definition, or you want to put the grouping information into one single place.
+    Another way of setting group is use the setting property file, which is provided by the SettingUi module. It's useful when you can not easily modify the setting definition, or you want to put the grouping information into one single place.
 
-    For demostration in this way, let's define a new setting:
+    For demonstration in this way, let's define a new setting:
 
     * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
 
@@ -307,7 +307,7 @@ So how can we custom the group of the setting? There are two ways:
 
 ## Setting types
 
-By default a setting value is string type, which will be rendered as a text input control in UI. We can custom it simpily by providing a setting property "Type":
+By default a setting value is string type, which will be rendered as a text input control in UI. We can custom it simply by providing a setting property "Type":
 
    * `MyAbpApp.Domain.Shared` project - `/SettingProperties/MySettingProperties.json` file
 
@@ -337,7 +337,7 @@ For now SettingUi support following setting types:
 * number
 * checkbox
 * select
-  * Needs an additional property "Options" to provide select options, which is a string delimitted by vertical bar (|)
+  * Needs an additional property "Options" to provide select options, which is a string separated by a vertical bar (|)
 
     ``` json
     "Connection.Protocol": {
