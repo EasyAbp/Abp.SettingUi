@@ -2,42 +2,115 @@
 
 [![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
-[![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.SettingUi?style=social)](https://www.github.com/EasyAbp/Abp.SettingUi)
 
 An [ABP](http://abp.io) module used to manage ABP settings
 
-![demo](/docs/images/demo.png)
+![demo](./doc/images/demo.png)
 
 > If you are using ABP version <2.1.1, please see [Abp.SettingManagement.Mvc.UI](https://github.com/wakuflair/Abp.SettingManagement.Mvc.UI)
 
-## Features
+# Features
 
 * Manage ABP setting values via UI
 * Support localization
 * Group settings
 * Display settings with appropriate input controls
 
-## Online Demo
+# How to use
 
-We have launched an online demo for this module: [https://settingui.samples.easyabp.io](https://settingui.samples.easyabp.io)
+Here is a step-by-step tutorial to show you the usage of this module.
 
-## Installation
+## Install module
 
-1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-nuget-packages))
+1. Create an ABP app by using [ABP CLI](https://docs.abp.io/en/abp/latest/CLI)
 
-    * EasyAbp.Abp.SettingUi.Application
-    * EasyAbp.Abp.SettingUi.Domain.Shared
-    * EasyAbp.Abp.SettingUi.HttpApi
-    * (Optional) EasyAbp.Abp.SettingUi.HttpApi.Client
-    * (Optional) EasyAbp.Abp.SettingUi.Web
+    `abp new MyAbpApp`
 
-> The `EasyAbp.Abp.SettingUi.HttpApi.Client` package should be installed if your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure).
+1. Install nuget packages
 
-1. Add `DependsOn(typeof(AbpSettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
+    There are 4~5 packages need to be installed:
+
+    * `MyAbpApp.Application` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.Application`
+
+    * `MyAbpApp.Domain.Shared` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.Domain.Shared`
+
+    * `MyAbpApp.HttpApi` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.HttpApi`
+
+    * `MyAbpApp.Web` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.Web`
+
+    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need install one more package to your `MyAbpApp.HttpApi.Client` project:
+
+        `Install-Package EasyAbp.Abp.SettingUi.HttpApi.Client`
+
+1. Add module dependencies
+
+    * `MyAbpApp.Application` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiApplicationModule))]
+        public class MyAbpAppApplicationModule : AbpModule
+        {
+            ...
+        }
+        ```
+
+    * `MyAbpApp.Domain.Shared` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiDomainSharedModule))]
+        public class MyAbpAppDomainSharedModule : AbpModule
+        {
+            ...
+        }
+
+    * `MyAbpApp.HttpApi` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiHttpApiModule))]
+        public class MyAbpAppHttpApiModule : AbpModule
+        {
+            ...
+        }
+        ```
+
+    * `MyAbpApp.Web` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiWebModule))]
+        public class MyAbpAppWebModule : AbpModule
+        {
+            ...
+        }
+        ```
+
+    * If your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure), you need add one more dependency to your `MyAbpApp.HttpApi.Client` project:
+
+        ``` csharp
+        ...
+        [DependsOn(typeof(SettingUiHttpApiClientModule))]
+        public class MyAbpAppHttpApiClientModule : AbpModule
+        {
+            ...
+        }
+        ```
+
 
 1. Add localization resource to SettingUi
 
     In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResouce`:
+
 
     * `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
 
@@ -51,11 +124,13 @@ We have launched an online demo for this module: [https://settingui.samples.easy
         });
         ```
 
-## Usage
+## Startup
 
-1. Add permissions ("Setting UI" - "Tenant") to the roles you want.
+1. Run `MyAbpApp.DbMigrator` to seed database
+1. Launch `MyAbpApp.Web`
+1. Login with admin/1q2w3E*, then grant permission "Setting UI" - "Tenant" to admin:
 
-    ![permission](/docs/images/permission.png)
+    ![permission](./doc/images/permission.png)
 
 1. Refresh the browser then you can use "Administration" - "Settings" menu to see all ABP built-in settings
 
@@ -126,13 +201,13 @@ Beside ABP built-in settings, you can also use this module to manage your own se
 
 1. Relaunch the application, we can see the setting displayed, and the localization also works
 
-    ![custom-setting](/docs/images/custom-setting.png)
+    ![custom-setting](./doc/images/custom-setting.png)
 
 ## Grouping
 
 You may notice that our custom setting is displayed in "Others" tab, and "Others" card, these are the default group display names called "Group1" and "Group2" respectively:
 
-![group](/docs/images/group.png)
+![group](doc/images/group.png)
 
 So how can we custom the group of the setting? There are two ways:
 
@@ -190,7 +265,7 @@ So how can we custom the group of the setting? There are two ways:
 
     Relaunch the applciation and see if the group names is correctly set
 
-    ![group-name](/docs/images/group-name.png)
+    ![group-name](doc/images/group-name.png)
 
 1. Use setting property file
 
@@ -228,7 +303,7 @@ So how can we custom the group of the setting? There are two ways:
 
     * Relaunch the application to see the new grouped setting
 
-        ![group-by-setting-property-file](/docs/images/group-by-setting-property-file.png)
+        ![group-by-setting-property-file](doc/images/group-by-setting-property-file.png)
 
 ## Setting types
 
@@ -250,7 +325,7 @@ By default a setting value is string type, which will be rendered as a text inpu
 
 No need to relaunch the application, just press F5 to refresh the browser, you should be able to see the effect immediately:
 
-![type-number](/docs/images/type-number.png)
+![type-number](doc/images/type-number.png)
 
 Now the input type changed to "number", and the frontend validations also work.
 
@@ -276,7 +351,7 @@ For now SettingUi support following setting types:
 
     The render result:
 
-    ![selection](/docs/images/selet.png)
+    ![selection](doc/images/selet.png)
 
 This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
 
