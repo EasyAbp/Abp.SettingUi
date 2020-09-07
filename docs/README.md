@@ -207,7 +207,7 @@ Beside ABP built-in settings, you can also use this module to manage your own se
 
 You may notice that our custom setting is displayed in "Others" tab, and "Others" card, these are the default group display names called "Group1" and "Group2" respectively:
 
-![group](doc/images/group.png)
+![group](/docs/images/group.png)
 
 So how can we custom the group of the setting? There are two ways:
 
@@ -265,7 +265,7 @@ So how can we custom the group of the setting? There are two ways:
 
     Relaunch the applciation and see if the group names is correctly set
 
-    ![group-name](doc/images/group-name.png)
+    ![group-name](/docs/images/group-name.png)
 
 1. Use setting property file
 
@@ -303,7 +303,7 @@ So how can we custom the group of the setting? There are two ways:
 
     * Relaunch the application to see the new grouped setting
 
-        ![group-by-setting-property-file](doc/images/group-by-setting-property-file.png)
+        ![group-by-setting-property-file](/docs/images/group-by-setting-property-file.png)
 
 ## Setting types
 
@@ -325,7 +325,7 @@ By default a setting value is string type, which will be rendered as a text inpu
 
 No need to relaunch the application, just press F5 to refresh the browser, you should be able to see the effect immediately:
 
-![type-number](doc/images/type-number.png)
+![type-number](/docs/images/type-number.png)
 
 Now the input type changed to "number", and the frontend validations also work.
 
@@ -351,7 +351,7 @@ For now SettingUi support following setting types:
 
     The render result:
 
-    ![selection](doc/images/selet.png)
+    ![selection](/docs/images/selet.png)
 
 This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
 
