@@ -44,7 +44,7 @@ namespace EasyAbp.Abp.SettingUi
             _settingManager = settingManager;
         }
 
-        public async Task<List<SettingGroup>> GroupSettingDefinitions()
+        public virtual async Task<List<SettingGroup>> GroupSettingDefinitions()
         {
             if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Tenant))
             {
@@ -70,7 +70,7 @@ namespace EasyAbp.Abp.SettingUi
                 ;
         }
 
-        public async Task SetSettingValues(Dictionary<string, string> settingValues)
+        public virtual async Task SetSettingValues(Dictionary<string, string> settingValues)
         {
             foreach (var kv in settingValues)
             {
@@ -93,7 +93,7 @@ namespace EasyAbp.Abp.SettingUi
             }
         }
 
-        public async Task ResetSettingValues(List<string> settingNames)
+        public virtual async Task ResetSettingValues(List<string> settingNames)
         {
             foreach (var name in settingNames)
             {
