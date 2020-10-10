@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="3.1.0" />
-    <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="3.1.0" />
+    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="3.2.1" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="3.2.1" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Domain.Shared\EasyAbp.Abp.SettingUi.Domain.Shared.csproj" />
   </ItemGroup>
 
