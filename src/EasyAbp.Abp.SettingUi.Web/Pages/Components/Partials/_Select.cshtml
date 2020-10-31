@@ -1,5 +1,8 @@
 ﻿@using EasyAbp.Abp.SettingUi
+@using EasyAbp.Abp.SettingUi.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
 @model EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingHtmlInfo
+@inject IHtmlLocalizer<SettingUiResource> L
 
 @{
     string optionStr;
@@ -21,6 +24,6 @@
     @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
     {
         string selected = option == Model.Value ? "selected" : "";
-    <!option value="@option" @selected>@option</!option>
+    <!option value="@option" @selected>@L[option].Value</!option>
     }
 </select>
