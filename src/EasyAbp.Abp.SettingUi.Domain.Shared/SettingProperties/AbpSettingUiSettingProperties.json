@@ -79,6 +79,17 @@
     "Group2": "OrganizationUnit",
     "Type": "number"
   },
+  "Abp.Identity.TwoFactor.Behaviour": {
+    "Group1": "System",
+    "Group2": "TwoFactor",
+    "Type": "select",
+    "Options": "Optional|Disabled|Forced"
+  },
+  "Abp.Identity.TwoFactor.UsersCanChange": {
+    "Group1": "System",
+    "Group2": "TwoFactor",
+    "Type": "checkbox"
+  },
   "Abp.Account.IsSelfRegistrationEnabled": {
     "Group1": "System",
     "Group2": "Account",
