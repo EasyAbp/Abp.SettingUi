@@ -23,34 +23,40 @@ We have launched an online demo for this module: [https://settingui.samples.easy
 
 ## Installation
 
-1. Install the following NuGet packages. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-nuget-packages))
+### Add ABP packages with [AbpHelper](https://github.com/EasyAbp/AbpHelper.CLI) (Recommended)
+
+Run following command in your ABP project root folder:
+
+> abphelper module add EasyAbp.Abp.SettingUi -ashlw
+
+### Add ABP packages manually
+
+1. Install the following NuGet packages.
 
     * EasyAbp.Abp.SettingUi.Application
     * EasyAbp.Abp.SettingUi.Domain.Shared
     * EasyAbp.Abp.SettingUi.HttpApi
-    * (Optional) EasyAbp.Abp.SettingUi.HttpApi.Client
-    * (Optional) EasyAbp.Abp.SettingUi.Web
-
-> The `EasyAbp.Abp.SettingUi.HttpApi.Client` package should be installed if your application is [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure).
+    * EasyAbp.Abp.SettingUi.HttpApi.Client (Only [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) is needed)
+    * EasyAbp.Abp.SettingUi.Web
 
 1. Add `DependsOn(typeof(AbpSettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 
-1. Add localization resource to SettingUi
+### Configure localization resource
 
-    In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResource`:
+In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResource`:
 
 
-    * `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
+* `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
 
-        ``` csharp
-        Configure<AbpLocalizationOptions>(options =>
-        {
-            ...
-            options.Resources
-                .Get<SettingUiResource>()
-                .AddVirtualJson("/Localization/MyAbpApp");
-        });
-        ```
+    ``` csharp
+    Configure<AbpLocalizationOptions>(options =>
+    {
+        ...
+        options.Resources
+            .Get<SettingUiResource>()
+            .AddVirtualJson("/Localization/MyAbpApp");
+    });
+    ```
 
 ## Usage
 

@@ -19,6 +19,10 @@
     "Save": "Save",
     "Reset": "Reset",
     "SuccessfullySaved": "Successfully saved",
-    "ResetConfirm" : "Reset the settings in group '{0}' to default"
+    "ResetConfirm" : "Reset the settings in group '{0}' to default",
+    "TwoFactor": "Two Factor",
+    "Optional": "Optional",
+    "Disabled": "Disabled",
+    "Forced": "Forced"
   }
 }

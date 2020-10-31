@@ -118,7 +118,13 @@ namespace MyAbpApp.Web
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application.Contracts"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppWebModule>(hostingEnvironment.ContentRootPath);
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiWebModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}..{sept}..{sept}..{sept}src{sept}EasyAbp.Abp.SettingUi.Web"));
+
+                    string moduleDir = Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}..{sept}..{sept}..{sept}src");
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiDomainSharedModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain.Shared"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiDomainModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiApplicationContractsModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application.Contracts"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiApplicationModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiWebModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Web"));
                 });
             }
         }

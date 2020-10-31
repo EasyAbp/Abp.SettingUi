@@ -19,6 +19,10 @@
     "Save": "保存",
     "Reset": "重置",
     "SuccessfullySaved": "保存成功",
-    "ResetConfirm" : "重置组 '{0}' 中的设置为默认值"
+    "ResetConfirm" : "重置组 '{0}' 中的设置为默认值",
+    "TwoFactor": "双因素认证",
+    "Optional": "可选",
+    "Disabled": "禁用",
+    "Forced": "强制"
   }
 }
