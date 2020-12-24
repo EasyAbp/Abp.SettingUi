@@ -14,6 +14,11 @@
     
     "Description:Connection.Ip": "The IP address of the server.",
     "Description:Connection.Port": "The Port number of the server.",
-    "Description:Connection.Protocol": "The protocol of the connection."
+    "Description:Connection.Protocol": "The protocol of the connection.",
+
+    "Permission:SettingUi.System": "Show System Group",
+    "Permission:SettingUi.System.Password": "Show Password Group",
+    "Permission:SettingUi.System.Password.RequiredLength": "Show RequiredLength Setting",
+    "Permission:SettingUi.System.Password.RequiredUniqueChars": "Show RequiredUniqueChars Setting"
   }
 }

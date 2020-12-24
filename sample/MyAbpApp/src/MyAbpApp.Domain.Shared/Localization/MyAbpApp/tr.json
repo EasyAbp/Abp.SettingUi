@@ -1,8 +1,13 @@
 ﻿{
-  "culture": "tr",
-  "texts": {
-    "Menu:Home": "Ana sayfa",
-    "Welcome": "Hoşgeldiniz",
-    "LongWelcomeMessage": "Uygulamaya hoşgeldiniz. Bu, ABP framework'ü üzerine bina edilmiş bir başlangıç projesidir. Daha fazla bilgi için abp.io adresini ziyaret edebilirsiniz."
-  }
+	"culture": "tr",
+	"texts": {
+		"Menu:Home": "Ana sayfa",
+		"Welcome": "Hoşgeldiniz",
+		"LongWelcomeMessage": "Uygulamaya hoşgeldiniz. Bu, ABP framework'ü üzerine bina edilmiş bir başlangıç projesidir. Daha fazla bilgi için abp.io adresini ziyaret edebilirsiniz.",
+
+		"Permission:SettingUi.System": "System Grubunu Göster",
+		"Permission:SettingUi.System.Password": "Password Grubunu Göster",
+		"Permission:SettingUi.System.Password.RequiredLength": "RequiredLength Ayarını Göster",
+		"Permission:SettingUi.System.Password.RequiredUniqueChars": "RequiredUniqueChars Ayarını Göster"
+	}
 }
