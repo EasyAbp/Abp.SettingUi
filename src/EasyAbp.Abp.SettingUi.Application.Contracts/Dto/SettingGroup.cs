@@ -8,6 +8,7 @@ namespace EasyAbp.Abp.SettingUi.Dto
         public string GroupName { get; set; }
         public string GroupDisplayName { get; set; }
         public List<SettingInfo> SettingInfos { get; set; }
+        public string Permission { get; set; }
     }
 
     public class SettingInfo
@@ -17,6 +18,7 @@ namespace EasyAbp.Abp.SettingUi.Dto
         public string Description { get; }
         public string Value { get; }
         public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>();
+        public string Permission { get; set; }
 
         public SettingInfo(string name, string displayName, string description, string value)
         {
