@@ -15,7 +15,7 @@
     "TimeZone": "TimeZone",
     "Others": "Others",
     "Permission:SettingUi": "Setting UI",
-    "Permission:SettingUi.Tenant": "Tenant",
+    "Permission:SettingUi.ShowSettingPage": "Show Setting Page",
     "Save": "Save",
     "Reset": "Reset",
     "SuccessfullySaved": "Successfully saved",

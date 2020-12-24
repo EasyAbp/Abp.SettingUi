@@ -46,7 +46,7 @@ namespace EasyAbp.Abp.SettingUi
 
         public virtual async Task<List<SettingGroup>> GroupSettingDefinitions()
         {
-            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.Tenant))
+            if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.ShowSettingPage))
             {
                 throw new AbpAuthorizationException("Authorization failed! No SettingUi policy granted.");
             }

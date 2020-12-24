@@ -15,7 +15,7 @@
     "TimeZone": "时区",
     "Others": "其它",
     "Permission:SettingUi": "设置UI",
-    "Permission:SettingUi.Tenant": "租户",
+    "Permission:SettingUi.ShowSettingPage": "显示设定页面",
     "Save": "保存",
     "Reset": "重置",
     "SuccessfullySaved": "保存成功",
