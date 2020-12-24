@@ -11,6 +11,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
+using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
@@ -28,13 +29,15 @@ namespace EasyAbp.Abp.SettingUi
         private readonly IJsonSerializer _jsonSerializer;
         private readonly ISettingDefinitionManager _settingDefinitionManager;
         private readonly ISettingManager _settingManager;
+        private readonly IPermissionDefinitionManager _permissionDefinitionManager;
 
         public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer,
             IStringLocalizerFactory factory,
             IVirtualFileProvider fileProvider,
             IJsonSerializer jsonSerializer,
             ISettingDefinitionManager settingDefinitionManager,
-            ISettingManager settingManager)
+            ISettingManager settingManager,
+            IPermissionDefinitionManager permissionDefinitionManager)
         {
             _localizer = localizer;
             _factory = factory;
@@ -42,6 +45,7 @@ namespace EasyAbp.Abp.SettingUi
             _jsonSerializer = jsonSerializer;
             _settingDefinitionManager = settingDefinitionManager;
             _settingManager = settingManager;
+            _permissionDefinitionManager = permissionDefinitionManager;
         }
 
         public virtual async Task<List<SettingGroup>> GroupSettingDefinitions()
@@ -65,6 +69,7 @@ namespace EasyAbp.Abp.SettingUi
                         GroupName = grp.Key,
                         GroupDisplayName = _localizer[grp.Key],
                         SettingInfos = grp.ToList(),
+                        Permission = $"{SettingUiPermissions.GroupName}.{grp.Key}"
                     })
                     .ToList()
                 ;
@@ -119,6 +124,7 @@ namespace EasyAbp.Abp.SettingUi
 
         private List<SettingInfo> SetSettingDefinitionProperties(IDictionary<string, IDictionary<string, string>> settingProperties)
         {
+            var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions().Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName));
             var settingInfos = new List<SettingInfo>();
             var settingDefinitions = _settingDefinitionManager.GetAll();
             foreach (var settingDefinition in settingDefinitions)
@@ -155,6 +161,12 @@ namespace EasyAbp.Abp.SettingUi
                 if (!si.Properties.ContainsKey(SettingUiConst.Type))
                 {
                     si.WithProperty(SettingUiConst.Type, SettingUiConst.DefaultType);
+                }
+
+                var definedPermission = definedSettingUiPermissions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
+                if (definedPermission != null)
+                {
+                    si.Permission = definedPermission.Name;
                 }
 
                 settingInfos.Add(si);
