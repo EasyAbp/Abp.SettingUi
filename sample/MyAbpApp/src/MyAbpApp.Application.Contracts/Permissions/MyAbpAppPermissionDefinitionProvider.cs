@@ -30,6 +30,16 @@ namespace MyAbpApp.Permissions
 				System.Password.RequiredUniqueChars,
 				L("Permission:SettingUi.System.Password.RequiredUniqueChars")
 			);
+
+			// group 1
+			var settingExampleGroup = settingUiTenantPermission.AddChild(SettingExample.Default, L("Permission:SettingUi.SettingExample"));
+			// group 2
+			var aSettings = settingExampleGroup.AddChild(SettingExample.ASettings.GroupName, L("Permission:SettingUi.SettingExample.ASettings"));
+			aSettings.AddChild(
+				SettingExample.ASettings.Setting1,
+				L("Permission:SettingUi.SettingExample.ASettings.Setting1")
+			);
+			var bSettings = settingExampleGroup.AddChild(SettingExample.BSettings.GroupName, L("Permission:SettingUi.SettingExample.BSettings"));
 		}
 
 		private static LocalizableString L(string name)

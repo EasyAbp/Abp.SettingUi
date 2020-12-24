@@ -20,4 +20,21 @@ namespace MyAbpApp.Permissions
 			public const string RequiredUniqueChars = Group2 + ".Abp.Identity.Password.RequiredUniqueChars";
 		}
 	}
+
+	public static class SettingExample
+	{
+		public const string Default = SettingUiPermissions.GroupName + ".SettingExample";
+
+		public static class ASettings
+		{
+			public const string GroupName = Default + ".ASettings";
+
+			public const string Setting1 = GroupName + ".Setting1";
+		}
+
+		public static class BSettings
+		{
+			public const string GroupName = Default + ".BSettings";
+		}
+	}
 }
