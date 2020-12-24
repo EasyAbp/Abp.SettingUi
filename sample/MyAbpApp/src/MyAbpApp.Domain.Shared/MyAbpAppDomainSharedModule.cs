@@ -7,6 +7,7 @@ using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.IdentityServer;
 using Volo.Abp.Localization;
+using Volo.Abp.Localization.ExceptionHandling;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.SettingManagement;
@@ -31,7 +32,8 @@ namespace MyAbpApp
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
         {
-            MyAbpAppModulePropertyConfigurator.Configure();
+            MyAbpAppGlobalFeatureConfigurator.Configure();
+            MyAbpAppModuleExtensionConfigurator.Configure();
         }
 
         public override void ConfigureServices(ServiceConfigurationContext context)
@@ -53,6 +55,11 @@ namespace MyAbpApp
                     .AddVirtualJson("/Localization/MyAbpApp");
 					
 				 options.DefaultResourceType = typeof(MyAbpAppResource);
+            });
+
+            Configure<AbpExceptionLocalizationOptions>(options =>
+            {
+                options.MapCodeNamespace("MyAbpApp", typeof(MyAbpAppResource));
             });
         }
     }

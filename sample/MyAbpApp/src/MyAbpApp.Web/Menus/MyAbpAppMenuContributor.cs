@@ -28,7 +28,7 @@ namespace MyAbpApp.Web.Menus
 
             var l = context.GetLocalizer<MyAbpAppResource>();
 
-            context.Menu.Items.Insert(0, new ApplicationMenuItem("MyAbpApp.Home", l["Menu:Home"], "~/"));
+            context.Menu.Items.Insert(0, new ApplicationMenuItem(MyAbpAppMenus.Home, l["Menu:Home"], "~/"));
         }
     }
 }

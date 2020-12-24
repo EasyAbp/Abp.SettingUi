@@ -22,8 +22,8 @@ namespace MyAbpApp.DbMigrator
                 .MinimumLevel.Override("MyAbpApp", LogEventLevel.Information)
 #endif
                 .Enrich.FromLogContext()
-                .WriteTo.File(Path.Combine(Directory.GetCurrentDirectory(), "Logs/logs.txt"))
-                .WriteTo.Console()
+                .WriteTo.Async(c => c.File("Logs/logs.txt"))
+                .WriteTo.Async(c => c.Console())
                 .CreateLogger();
 
             await CreateHostBuilder(args).RunConsoleAsync();
