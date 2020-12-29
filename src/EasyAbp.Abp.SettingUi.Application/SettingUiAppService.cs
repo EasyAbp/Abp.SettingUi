@@ -72,11 +72,34 @@ namespace EasyAbp.Abp.SettingUi
 					GroupDisplayName = _localizer[grp.Key],
 					SettingInfos = grp.ToList(),
 					Permission = $"{SettingUiPermissions.GroupName}.{grp.Key}"
-				})) 
+				}))
 			{
 				var definedSettingUiGroupPermission = definedSettingUiPermissions.FirstOrDefault(p => p.Name == settingGroup.Permission);
-				if (definedSettingUiGroupPermission == null || await AuthorizationService.IsGrantedAsync(definedSettingUiGroupPermission.Name))
+				if (definedSettingUiGroupPermission == null 
+					|| await AuthorizationService.IsGrantedAsync(definedSettingUiGroupPermission.Name) //Group1 permission check
+				)
 				{
+					var settingInfoGroups = settingGroup.SettingInfos
+						.GroupBy(sd => sd.Properties[SettingUiConst.Group2].ToString())
+						.Select(grp => new
+						{
+							Permission = $"{SettingUiPermissions.GroupName}.{settingGroup.GroupName}.{grp.Key}",
+							SettingInfoList = grp.ToList()
+						});
+
+					var settingInfos = new List<SettingInfo>();
+					foreach (var settingInfoGroup in settingInfoGroups)
+					{
+						if (definedSettingUiGroupPermission == null
+							|| !definedSettingUiGroupPermission.Children.Any(p => p.Name == settingInfoGroup.Permission)
+							|| await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission) //Group2 permission check
+						)
+						{
+							settingInfos.AddRange(settingInfoGroup.SettingInfoList);
+						}
+					}
+
+					settingGroup.SettingInfos = settingInfos;
 					groups.Add(settingGroup);
 				}
 			}
