@@ -14,16 +14,9 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
         public async Task ConfigureAsync(SettingPageCreationContext context)
         {
             var settingUiAppService = context.ServiceProvider.GetService<ISettingUiAppService>();
-            var authorizationService = context.ServiceProvider.GetRequiredService<IAuthorizationService>();
-            var permissionDefinitionManager = context.ServiceProvider.GetRequiredService<IPermissionDefinitionManager>();
-            var definedSettingUiPermissions = permissionDefinitionManager.GetPermissions().Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName));
             foreach (var grp in await settingUiAppService.GroupSettingDefinitions())
             {
-                var definedSettingUiGroupPermission = definedSettingUiPermissions.FirstOrDefault(p => p.Name == grp.Permission);
-                if (definedSettingUiGroupPermission == null || await authorizationService.IsGrantedAsync(definedSettingUiGroupPermission.Name))
-                {
-                    context.Groups.Add(new SettingPageGroup(grp.GroupName, grp.GroupDisplayName, typeof(SettingViewComponent), grp));
-                }
+                context.Groups.Add(new SettingPageGroup(grp.GroupName, grp.GroupDisplayName, typeof(SettingViewComponent), grp));
             }
         }
 

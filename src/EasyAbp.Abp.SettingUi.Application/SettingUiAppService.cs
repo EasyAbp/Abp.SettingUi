@@ -58,21 +58,30 @@ namespace EasyAbp.Abp.SettingUi
 			// Merge all setting properties into one dictionary
 			var settingProperties = GetMergedSettingProperties();
 
+			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions().Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName));
 			// Set properties of the setting definitions
-			var settingDefinitions = SetSettingDefinitionProperties(settingProperties);
+			var settingDefinitions = await SetSettingDefinitionPropertiesAsync(settingProperties, definedSettingUiPermissions);
 
 			// Group the setting definitions
-			return settingDefinitions
-					.GroupBy(sd => sd.Properties[SettingUiConst.Group1].ToString())
-					.Select(grp => new SettingGroup
-					{
-						GroupName = grp.Key,
-						GroupDisplayName = _localizer[grp.Key],
-						SettingInfos = grp.ToList(),
-						Permission = $"{SettingUiPermissions.GroupName}.{grp.Key}"
-					})
-					.ToList()
-				;
+			var groups = new List<SettingGroup>();
+			foreach (var settingGroup in settingDefinitions
+				.GroupBy(sd => sd.Properties[SettingUiConst.Group1].ToString())
+				.Select(grp => new SettingGroup
+				{
+					GroupName = grp.Key,
+					GroupDisplayName = _localizer[grp.Key],
+					SettingInfos = grp.ToList(),
+					Permission = $"{SettingUiPermissions.GroupName}.{grp.Key}"
+				})) 
+			{
+				var definedSettingUiGroupPermission = definedSettingUiPermissions.FirstOrDefault(p => p.Name == settingGroup.Permission);
+				if (definedSettingUiGroupPermission == null || await AuthorizationService.IsGrantedAsync(definedSettingUiGroupPermission.Name))
+				{
+					groups.Add(settingGroup);
+				}
+			}
+
+			return groups;
 		}
 
 		public virtual async Task SetSettingValues(Dictionary<string, string> settingValues)
@@ -138,14 +147,24 @@ namespace EasyAbp.Abp.SettingUi
 				.ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
-		private List<SettingInfo> SetSettingDefinitionProperties(IDictionary<string, IDictionary<string, string>> settingProperties)
+		private async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IEnumerable<PermissionDefinition> permissionDefinitions)
 		{
-			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions().Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName));
 			var settingInfos = new List<SettingInfo>();
 			var settingDefinitions = _settingDefinitionManager.GetAll();
 			foreach (var settingDefinition in settingDefinitions)
 			{
 				var si = CreateSettingInfo(settingDefinition);
+				
+				var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
+				if (definedPermission != null)
+				{
+					si.Permission = definedPermission.Name;
+					if (!await AuthorizationService.IsGrantedAsync(si.Permission))
+					{
+						continue;
+					}
+				}
+
 				if (settingProperties.ContainsKey(si.Name))
 				{
 					// This Setting is defined in the property file,
@@ -177,12 +196,6 @@ namespace EasyAbp.Abp.SettingUi
 				if (!si.Properties.ContainsKey(SettingUiConst.Type))
 				{
 					si.WithProperty(SettingUiConst.Type, SettingUiConst.DefaultType);
-				}
-
-				var definedPermission = definedSettingUiPermissions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
-				if (definedPermission != null)
-				{
-					si.Permission = definedPermission.Name;
 				}
 
 				settingInfos.Add(si);
