@@ -1,0 +1,31 @@
+﻿{
+	"culture": "tr",
+	"texts": {
+		"Settings": "Ayarlar",
+		"System": "Sistem",
+		"Localization": "Yerelleştirme",
+		"Password": "Şifre",
+		"Lockout": "Kilitleme",
+		"SignIn": "Giriş Yap",
+		"User": "Kullanıcı",
+		"OrganizationUnit": "Organizasyon Birimi",
+		"Account": "Hesap",
+		"Mail": "Mail",
+		"Smtp": "SMTP",
+		"TimeZone": "Zaman Dilimi",
+		"Others": "Diğer",
+		"Permission:SettingUi": "Ayarlar Kullanıcı Arayüzü",
+		"Permission:SettingUi.ShowSettingPage": "Ayarlar Sayfasını Göster",
+		"Permission:SettingUi.Tenant": "Tenant Ayarları",
+		"Permission:SettingUi.User": "Kullanıcı Ayarları",
+		"Permission:SettingUi.Host": "Host Ayarları",
+		"Save": "Kaydet",
+		"Reset": "Sıfırla",
+		"SuccessfullySaved": "Başarıyla kaydedildi",
+		"ResetConfirm": "'{0}' grubundaki ayarları varsayılana sıfırlamak istiyor musunuz?",
+		"TwoFactor": "Two Factor",
+		"Optional": "Optional",
+		"Disabled": "Disabled",
+		"Forced": "Forced"
+	}
+}

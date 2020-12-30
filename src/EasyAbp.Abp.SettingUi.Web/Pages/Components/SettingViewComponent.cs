@@ -8,7 +8,7 @@ using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
 {
-    [Widget(StyleFiles = new[] {"/Pages/Components/Default.css"})]
+    [Widget(StyleFiles = new[] { "/Pages/Components/Default.css" })]
     public class SettingViewComponent : AbpViewComponent
     {
         public IViewComponentResult Invoke(SettingGroup parameter)
@@ -36,10 +36,10 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
             DisplayName = settingInfo.DisplayName;
             Description = settingInfo.Description;
             Value = settingInfo.Value;
-            Group1 = (string) settingInfo.Properties[SettingUiConst.Group1];
-            Group2 = (string) settingInfo.Properties[SettingUiConst.Group2];
+            Group1 = (string)settingInfo.Properties[SettingUiConst.Group1];
+            Group2 = (string)settingInfo.Properties[SettingUiConst.Group2];
             FormName = SettingUiConst.FormNamePrefix + Name.DotToUnderscore();
-            Type = (string) settingInfo.Properties[SettingUiConst.Type];
+            Type = (string)settingInfo.Properties[SettingUiConst.Type];
             Properties = settingInfo.Properties;
         }
     }
