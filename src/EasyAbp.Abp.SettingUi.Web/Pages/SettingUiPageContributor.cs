@@ -13,7 +13,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
     {
         public async Task ConfigureAsync(SettingPageCreationContext context)
         {
-            var settingUiAppService = context.ServiceProvider.GetService<ISettingUiAppService>();
+            var settingUiAppService = context.ServiceProvider.GetRequiredService<ISettingUiAppService>();
             foreach (var grp in await settingUiAppService.GroupSettingDefinitions())
             {
                 context.Groups.Add(new SettingPageGroup(grp.GroupName, grp.GroupDisplayName, typeof(SettingViewComponent), grp));

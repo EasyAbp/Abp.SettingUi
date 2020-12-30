@@ -58,7 +58,10 @@ namespace EasyAbp.Abp.SettingUi
 			// Merge all setting properties into one dictionary
 			var settingProperties = GetMergedSettingProperties();
 
-			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions().Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName));
+			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions()
+				.Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName))
+				.ToList()
+				;
 			// Set properties of the setting definitions
 			var settingDefinitions = await SetSettingDefinitionPropertiesAsync(settingProperties, definedSettingUiPermissions);
 
@@ -69,7 +72,7 @@ namespace EasyAbp.Abp.SettingUi
 				.Select(grp => new SettingGroup
 				{
 					GroupName = grp.Key,
-					GroupDisplayName = _localizer[grp.Key],
+					GroupDisplayName = _localizer[grp.Key!],
 					SettingInfos = grp.ToList(),
 					Permission = $"{SettingUiPermissions.GroupName}.{grp.Key}"
 				}))
@@ -91,8 +94,8 @@ namespace EasyAbp.Abp.SettingUi
 					foreach (var settingInfoGroup in settingInfoGroups)
 					{
 						if (definedSettingUiGroupPermission == null
-							|| !definedSettingUiGroupPermission.Children.Any(p => p.Name == settingInfoGroup.Permission)
-							|| await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission) //Group2 permission check
+							|| definedSettingUiGroupPermission.Children.All(p => 
+								p.Name != settingInfoGroup.Permission) || await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission) //Group2 permission check
 						)
 						{
 							settingInfos.AddRange(settingInfoGroup.SettingInfoList);
@@ -170,7 +173,7 @@ namespace EasyAbp.Abp.SettingUi
 				.ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
-		private async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IEnumerable<PermissionDefinition> permissionDefinitions)
+		private async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IList<PermissionDefinition> permissionDefinitions)
 		{
 			var settingInfos = new List<SettingInfo>();
 			var settingDefinitions = _settingDefinitionManager.GetAll();
