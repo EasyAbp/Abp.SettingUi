@@ -17,6 +17,7 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Support localization
 * Group settings
 * Display settings with appropriate input controls
+* Control display of settings by permissions
 
 ## Online Demo
 
@@ -61,7 +62,7 @@ In order to let SettingUi module use localization resources from this applicatio
 
 ## Usage
 
-1. Add permissions ("Setting UI" - "Show Setting Page") to the roles you want.
+1. Grant permission ("Setting UI" - "Show Setting Page")
 
     ![permission](/docs/images/permission.png)
 
@@ -264,7 +265,7 @@ Now the input type changed to "number", and the frontend validations also work.
 
 > The setting types can also be configured through `WithProperty` method, like `WithProperty("Type", "number")`
 
-For now SettingUi support following setting types:
+For now SettingUi supports following setting types:
 
 * text (default)
 * number
@@ -286,14 +287,15 @@ For now SettingUi support following setting types:
 
     ![selection](/docs/images/selet.png)
 
-This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
+This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample).
 
 # Localization
 
-The SettingUI module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
+The SettingUi module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
 
 * en
 * zh-Hans
+* tr
 
 The localization resource files are under `/Localization/SettingUi` of the `EasyAbp.Abp.SettingUi.Domain.Shared` project.
 

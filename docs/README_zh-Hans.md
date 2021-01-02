@@ -5,49 +5,51 @@
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
 [![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.SettingUi?style=social)](https://www.github.com/EasyAbp/Abp.SettingUi)
 
-An [ABP](http://abp.io) module used to manage ABP settings
+一个用来管理[ABP](http://abp.io)设置的模块
 
 ![demo](/docs/images/demo.png)
 
-> If you are using ABP version <2.1.1, please see [Abp.SettingManagement.Mvc.UI](https://github.com/wakuflair/Abp.SettingManagement.Mvc.UI)
+> 如果你在使用 ABP v2.1.1 之前的版本, 请查看[Abp.SettingManagement.Mvc.UI](https://github.com/wakuflair/Abp.SettingManagement.Mvc.UI)
 
-## Features
+## 功能
 
-* Manage ABP setting values via UI
-* Support localization
-* Group settings
-* Display settings with appropriate input controls
+* 通过UI管理ABP设置的值
+* 支持本地化
+* 设置分组
+* 为不同设置显示适当的控件
+* 可通过权限控制设置的显示
 
-## Online Demo
+## 在线演示
 
-We have launched an online demo for this module: [https://settingui.samples.easyabp.io](https://settingui.samples.easyabp.io)
+我们为这个模块创建了一个在线演示: [https://settingui.samples.easyabp.io](https://settingui.samples.easyabp.io)
 
-## Installation
+## 安装
 
-### Add ABP packages with [AbpHelper](https://github.com/EasyAbp/AbpHelper.CLI) (Recommended)
+### 使用[AbpHelper](https://github.com/EasyAbp/AbpHelper.CLI) (推荐)
 
-Run following command in your ABP project root folder:
+在你的ABP项目的根文件夹中运行以下命令:
 
 > abphelper module add EasyAbp.Abp.SettingUi -ashlw
 
-### Add ABP packages manually
+### 手动安装包
 
-1. Install the following NuGet packages.
+1. 安装以下 NuGet 包.
 
     * EasyAbp.Abp.SettingUi.Application
     * EasyAbp.Abp.SettingUi.Domain.Shared
     * EasyAbp.Abp.SettingUi.HttpApi
-    * EasyAbp.Abp.SettingUi.HttpApi.Client (Only [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) is needed)
+    * EasyAbp.Abp.SettingUi.HttpApi.Client (只有 [分层结构](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) 才需要)
     * EasyAbp.Abp.SettingUi.Web
 
 1. Add `DependsOn(typeof(AbpSettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
+1. 添加 `DependsOn(typeof(AbpSettingUiXxxModule))` 属性来配置模块依赖. ([帮助](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 
-### Configure localization resource
+### 配置本地化资源
 
-In order to let SettingUi module use localization resources from this application, we need to add them to `SettingUiResource`:
+为了让SettingUi模块使用应用程序的本地化资源, 我们需要将它们添加进`SettingUiResource`:
 
 
-* `MyAbpApp.Domain.Shared` project - `MyAbpAppDomainSharedModule` class
+* `MyAbpApp.Domain.Shared` 项目 - `MyAbpAppDomainSharedModule` 类
 
     ``` csharp
     Configure<AbpLocalizationOptions>(options =>
@@ -59,21 +61,21 @@ In order to let SettingUi module use localization resources from this applicatio
     });
     ```
 
-## Usage
+## 使用
 
-1. Add permissions ("Setting UI" - "Show Setting Page") to the roles you want.
+1. 授权 ("Setting UI" - "Show Setting Page")
 
     ![permission](/docs/images/permission.png)
 
-1. Refresh the browser then you can use "Administration" - "Settings" menu to see all ABP built-in settings
+1. 刷新浏览器, 然后你就可以使用 "Administration" - "Settings" 菜单来看见所有ABP内置的设置了
 
-## Manage custom settings
+## 管理自定义设置
 
-Beside ABP built-in settings, you can also use this module to manage your own settings.
+除了ABP自定义设置以外, 你也可以使用这个模块来管理你自己的设置.
 
-1. Define a setting
+1. 定义一个设置
 
-    * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
+    * `MyAbpApp.Domain` 项目 - `Settings/MyAbpAppSettingDefinitionProvider` 类
 
         ``` csharp
         public class MyAbpAppSettingDefinitionProvider : SettingDefinitionProvider
@@ -82,10 +84,10 @@ Beside ABP built-in settings, you can also use this module to manage your own se
             {
                 context.Add(
                     new SettingDefinition(
-                        "Connection.Ip", // Setting name
-                        "127.0.0.1", // Default value
-                        L("DisplayName:Connection.Ip"), // Display name
-                        L("Description:Connection.Ip") // Description
+                        "Connection.Ip", // 设置的名称
+                        "127.0.0.1", // 默认值
+                        L("DisplayName:Connection.Ip"), // 显示名称
+                        L("Description:Connection.Ip") // 描述
                     ));
             }
 
@@ -96,15 +98,15 @@ Beside ABP built-in settings, you can also use this module to manage your own se
         }
         ```
 
-        * The setting name is "Connection.Ip"
-        * Provide a default value: "127.0.0.1"
-        * Set the `DisplayName` and `Description` to a localizable string by using a helper method `L`. The format "DisplayName:{SettingName}" is the convention recommended by ABP
+        * 设置的名称为"Connection.Ip"
+        * 提供了一个默认值: "127.0.0.1"
+        * 使用帮助方法 `L` 为 `显示名称` 和 `描述` 赋予了可本地化的字符串. 格式 "DisplayName:{SettingName}" 是ABP推荐的形式.
 
-        > For ABP setting system, please see [Settings document](https://docs.abp.io/en/abp/latest/Settings)
+        > ABP的设置系统, 请参见 [设置文档](https://docs.abp.io/en/abp/latest/Settings)
 
-1. Define localization resources for the setting, for demonstration purpose, we defined English and Chinese localization resources
+1. 定义本地化资源, 出于演示目的, 我们定义了英语和简体中文的本地化资源
 
-    * `MyAbpApp.Domain.Shared` project
+    * `MyAbpApp.Domain.Shared` 项目
 
       * `Localization/MyAbpApp/en.json`
 
@@ -132,43 +134,43 @@ Beside ABP built-in settings, you can also use this module to manage your own se
         }
         ```
 
-1. Relaunch the application, we can see the setting displayed, and the localization also works
+1. 重新启动应用程序, 我们可以看到设置显示了, 并且本地化也正常工作
 
     ![custom-setting](/docs/images/custom-setting.png)
 
-## Grouping
+## 分组
 
-You may notice that our custom setting is displayed in "Others" tab, and "Others" card, these are the default group display names called "Group1" and "Group2" respectively:
+你可能注意到我们的自定义设置显示在"Others"标签, "Others"卡片中, 这些是默认的分组, 分别称之为"Group1"和"Group2"
 
 ![group](/docs/images/group.png)
 
-So how can we custom the group of the setting? There are two ways:
+那么我们如何自定义这些设置的分组呢? 有两种方式:
 
-1. Use `WithProperty` method
+1. 使用 `WithProperty` 方法
 
-    The `WithProperty` method is a method provided by ABP `SettingDefinition` class, we can directly use it in setting defining:
+    `WithProperty` 方法是由ABP`SettingDefinition`类提供的一个方法, 我们可以直接在设置定义中使用它:
 
     * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
 
         ``` csharp
         context.Add(
             new SettingDefinition(
-                    "Connection.Ip", // Setting name
-                    "127.0.0.1", // Default value
-                    L("DisplayName:Connection.Ip"), // Display name
-                    L("Description:Connection.Ip") // Description
+                    "Connection.Ip", // 设置名称
+                    "127.0.0.1", // 默认值
+                    L("DisplayName:Connection.Ip"), // 显示名称
+                    L("Description:Connection.Ip") // 描述
                 )
                 .WithProperty(SettingUiConst.Group1, "Server")
                 .WithProperty(SettingUiConst.Group2, "Connection")
         );
         ```
 
-        * The constants `Group1` and `Group2` are defined in the `SettingUiConst` class
-        * Set the "Server" to "Group1", and "Connection" to "Group2"
+        * 常量 `Group1` 和 `Group2` 定义在 `SettingUiConst`类中
+        * 设置 "Server" 为 "Group1", "Connection" 为 "Group2"
 
-    Then we should provide the localization resource for these two group names:
+    然后我们应该为这两个分组名字提供本地化资源:
 
-    * `MyAbpApp.Domain.Shared` project
+    * `MyAbpApp.Domain.Shared` 项目
 
       * `Localization/MyAbpApp/en.json`
 
@@ -196,17 +198,17 @@ So how can we custom the group of the setting? There are two ways:
         }
         ```
 
-    Relaunch the application and see if the group names are correctly set
+    重新启动应用程序查看分组名称是否正确设置
 
     ![group-name](/docs/images/group-name.png)
 
-1. Use setting property file
+1. 使用设置属性文件
 
-    Another way of setting group is use the setting property file, which is provided by the SettingUi module. It's useful when you can not easily modify the setting definition, or you want to put the grouping information into one single place.
+    另一种分组方式是使用设置分组文件, 该方式由SettingUi模块提供. 当你不太容易修改设置的定义, 或者你想将分组信息汇集在一个单独的位置时, 这种方式很有用.
 
-    For demonstration in this way, let's define a new setting:
+    为了演示这种方式, 让我们定义一个新设置:
 
-    * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
+    * `MyAbpApp.Domain` 项目 - `Settings/MyAbpAppSettingDefinitionProvider` 类
 
         ``` json
         new SettingDefinition(
@@ -216,11 +218,11 @@ So how can we custom the group of the setting? There are two ways:
             L("Description:Connection.Port")
         )
         ```
-    > The steps of adding localization for this setting are omitted.
+    > 为这个设置添加本地化的步骤省略了.
 
-    Then we need to create a new json file with arbitrary filename, however the path must be "/SettingProperties", because SettingUi module will look for the setting property files from this path.
+    然后我们需要创建一个新的任意名字的JSON文件, 但是路径必须为"/SettingProperties", 这是因为SettingUi模块将会从这个路径下查找设置属性文件.
 
-    * `MyAbpApp.Domain.Shared` project - `/SettingProperties/MySettingProperties.json` file
+    * `MyAbpApp.Domain.Shared` 项目 - `/SettingProperties/MySettingProperties.json` 文件
 
         ``` json
         {
@@ -231,18 +233,18 @@ So how can we custom the group of the setting? There are two ways:
         }
         ```
 
-        * The setting name `Connection.Port` as the key of the JSON object
-        * Use "Group1" and "Group2" to set the grouping names
+        * 设置名称 `Connection.Port` 做为JSON对象的键
+        * 使用 "Group1" 和 "Group2" 来设置分组名称
 
-    * Relaunch the application to see the new grouped setting
+    * 重新启动应用程序来查看新分组的设置
 
         ![group-by-setting-property-file](/docs/images/group-by-setting-property-file.png)
 
-## Setting types
+## 设置类型
 
-By default a setting value is string type, which will be rendered as a text input control in UI. We can custom it simply by providing a setting property "Type":
+默认情况下, 一个设置的值是字符串类型, 将会在UI中渲染为一个文本输入控件. 我们可以简单地提供一个设置属性"Type"来定制它:
 
-   * `MyAbpApp.Domain.Shared` project - `/SettingProperties/MySettingProperties.json` file
+   * `MyAbpApp.Domain.Shared` 项目 - `/SettingProperties/MySettingProperties.json` 文件
 
         ``` json
         {
@@ -254,23 +256,23 @@ By default a setting value is string type, which will be rendered as a text inpu
         }
         ```
 
-        * Set the "Connection.Port" setting type to "number"
+        * "Connection.Port" 设置类型为 "number"
 
-No need to relaunch the application, just press F5 to refresh the browser, you should be able to see the effect immediately:
+不用重新启动应用程序, 只需要按下F5来刷新浏览器, 你可以立即看到效果:
 
 ![type-number](/docs/images/type-number.png)
 
-Now the input type changed to "number", and the frontend validations also work.
+现在输入的类型变更为了"数字", 并且前端的验证也生效了.
 
-> The setting types can also be configured through `WithProperty` method, like `WithProperty("Type", "number")`
+> 设置类型也可以通过 `WithProperty` 方法来配置, 如 `WithProperty("Type", "number")`
 
-For now SettingUi support following setting types:
+目前SettingUi支持以下几种设置类型:
 
-* text (default)
+* text (默认)
 * number
 * checkbox
 * select
-  * Needs an additional property "Options" to provide select options, which is a string separated by a vertical bar (|)
+  * 需要一个额外属性 "Options" 来提供选项, 是一个使用竖线(|)分隔的字符串
 
     ``` json
     "Connection.Protocol": {
@@ -282,23 +284,24 @@ For now SettingUi support following setting types:
 
     ```
 
-    The render result:
+    渲染结果:
 
     ![selection](/docs/images/selet.png)
 
-This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
+这是教程的结尾了. 通过该教程, 你应该可以轻松地使用SettingUi来管理你的设置了. 教程的源码可以在[sample文件夹](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)中找到.
 
-# Localization
+# 本地化
 
-The SettingUI module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
+SettingUi模块使用ABP的本地化系统来显示设置的本地化信息. 现在支持的语言有:
 
-* en
-* zh-Hans
+* 英语
+* 简体中文
+* 土耳其语
 
-The localization resource files are under `/Localization/SettingUi` of the `EasyAbp.Abp.SettingUi.Domain.Shared` project.
+本地化资源存放在`EasyAbp.Abp.SettingUi.Domain.Shared`项目的`/Localization/SettingUi`中.
 
-You can add more resource files to make this module support more languages. Welcome PRs :blush: .
-> For ABP's localization system, please see [the document](https://docs.abp.io/en/abp/latest/Localization)
+你可以添加更多的资源文件来让这个模块支持更多语言. 欢迎PR :blush: .
+> ABP的本地化系统, 请查看[文档](https://docs.abp.io/en/abp/latest/Localization)
 
 # 权限
 
@@ -350,6 +353,6 @@ public override void Define(IPermissionDefinitionContext context)
 
 ![setting_permission](/docs/images/setting_permission.png)
 
-> 关于ABP中权限系统, 请参见[该文档](https://docs.abp.io/en/abp/latest/Authorization)
+> 关于ABP中权限系统, 请查看[该文档](https://docs.abp.io/en/abp/latest/Authorization)
 
 
