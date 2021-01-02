@@ -36,6 +36,7 @@
 1. 安装以下 NuGet 包.
 
     * EasyAbp.Abp.SettingUi.Application
+    * EasyAbp.Abp.SettingUi.Application.Contracts
     * EasyAbp.Abp.SettingUi.Domain.Shared
     * EasyAbp.Abp.SettingUi.HttpApi
     * EasyAbp.Abp.SettingUi.HttpApi.Client (只有 [分层结构](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) 才需要)
