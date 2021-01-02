@@ -29,7 +29,7 @@
 
 在你的ABP项目的根文件夹中运行以下命令:
 
-> abphelper module add EasyAbp.Abp.SettingUi -ashlw
+> abphelper module add EasyAbp.Abp.SettingUi -acshlw
 
 ### 手动安装包
 
