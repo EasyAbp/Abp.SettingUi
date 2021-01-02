@@ -300,53 +300,56 @@ The localization resource files are under `/Localization/SettingUi` of the `Easy
 You can add more resource files to make this module support more languages. Welcome PRs :blush: .
 > For ABP's localization system, please see [the document](https://docs.abp.io/en/abp/latest/Localization)
 
-# Permissions
+# 权限
 
-SettingUi controls whether to display SettingUi's page by checking the `SettingUi.ShowSettingPage` permission.
+SettingUi通过检查`SettingUi.ShowSettingPage`权限,来控制是否显示SettingUi的页面.
 
-As long as the permission is granted, all settings in the system can be modified through SettingUi.
+只要赋予了该权限, 那么系统中所有的设置都可以通过SettingUi来修改.
 
-But sometimes, we don't want users to see certain settings in SettingUi, which can be achieved by defining specific permissions.
+但有些时候, 我们不想让用户在SettingUi中看到某些设置, 这可以通过定义特定的权限来实现这个目的.
 
-For example, if we need to hide the "system" group from users, then we need to add a child permission of `SettingUi.ShowSettingPage`, the name of the permission is `SettingUi.System`. The code is as follows:
+比如我们需要对用户隐藏"系统"分组, 那么需要在`SettingUi.ShowSettingPage`下添加一个子权限, 权限的名字为`SettingUi.System`. 代码如下:
 
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
-    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
-    var systemGroup = settingUiPage.AddChild("SettingUi.System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // 取得ShowSettingPage权限
+    var systemGroup = settingUiPage.AddChild("SettingUi.System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1` is found, the Group1 will only be displayed after the permission is explicitly granted.
+这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1`形式的权限, 则只有显式的赋予该权限后, 分组Group1才会显示.
 
-We can continue to add permissions to control Group2, such as "System" -> "Password" group, we need to add a permission with the Group2 name as the suffix, the code is as follows:
-``` csharp
-public override void Define(IPermissionDefinitionContext context)
-{
-    ...
-    var passwordGroup = systemGroup.AddChild("SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // Add display permission of Group2: Password
-}
-```
+我们可以继续添加对Group2控制的权限, 如"系统" -> "密码"分组, 需要继续添加后缀为Group2的权限, 代码如下:
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
-
-Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     ...
-    var requiredLength = passwordGroup.AddChild("SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // Add display permission of Abp.Identity.Password.RequiredLength
+    var passwordGroup = systemGroup.AddChild("SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // 添加控制 Group2: Password 的权限
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
+这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示.
+
+当然, 我们也可继续添加精确控制某一设置的权限, 如"系统" -> "密码" -> "要求长度", 需要继续添加后缀为设置名称的权限, 代码如下:
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    ...
+    var requiredLength = passwordGroup.AddChild("SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // 添加控制设置Abp.Identity.Password.RequiredLength的权限
+}
+```
+
+这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2.SettingName`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2中的SettingName才会显示.
 
 
-Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.
+通过以上3级的权限定义方式, 我们就可以在SettingUi中任意控制设置的显示了.
 
-The following figure is a screenshot of Setting Ui permissions, and the displayed result:
+下图是Setting Ui权限的截图, 和显示的结果:
 
 ![setting_permission](/docs/images/setting_permission.png)
 
-> For ABP's permission system, please see [the document](https://docs.abp.io/en/abp/latest/Authorization)
+> 关于ABP中权限系统, 请参见[该文档](https://docs.abp.io/en/abp/latest/Authorization)
+
+

@@ -14,12 +14,10 @@ namespace MyAbpApp.Permissions
 			//Define your own permissions here. Example:
 			//myGroup.AddPermission(MyAbpAppPermissions.MyPermission1, L("Permission:MyPermission1"));
 
-			var settingUiHostPermission = context.GetPermissionOrNull(SettingUiPermissions.Host.Default);
-			var setttingUiUserPermission = context.GetPermissionOrNull(SettingUiPermissions.User.Default);
-			var settingUiTenantPermission = context.GetPermissionOrNull(SettingUiPermissions.Tenant.Default);
-
+			var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
+			
 			// group 1
-			var systemGroup = settingUiTenantPermission.AddChild(System.Default, L("Permission:SettingUi.System"));
+			var systemGroup = settingUiPage.AddChild(System.Default, L("Permission:SettingUi.System"));
 			// group 2
 			var passwordGroup = systemGroup.AddChild(System.Password.Group2, L("Permission:SettingUi.System.Password"));
 			passwordGroup.AddChild(
@@ -32,7 +30,7 @@ namespace MyAbpApp.Permissions
 			);
 
 			// group 1
-			var settingExampleGroup = settingUiTenantPermission.AddChild(SettingExample.Default, L("Permission:SettingUi.SettingExample"));
+			var settingExampleGroup = settingUiPage.AddChild(SettingExample.Default, L("Permission:SettingUi.SettingExample"));
 			// group 2
 			var aSettings = settingExampleGroup.AddChild(SettingExample.ASettings.GroupName, L("Permission:SettingUi.SettingExample.ASettings"));
 			aSettings.AddChild(
