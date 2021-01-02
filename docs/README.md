@@ -1,3 +1,5 @@
+[中文](/docs/README_zh-Hans.md)
+
 # Abp.SettingUi
 
 [![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=%2F%2FProject%2FPropertyGroup%2FAbpVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FEasyAbp%2FAbp.SettingUi%2Fmaster%2FDirectory.Build.props)](https://abp.io)
