@@ -31,13 +31,14 @@ We have launched an online demo for this module: [https://settingui.samples.easy
 
 Run following command in your ABP project root folder:
 
-> abphelper module add EasyAbp.Abp.SettingUi -ashlw
+> abphelper module add EasyAbp.Abp.SettingUi -acshlw
 
 ### Add ABP packages manually
 
 1. Install the following NuGet packages.
 
     * EasyAbp.Abp.SettingUi.Application
+    * EasyAbp.Abp.SettingUi.Application.Contracts
     * EasyAbp.Abp.SettingUi.Domain.Shared
     * EasyAbp.Abp.SettingUi.HttpApi
     * EasyAbp.Abp.SettingUi.HttpApi.Client (Only [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) is needed)
