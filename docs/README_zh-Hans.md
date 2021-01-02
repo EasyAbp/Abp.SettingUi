@@ -41,7 +41,6 @@
     * EasyAbp.Abp.SettingUi.HttpApi.Client (只有 [分层结构](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) 才需要)
     * EasyAbp.Abp.SettingUi.Web
 
-1. Add `DependsOn(typeof(AbpSettingUiXxxModule))` attribute to configure the module dependencies. ([see how](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 1. 添加 `DependsOn(typeof(AbpSettingUiXxxModule))` 属性来配置模块依赖. ([帮助](https://github.com/EasyAbp/EasyAbpGuide/blob/master/How-To.md#add-module-dependencies))
 
 ### 配置本地化资源
@@ -102,6 +101,7 @@
         * 提供了一个默认值: "127.0.0.1"
         * 使用帮助方法 `L` 为 `显示名称` 和 `描述` 赋予了可本地化的字符串. 格式 "DisplayName:{SettingName}" 是ABP推荐的形式.
 
+
         > ABP的设置系统, 请参见 [设置文档](https://docs.abp.io/en/abp/latest/Settings)
 
 1. 定义本地化资源, 出于演示目的, 我们定义了英语和简体中文的本地化资源
@@ -140,7 +140,7 @@
 
 ## 分组
 
-你可能注意到我们的自定义设置显示在"Others"标签, "Others"卡片中, 这些是默认的分组, 分别称之为"Group1"和"Group2"
+你可能注意到我们的自定义设置显示在"其它"标签, "其它"卡片中, 这些是默认的分组, 分别称之为"Group1"和"Group2"
 
 ![group](/docs/images/group.png)
 
@@ -150,7 +150,7 @@
 
     `WithProperty` 方法是由ABP`SettingDefinition`类提供的一个方法, 我们可以直接在设置定义中使用它:
 
-    * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
+    * `MyAbpApp.Domain` 项目 - `Settings/MyAbpAppSettingDefinitionProvider` 类
 
         ``` csharp
         context.Add(
@@ -166,7 +166,7 @@
         ```
 
         * 常量 `Group1` 和 `Group2` 定义在 `SettingUiConst`类中
-        * 设置 "Server" 为 "Group1", "Connection" 为 "Group2"
+        * 设置 "Group1" 为 "Server", "Group2" 为 "Connection"
 
     然后我们应该为这两个分组名字提供本地化资源:
 
@@ -288,7 +288,7 @@
 
     ![selection](/docs/images/selet.png)
 
-这是教程的结尾了. 通过该教程, 你应该可以轻松地使用SettingUi来管理你的设置了. 教程的源码可以在[sample文件夹](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)中找到.
+到这里教程就结束了. 通过本教程, 你应该可以轻松地使用SettingUi来管理你的设置了. 教程的源码可以在[sample文件夹](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)中找到.
 
 # 本地化
 
