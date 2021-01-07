@@ -11,7 +11,7 @@ namespace EasyAbp.Abp.SettingUi.Authorization
         public override void Define(IPermissionDefinitionContext context)
         {
             var moduleGroup = context.AddGroup(SettingUiPermissions.GroupName, L("Permission:SettingUi"));
-            moduleGroup.AddPermission(SettingUiPermissions.Tenant, L("Permission:SettingUi.Tenant"));
+            var showSettingPagePermission = moduleGroup.AddPermission(SettingUiPermissions.ShowSettingPage, L("Permission:SettingUi.ShowSettingPage"));
         }
 
         private static LocalizableString L(string name)

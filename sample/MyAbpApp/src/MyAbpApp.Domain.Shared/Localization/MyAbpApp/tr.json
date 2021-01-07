@@ -1,8 +1,36 @@
 ﻿{
-  "culture": "tr",
-  "texts": {
-    "Menu:Home": "Ana sayfa",
-    "Welcome": "Hoşgeldiniz",
-    "LongWelcomeMessage": "Uygulamaya hoşgeldiniz. Bu, ABP framework'ü üzerine bina edilmiş bir başlangıç projesidir. Daha fazla bilgi için abp.io adresini ziyaret edebilirsiniz."
-  }
+	"culture": "tr",
+	"texts": {
+		"Menu:Home": "Ana sayfa",
+		"Welcome": "Hoşgeldiniz",
+		"LongWelcomeMessage": "Uygulamaya hoşgeldiniz. Bu, ABP framework'ü üzerine bina edilmiş bir başlangıç projesidir. Daha fazla bilgi için abp.io adresini ziyaret edebilirsiniz.",
+
+		"Server": "Sunucu",
+		"Connection": "Bağlantı",
+		"SettingExample": "Örnek Ayar",
+		"ASettings": "A",
+		"BSettings": "B",
+
+		"DisplayName:Connection.Ip": "IP",
+		"DisplayName:Connection.Port": "Port",
+		"DisplayName:Connection.Protocol": "Protokol",
+		"DisplayName:ASettings.Setting1": "Ayar 1",
+		"DisplayName:ASettings.Setting2": "Ayar 2",
+		"DisplayName:ASettings.Setting3": "Ayar 3",
+		"DisplayName:BSettings.Setting1": "Ayar 1",
+
+		"Description:Connection.Ip": "Sunucunun IP adresi.",
+		"Description:Connection.Port": "Sunucunun Port numarası.",
+		"Description:Connection.Protocol": "Bağlantı protokolü.",
+
+		"Permission:SettingUi.System": "'Sistem' Ayarlarını Göster",
+		"Permission:SettingUi.System.Password": "'Şifre' Ayarlarını Göster",
+		"Permission:SettingUi.System.Password.RequiredLength": "'Uzunluk gerekli' Ayarını Göster",
+		"Permission:SettingUi.System.Password.RequiredUniqueChars": "'Tekil karakter gerekli' Ayarını Göster",
+
+		"Permission:SettingUi.SettingExample": "'Örnek Ayar' Ayarlarını Göster",
+		"Permission:SettingUi.SettingExample.ASettings": "'A' Ayarlarını Göster",
+		"Permission:SettingUi.SettingExample.ASettings.Setting1": "`Ayar 1' Ayarını Göster",
+		"Permission:SettingUi.SettingExample.BSettings": "'B' Ayarlarını Göster"
+	}
 }

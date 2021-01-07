@@ -1,4 +1,4 @@
-﻿﻿(function ($) {
+﻿(function ($) {
 
     var service = easyAbp.abp.settingUi.settingUi;
     var l = abp.localization.getResource("SettingUi");

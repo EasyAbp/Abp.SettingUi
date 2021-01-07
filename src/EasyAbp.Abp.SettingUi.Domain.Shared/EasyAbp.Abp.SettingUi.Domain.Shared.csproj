@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.SettingManagement.Domain.Shared" Version="$(AbpVersion)" />
-    <PackageReference Include="Volo.Abp.UI" Version="$(AbpVersion)" />
-    <PackageReference Include="Volo.Abp.Validation" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Domain.Shared" Version="4.1.0" />
+    <PackageReference Include="Volo.Abp.UI" Version="4.1.0" />
+    <PackageReference Include="Volo.Abp.Validation" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.0" />
+    <None Remove="Localization\SettingUi\tr.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="5.0.1" />
   </ItemGroup>
 
 </Project>

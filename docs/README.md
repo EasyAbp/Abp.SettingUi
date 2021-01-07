@@ -1,3 +1,5 @@
+[中文](/docs/README_zh-Hans.md)
+
 # Abp.SettingUi
 
 [![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=%2F%2FProject%2FPropertyGroup%2FAbpVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FEasyAbp%2FAbp.SettingUi%2Fmaster%2FDirectory.Build.props)](https://abp.io)
@@ -17,6 +19,7 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Support localization
 * Group settings
 * Display settings with appropriate input controls
+* Control display of settings by permissions
 
 ## Online Demo
 
@@ -28,13 +31,14 @@ We have launched an online demo for this module: [https://settingui.samples.easy
 
 Run following command in your ABP project root folder:
 
-> abphelper module add EasyAbp.Abp.SettingUi -ashlw
+> abphelper module add EasyAbp.Abp.SettingUi -acshlw
 
 ### Add ABP packages manually
 
 1. Install the following NuGet packages.
 
     * EasyAbp.Abp.SettingUi.Application
+    * EasyAbp.Abp.SettingUi.Application.Contracts
     * EasyAbp.Abp.SettingUi.Domain.Shared
     * EasyAbp.Abp.SettingUi.HttpApi
     * EasyAbp.Abp.SettingUi.HttpApi.Client (Only [Tiered structure](https://docs.abp.io/en/abp/latest/Startup-Templates/Application#tiered-structure) is needed)
@@ -61,7 +65,7 @@ In order to let SettingUi module use localization resources from this applicatio
 
 ## Usage
 
-1. Add permissions ("Setting UI" - "Tenant") to the roles you want.
+1. Grant permission ("Setting UI" - "Show Setting Page")
 
     ![permission](/docs/images/permission.png)
 
@@ -264,7 +268,7 @@ Now the input type changed to "number", and the frontend validations also work.
 
 > The setting types can also be configured through `WithProperty` method, like `WithProperty("Type", "number")`
 
-For now SettingUi support following setting types:
+For now SettingUi supports following setting types:
 
 * text (default)
 * number
@@ -286,16 +290,68 @@ For now SettingUi support following setting types:
 
     ![selection](/docs/images/selet.png)
 
-This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)
+This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample).
 
 # Localization
 
-The SettingUI module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
+The SettingUi module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
 
 * en
 * zh-Hans
+* tr
 
 The localization resource files are under `/Localization/SettingUi` of the `EasyAbp.Abp.SettingUi.Domain.Shared` project.
 
 You can add more resource files to make this module support more languages. Welcome PRs :blush: .
 > For ABP's localization system, please see [the document](https://docs.abp.io/en/abp/latest/Localization)
+
+# Permissions
+
+SettingUi controls whether to display SettingUi's page by checking the `SettingUi.ShowSettingPage` permission.
+
+As long as the permission is granted, all settings in the system can be modified through SettingUi.
+
+But sometimes, we don't want users to see certain settings in SettingUi, which can be achieved by defining specific permissions.
+
+For example, if we need to hide the "system" group from users, then we need to add a child permission of `SettingUi.ShowSettingPage`, the name of the permission is `SettingUi.System`. The code is as follows:
+
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
+    var systemGroup = settingUiPage.AddChild("SettingUi.System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
+}
+```
+
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1` is found, the Group1 will only be displayed after the permission is explicitly granted.
+
+We can continue to add permissions to control Group2, such as "System" -> "Password" group, we need to add a permission with the Group2 name as the suffix, the code is as follows:
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    ...
+    var passwordGroup = systemGroup.AddChild("SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // Add display permission of Group2: Password
+}
+```
+
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
+
+Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    ...
+    var requiredLength = passwordGroup.AddChild("SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // Add display permission of Abp.Identity.Password.RequiredLength
+}
+```
+
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
+
+
+Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.
+
+The following figure is a screenshot of Setting Ui permissions, and the displayed result:
+
+![setting_permission](/docs/images/setting_permission.png)
+
+> For ABP's permission system, please see [the document](https://docs.abp.io/en/abp/latest/Authorization)
