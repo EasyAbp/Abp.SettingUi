@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Http.Client" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Http.Client" Version="4.1.0" />
     <ProjectReference Include="..\EasyAbp.Abp.SettingUi.Application.Contracts\EasyAbp.Abp.SettingUi.Application.Contracts.csproj" />
   </ItemGroup>
 
