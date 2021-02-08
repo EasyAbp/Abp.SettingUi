@@ -1,11 +1,11 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj", "sample/MyAbpApp/src/MyAbpApp.Web/"]
 COPY ["src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj", "src/EasyAbp.Abp.SettingUi.Web/"]
@@ -21,6 +21,7 @@ COPY ["sample/MyAbpApp/src/MyAbpApp.Domain/MyAbpApp.Domain.csproj", "sample/MyAb
 COPY ["sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj", "sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/"]
 COPY ["sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore/MyAbpApp.EntityFrameworkCore.csproj", "sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore/"]
 COPY ["sample/MyAbpApp/src/MyAbpApp.HttpApi/MyAbpApp.HttpApi.csproj", "sample/MyAbpApp/src/MyAbpApp.HttpApi/"]
+COPY Directory.Build.props .
 RUN dotnet restore "sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj"
 COPY . .
 WORKDIR "/src/sample/MyAbpApp/src/MyAbpApp.Web"
