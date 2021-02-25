@@ -5,6 +5,7 @@ using EasyAbp.Abp.SettingUi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
+using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
 {
@@ -28,7 +29,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
         public string Group2 { get; }
         public string FormName { get; }
         public string Type { get; }
-        public Dictionary<string, object> Properties { get; }
+        public ExtraPropertyDictionary Properties { get; }
 
         public SettingHtmlInfo(SettingInfo settingInfo)
         {
