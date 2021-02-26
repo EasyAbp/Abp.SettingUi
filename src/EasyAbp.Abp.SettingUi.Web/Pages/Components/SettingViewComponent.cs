@@ -29,7 +29,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
         public string Group2 { get; }
         public string FormName { get; }
         public string Type { get; }
-        public ExtraPropertyDictionary Properties { get; }
+        public Dictionary<string, object> Properties { get; }
 
         public SettingHtmlInfo(SettingInfo settingInfo)
         {

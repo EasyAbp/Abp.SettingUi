@@ -21,7 +21,7 @@ namespace EasyAbp.Abp.SettingUi.Dto
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Value { get; set; }
-        public ExtraPropertyDictionary Properties { get; set; } 
+        public Dictionary<string, object> Properties { get; set; } 
         public string Permission { get; set; }
     }
 }
