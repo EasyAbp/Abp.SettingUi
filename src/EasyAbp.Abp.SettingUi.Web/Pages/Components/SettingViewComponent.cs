@@ -5,6 +5,7 @@ using EasyAbp.Abp.SettingUi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
+using Volo.Abp.Data;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
 {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Localization;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
 using Volo.Abp.Authorization.Permissions;
+using Volo.Abp.Data;
 using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
@@ -201,7 +202,7 @@ namespace EasyAbp.Abp.SettingUi
 						// Do not assign the property if it has already been set by the user.
 						if (!si.Properties.ContainsKey(kv.Key))
 						{
-							si.WithProperty(kv.Key, kv.Value);
+							si.Properties[kv.Key] =  kv.Value;
 						}
 					}
 				}
@@ -209,19 +210,19 @@ namespace EasyAbp.Abp.SettingUi
 				// Default group1: Others
 				if (!si.Properties.ContainsKey(SettingUiConst.Group1))
 				{
-					si.WithProperty(SettingUiConst.Group1, SettingUiConst.DefaultGroup);
+					si.Properties[SettingUiConst.Group1] = SettingUiConst.DefaultGroup;
 				}
 
 				// Default group2: Others
 				if (!si.Properties.ContainsKey(SettingUiConst.Group2))
 				{
-					si.WithProperty(SettingUiConst.Group2, SettingUiConst.DefaultGroup);
+					si.Properties[SettingUiConst.Group2] =  SettingUiConst.DefaultGroup;
 				}
 
 				// Default type: text
 				if (!si.Properties.ContainsKey(SettingUiConst.Type))
 				{
-					si.WithProperty(SettingUiConst.Type, SettingUiConst.DefaultType);
+					si.Properties[SettingUiConst.Type] = SettingUiConst.DefaultType;
 				}
 
 				settingInfos.Add(si);
@@ -261,12 +262,19 @@ namespace EasyAbp.Abp.SettingUi
 
 			string value = AsyncHelper.RunSync(() => SettingProvider.GetOrNullAsync(name));
 
-			var si = new SettingInfo(name, displayName, description, value);
+			var si = new SettingInfo
+			{
+				Name = name,
+				DisplayName = displayName,
+				Description = description,
+				Value = value,
+				Properties = new ExtraPropertyDictionary(),
+			};
 
 			// Copy properties from SettingDefinition
 			foreach (var property in settingDefinition.Properties)
 			{
-				si.WithProperty(property.Key, property.Value);
+				si.Properties[property.Key] = property.Value;
 			}
 
 			return si;
