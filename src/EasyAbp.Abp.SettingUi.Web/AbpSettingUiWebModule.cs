@@ -13,14 +13,14 @@ namespace EasyAbp.Abp.SettingUi.Web
         typeof(AbpAspNetCoreMvcUiThemeSharedModule),
         typeof(AbpSettingManagementWebModule)
         )]
-    [DependsOn(typeof(SettingUiHttpApiModule))]
-    public class SettingUiWebModule : AbpModule
+    [DependsOn(typeof(AbpSettingUiHttpApiModule))]
+    public class AbpSettingUiWebModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
         {
             PreConfigure<IMvcBuilder>(mvcBuilder =>
             {
-                mvcBuilder.AddApplicationPartIfNotExists(typeof(SettingUiWebModule).Assembly);
+                mvcBuilder.AddApplicationPartIfNotExists(typeof(AbpSettingUiWebModule).Assembly);
             });
         }
 
@@ -28,7 +28,7 @@ namespace EasyAbp.Abp.SettingUi.Web
         {
             Configure<AbpVirtualFileSystemOptions>(options =>
             {
-                options.FileSets.AddEmbedded<SettingUiWebModule>();
+                options.FileSets.AddEmbedded<AbpSettingUiWebModule>();
             });
 
             Configure<SettingManagementPageOptions>(options =>

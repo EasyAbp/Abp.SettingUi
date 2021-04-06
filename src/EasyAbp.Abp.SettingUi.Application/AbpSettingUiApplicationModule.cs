@@ -4,11 +4,11 @@ using Volo.Abp.Application;
 namespace EasyAbp.Abp.SettingUi
 {
     [DependsOn(
-        typeof(SettingUiDomainModule),
-        typeof(SettingUiApplicationContractsModule),
+        typeof(AbpSettingUiDomainModule),
+        typeof(AbpSettingUiApplicationContractsModule),
         typeof(AbpDddApplicationModule)
         )]
-    public class SettingUiApplicationModule : AbpModule
+    public class AbpSettingUiApplicationModule : AbpModule
     {
     }
 }

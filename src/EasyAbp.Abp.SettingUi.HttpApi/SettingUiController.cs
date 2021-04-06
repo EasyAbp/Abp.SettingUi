@@ -8,9 +8,9 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace EasyAbp.Abp.SettingUi
 {
-    [RemoteService(Name = "SettingUi")]
+    [RemoteService(Name = "EasyAbpAbpSettingUi")]
     [Area("settingUi")]
-    [Route("api/settingUi")] 
+    [Route("api/setting-ui")] 
     public class SettingUiController : AbpController, ISettingUiAppService
     {
         private readonly ISettingUiAppService _service;
@@ -28,14 +28,14 @@ namespace EasyAbp.Abp.SettingUi
         }
 
         [HttpPut]
-        [Route("setSettingValues")]
+        [Route("set-setting-values")]
         public virtual Task SetSettingValues(Dictionary<string, string> settingValues)
         {
             return _service.SetSettingValues(settingValues);
         }
 
         [HttpPut]
-        [Route("resetSettingValues")]
+        [Route("reset-setting-values")]
         public virtual Task ResetSettingValues(List<string> settingNames)
         {
             return _service.ResetSettingValues(settingNames);

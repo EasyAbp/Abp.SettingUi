@@ -18,7 +18,7 @@ namespace MyAbpApp
         typeof(AbpPermissionManagementApplicationModule),
         typeof(AbpTenantManagementApplicationModule),
         typeof(AbpFeatureManagementApplicationModule),
-        typeof(SettingUiApplicationModule),
+        typeof(AbpSettingUiApplicationModule),
         typeof(AbpEmailingModule)
         )]
     public class MyAbpAppApplicationModule : AbpModule

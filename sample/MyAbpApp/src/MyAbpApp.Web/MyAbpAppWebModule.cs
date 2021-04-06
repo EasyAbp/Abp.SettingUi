@@ -49,7 +49,7 @@ namespace MyAbpApp.Web
         typeof(AbpTenantManagementWebModule),
         typeof(AbpAspNetCoreSerilogModule),
         typeof(AbpSwashbuckleModule),
-        typeof(SettingUiWebModule)
+        typeof(AbpSettingUiWebModule)
     )]
     public class MyAbpAppWebModule : AbpModule
     {
@@ -140,11 +140,11 @@ namespace MyAbpApp.Web
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppWebModule>(hostingEnvironment.ContentRootPath);
 
                     string moduleDir = Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}..{sept}..{sept}..{sept}src");
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiDomainSharedModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain.Shared"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiDomainModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiApplicationContractsModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application.Contracts"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiApplicationModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application"));
-                    options.FileSets.ReplaceEmbeddedByPhysical<SettingUiWebModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Web"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<AbpSettingUiDomainSharedModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain.Shared"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<AbpSettingUiDomainModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Domain"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<AbpSettingUiApplicationContractsModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application.Contracts"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<AbpSettingUiApplicationModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Application"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<AbpSettingUiWebModule>(Path.Combine(moduleDir, "EasyAbp.Abp.SettingUi.Web"));
                 });
             }
         }

@@ -27,7 +27,7 @@ namespace MyAbpApp
         typeof(AbpSettingManagementDomainSharedModule),
         typeof(AbpTenantManagementDomainSharedModule)
         )]
-    [DependsOn(typeof(SettingUiDomainSharedModule))]
+    [DependsOn(typeof(AbpSettingUiDomainSharedModule))]
     public class MyAbpAppDomainSharedModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
