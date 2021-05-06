@@ -18,7 +18,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.26" />
     <ProjectReference Include="..\MyAbpApp.Application.Tests\MyAbpApp.Application.Tests.csproj" />
     <ProjectReference Include="..\..\src\MyAbpApp.Web\MyAbpApp.Web.csproj" />
-    <PackageReference Include="Volo.Abp.AspNetCore.TestBase" Version="4.2.1" />
+    <PackageReference Include="Volo.Abp.AspNetCore.TestBase" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
