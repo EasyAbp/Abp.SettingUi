@@ -214,7 +214,7 @@ namespace MyAbpApp.Web
             }
 
             app.UseCorrelationId();
-            app.UseVirtualFiles();
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseJwtTokenMiddleware();
