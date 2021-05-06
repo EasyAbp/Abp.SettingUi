@@ -1,7 +1,7 @@
 ﻿(function ($) {
 
     var service = easyAbp.abp.settingUi.settingUi;
-    var l = abp.localization.getResource("SettingUi");
+    var l = abp.localization.getResource("EasyAbpAbpSettingUi");
 
     $("form").submit(function (e) {
         e.preventDefault();

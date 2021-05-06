@@ -5,16 +5,16 @@ using Volo.Abp.Modularity;
 namespace EasyAbp.Abp.SettingUi
 {
     [DependsOn(
-        typeof(SettingUiApplicationContractsModule),
+        typeof(AbpSettingUiApplicationContractsModule),
         typeof(AbpHttpClientModule))]
-    public class SettingUiHttpApiClientModule : AbpModule
+    public class AbpSettingUiHttpApiClientModule : AbpModule
     {
-        public const string RemoteServiceName = "SettingUi";
+        public const string RemoteServiceName = "EasyAbpAbpSettingUi";
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             context.Services.AddHttpClientProxies(
-                typeof(SettingUiApplicationContractsModule).Assembly,
+                typeof(AbpSettingUiApplicationContractsModule).Assembly,
                 RemoteServiceName
             );
         }

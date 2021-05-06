@@ -2,7 +2,7 @@
 
 namespace EasyAbp.Abp.SettingUi.Localization
 {
-    [LocalizationResourceName("SettingUi")]
+    [LocalizationResourceName("EasyAbpAbpSettingUi")]
     public class SettingUiResource
     {
         

@@ -17,7 +17,7 @@ namespace MyAbpApp
         typeof(AbpPermissionManagementApplicationContractsModule),
         typeof(AbpTenantManagementApplicationContractsModule),
         typeof(AbpObjectExtendingModule),
-        typeof(SettingUiApplicationContractsModule)
+        typeof(AbpSettingUiApplicationContractsModule)
     )]
     public class MyAbpAppApplicationContractsModule : AbpModule
     {

@@ -13,7 +13,7 @@ namespace EasyAbp.Abp.SettingUi
         typeof(AbpAutofacModule),
         typeof(AbpTestBaseModule),
         typeof(AbpAuthorizationModule), 
-        typeof(SettingUiDomainModule),
+        typeof(AbpSettingUiDomainModule),
         typeof(AbpSettingManagementDomainModule)
     )]
     public class SettingUiTestBaseModule : AbpModule

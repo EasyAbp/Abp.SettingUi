@@ -9,11 +9,11 @@ using Volo.Abp.Json.SystemTextJson;
 namespace EasyAbp.Abp.SettingUi
 {
     [DependsOn(
-        typeof(SettingUiDomainSharedModule),
+        typeof(AbpSettingUiDomainSharedModule),
         typeof(AbpDddApplicationContractsModule),
         typeof(AbpAuthorizationModule)
         )]
-    public class SettingUiApplicationContractsModule : AbpModule
+    public class AbpSettingUiApplicationContractsModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {

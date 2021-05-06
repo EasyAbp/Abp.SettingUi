@@ -19,7 +19,7 @@ namespace MyAbpApp
         typeof(AbpTenantManagementHttpApiModule),
         typeof(AbpFeatureManagementHttpApiModule)
         )]
-    [DependsOn(typeof(SettingUiHttpApiModule))]
+    [DependsOn(typeof(AbpSettingUiHttpApiModule))]
     public class MyAbpAppHttpApiModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)

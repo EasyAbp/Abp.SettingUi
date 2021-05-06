@@ -4,7 +4,7 @@ using Volo.Abp.VirtualFileSystem;
 namespace EasyAbp.Abp.SettingUi
 {
     [DependsOn(
-        typeof(SettingUiApplicationModule),
+        typeof(AbpSettingUiApplicationModule),
         typeof(SettingUiDomainTestModule)
         )]
     public class SettingUiApplicationTestModule : AbpModule

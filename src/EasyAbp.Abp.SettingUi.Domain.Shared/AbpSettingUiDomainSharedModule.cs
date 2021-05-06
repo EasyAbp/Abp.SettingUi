@@ -14,11 +14,11 @@ namespace EasyAbp.Abp.SettingUi
         typeof(AbpUiModule),
         typeof(AbpSettingManagementDomainSharedModule)
     )]
-    public class SettingUiDomainSharedModule : AbpModule
+    public class AbpSettingUiDomainSharedModule : AbpModule
     {
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<AbpVirtualFileSystemOptions>(options => { options.FileSets.AddEmbedded<SettingUiDomainSharedModule>(); });
+            Configure<AbpVirtualFileSystemOptions>(options => { options.FileSets.AddEmbedded<AbpSettingUiDomainSharedModule>(); });
 
             Configure<AbpLocalizationOptions>(options =>
             {
