@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\MyAbpApp.EntityFrameworkCore.DbMigrations\MyAbpApp.EntityFrameworkCore.DbMigrations.csproj" />
     <ProjectReference Include="..\MyAbpApp.TestBase\MyAbpApp.TestBase.csproj" />
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="$(AbpVersion)" />
   </ItemGroup>
 
   <ItemGroup>
