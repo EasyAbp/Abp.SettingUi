@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Web.Pages.Components;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
 
 namespace EasyAbp.Abp.SettingUi.Web.Pages
@@ -13,6 +11,11 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
     {
         public async Task ConfigureAsync(SettingPageCreationContext context)
         {
+            if (!await CheckPermissionsAsync(context))
+            {
+                return;
+            }
+
             var settingUiAppService = context.ServiceProvider.GetRequiredService<ISettingUiAppService>();
             foreach (var grp in await settingUiAppService.GroupSettingDefinitions())
             {
