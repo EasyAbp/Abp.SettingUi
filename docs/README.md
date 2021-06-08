@@ -307,45 +307,53 @@ You can add more resource files to make this module support more languages. Welc
 
 # Permissions
 
-SettingUi controls whether to display SettingUi's page by checking the `SettingUi.ShowSettingPage` permission.
+SettingUi controls whether to display SettingUi's page by checking the `EasyAbp.Abp.SettingUi.ShowSettingPage` permission.
 
 As long as the permission is granted, all settings in the system can be modified through SettingUi.
 
 But sometimes, we don't want users to see certain settings in SettingUi, which can be achieved by defining specific permissions.
 
-For example, if we need to hide the "system" group from users, then we need to add a child permission of `SettingUi.ShowSettingPage`, the name of the permission is `SettingUi.System`. The code is as follows:
+For example, if we need to hide the "system" group from users, then we need to add a child permission of `EasyAbp.Abp.SettingUi.ShowSettingPage`, the name of the permission is `EasyAbp.Abp.SettingUi.System`. The code is as follows:
 
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
-    var systemGroup = settingUiPage.AddChild("SettingUi.System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
+    var systemGroup = settingUiPage.AddChild("EasyAbp.Abp.SettingUi.System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1` is found, the Group1 will only be displayed after the permission is explicitly granted.
+In this way, when SettingUi enumerates the settings, if a permission in the form of `EasyAbp.Abp.SettingUi.Group1` is found, the Group1 will only be displayed after the permission is explicitly granted.
+You can also use the `SettingUiPermissions.GroupName` variable. The code is as follows:
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
+    var systemGroup = settingUiPage.AddChild(SettingUiPermissions.GroupName + ".System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
+}
+```
 
 We can continue to add permissions to control Group2, such as "System" -> "Password" group, we need to add a permission with the Group2 name as the suffix, the code is as follows:
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     ...
-    var passwordGroup = systemGroup.AddChild("SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // Add display permission of Group2: Password
+    var passwordGroup = systemGroup.AddChild("EasyAbp.Abp.SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // Add display permission of Group2: Password
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
+In this way, when SettingUi enumerates the settings, if a permission in the form of `EasyAbp.Abp.SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
 
 Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     ...
-    var requiredLength = passwordGroup.AddChild("SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // Add display permission of Abp.Identity.Password.RequiredLength
+    var requiredLength = passwordGroup.AddChild("EasyAbp.Abp.SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // Add display permission of Abp.Identity.Password.RequiredLength
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
+In this way, when SettingUi enumerates the settings, if a permission in the form of `EasyAbp.Abp.SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
 
 
 Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.

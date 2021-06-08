@@ -306,23 +306,32 @@ SettingUi模块使用ABP的本地化系统来显示设置的本地化信息. 现
 
 # 权限
 
-SettingUi通过检查`SettingUi.ShowSettingPage`权限,来控制是否显示SettingUi的页面.
+SettingUi通过检查`EasyAbp.Abp.SettingUi.ShowSettingPage`权限,来控制是否显示SettingUi的页面.
 
 只要赋予了该权限, 那么系统中所有的设置都可以通过SettingUi来修改.
 
 但有些时候, 我们不想让用户在SettingUi中看到某些设置, 这可以通过定义特定的权限来实现这个目的.
 
-比如我们需要对用户隐藏"系统"分组, 那么需要在`SettingUi.ShowSettingPage`下添加一个子权限, 权限的名字为`SettingUi.System`. 代码如下:
+比如我们需要对用户隐藏"系统"分组, 那么需要在`EasyAbp.Abp.SettingUi.ShowSettingPage`下添加一个子权限, 权限的名字为`EasyAbp.Abp.SettingUi.System`. 代码如下:
 
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // 取得ShowSettingPage权限
-    var systemGroup = settingUiPage.AddChild("SettingUi.System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
+    var systemGroup = settingUiPage.AddChild("EasyAbp.Abp.SettingUi.System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
 }
 ```
 
-这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1`形式的权限, 则只有显式的赋予该权限后, 分组Group1才会显示.
+这样当SettingUi遍历设置时, 如果发现有`EasyAbp.Abp.SettingUi.Group1`形式的权限, 则只有显式的赋予该权限后, 分组Group1才会显示.  
+
+您也可以使用`SettingUiPermissions.GroupName`变量,如
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // 取得ShowSettingPage权限
+    var systemGroup = settingUiPage.AddChild(SettingUiPermissions.GroupName + ".System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
+}
+```
 
 我们可以继续添加对Group2控制的权限, 如"系统" -> "密码"分组, 需要继续添加后缀为Group2的权限, 代码如下:
 
@@ -330,22 +339,22 @@ public override void Define(IPermissionDefinitionContext context)
 public override void Define(IPermissionDefinitionContext context)
 {
     ...
-    var passwordGroup = systemGroup.AddChild("SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // 添加控制 Group2: Password 的权限
+    var passwordGroup = systemGroup.AddChild("EasyAbp.Abp.SettingUi.System.Password", L("Permission:SettingUi.System.Password"));   // 添加控制 Group2: Password 的权限
 }
 ```
 
-这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示.
+这样当SettingUi遍历设置时, 如果发现有`EasyAbp.Abp.SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示.
 
 当然, 我们也可继续添加精确控制某一设置的权限, 如"系统" -> "密码" -> "要求长度", 需要继续添加后缀为设置名称的权限, 代码如下:
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)
 {
     ...
-    var requiredLength = passwordGroup.AddChild("SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // 添加控制设置Abp.Identity.Password.RequiredLength的权限
+    var requiredLength = passwordGroup.AddChild("EasyAbp.Abp.SettingUi.System.Password.Abp.Identity.Password.RequiredLength", L("Permission:SettingUi.System.Password.RequiredLength"));    // 添加控制设置Abp.Identity.Password.RequiredLength的权限
 }
 ```
 
-这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2.SettingName`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2中的SettingName才会显示.
+这样当SettingUi遍历设置时, 如果发现有`EasyAbp.Abp.SettingUi.Group1.Group2.SettingName`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2中的SettingName才会显示.
 
 
 通过以上3级的权限定义方式, 我们就可以在SettingUi中任意控制设置的显示了.
