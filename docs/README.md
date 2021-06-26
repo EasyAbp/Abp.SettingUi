@@ -325,6 +325,16 @@ public override void Define(IPermissionDefinitionContext context)
 
 In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1` is found, the Group1 will only be displayed after the permission is explicitly granted.
 
+You can also use the `SettingUiPermissions.GroupName` variable. The effect is the same as the above code. The code is as follows:
+
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // Get ShowSettingPage permission
+    var systemGroup = settingUiPage.AddChild(SettingUiPermissions.GroupName + ".System", L("Permission:SettingUi.System")); // Add display permission of Group1: System
+}
+```
+
 We can continue to add permissions to control Group2, such as "System" -> "Password" group, we need to add a permission with the Group2 name as the suffix, the code is as follows:
 ``` csharp
 public override void Define(IPermissionDefinitionContext context)

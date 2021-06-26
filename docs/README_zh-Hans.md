@@ -324,6 +324,16 @@ public override void Define(IPermissionDefinitionContext context)
 
 这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1`形式的权限, 则只有显式的赋予该权限后, 分组Group1才会显示.
 
+您也可以使用`SettingUiPermissions.GroupName`变量, 作用与上方代码相同, 如
+
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // 取得ShowSettingPage权限
+    var systemGroup = settingUiPage.AddChild(SettingUiPermissions.GroupName + ".System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
+}
+```
+
 我们可以继续添加对Group2控制的权限, 如"系统" -> "密码"分组, 需要继续添加后缀为Group2的权限, 代码如下:
 
 ``` csharp
