@@ -105,7 +105,7 @@ stages:
        displayName: 'update database'
        inputs:
         script: | 
-          dotnet ef database update --project sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj -s sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj
+          dotnet ef database update --project sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore/MyAbpApp.EntityFrameworkCore.csproj -s sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj
      
      - task: CmdLine@2
        inputs:

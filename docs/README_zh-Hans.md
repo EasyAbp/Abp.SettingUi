@@ -1,6 +1,6 @@
 # Abp.SettingUi
 
-[![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=%2F%2FProject%2FPropertyGroup%2FAbpVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2FEasyAbp%2FAbp.SettingUi%2Fmaster%2FDirectory.Build.props)](https://abp.io)
+[![ABP version](https://img.shields.io/badge/dynamic/xml?style=flat-square&color=yellow&label=abp&query=//PackageReference[@Include=%27Volo.Abp.Ddd.Domain%27]/@Version&url=https://raw.githubusercontent.com/EasyAbp/Abp.SettingUi/develop/src/EasyAbp.Abp.SettingUi.Domain/EasyAbp.Abp.SettingUi.Domain.csproj)](https://abp.io)
 [![NuGet](https://img.shields.io/nuget/v/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
 [![NuGet Download](https://img.shields.io/nuget/dt/EasyAbp.Abp.SettingUi.Domain.Shared.svg?style=flat-square)](https://www.nuget.org/packages/EasyAbp.Abp.SettingUi.Domain.Shared)
 [![GitHub stars](https://img.shields.io/github/stars/EasyAbp/Abp.SettingUi?style=social)](https://www.github.com/EasyAbp/Abp.SettingUi)
@@ -323,6 +323,16 @@ public override void Define(IPermissionDefinitionContext context)
 ```
 
 这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1`形式的权限, 则只有显式的赋予该权限后, 分组Group1才会显示.
+
+您也可以使用`SettingUiPermissions.GroupName`变量, 作用与上方代码相同, 如
+
+``` csharp
+public override void Define(IPermissionDefinitionContext context)
+{
+    var settingUiPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);  // 取得ShowSettingPage权限
+    var systemGroup = settingUiPage.AddChild(SettingUiPermissions.GroupName + ".System", L("Permission:SettingUi.System")); // 添加控制 Group1: System 的权限
+}
+```
 
 我们可以继续添加对Group2控制的权限, 如"系统" -> "密码"分组, 需要继续添加后缀为Group2的权限, 代码如下:
 

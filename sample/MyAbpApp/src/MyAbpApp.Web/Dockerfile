@@ -7,6 +7,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+COPY ["sample/MyAbpApp/NuGet.Config", "sample/MyAbpApp/"]
+COPY ["NuGet.Config", "."]
 COPY ["sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj", "sample/MyAbpApp/src/MyAbpApp.Web/"]
 COPY ["src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj", "src/EasyAbp.Abp.SettingUi.Web/"]
 COPY ["src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.csproj", "src/EasyAbp.Abp.SettingUi.HttpApi/"]
@@ -18,7 +20,6 @@ COPY ["sample/MyAbpApp/src/MyAbpApp.Domain.Shared/MyAbpApp.Domain.Shared.csproj"
 COPY ["src/EasyAbp.Abp.SettingUi.Application/EasyAbp.Abp.SettingUi.Application.csproj", "src/EasyAbp.Abp.SettingUi.Application/"]
 COPY ["src/EasyAbp.Abp.SettingUi.Domain/EasyAbp.Abp.SettingUi.Domain.csproj", "src/EasyAbp.Abp.SettingUi.Domain/"]
 COPY ["sample/MyAbpApp/src/MyAbpApp.Domain/MyAbpApp.Domain.csproj", "sample/MyAbpApp/src/MyAbpApp.Domain/"]
-COPY ["sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/MyAbpApp.EntityFrameworkCore.DbMigrations.csproj", "sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore.DbMigrations/"]
 COPY ["sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore/MyAbpApp.EntityFrameworkCore.csproj", "sample/MyAbpApp/src/MyAbpApp.EntityFrameworkCore/"]
 COPY ["sample/MyAbpApp/src/MyAbpApp.HttpApi/MyAbpApp.HttpApi.csproj", "sample/MyAbpApp/src/MyAbpApp.HttpApi/"]
 COPY Directory.Build.props .

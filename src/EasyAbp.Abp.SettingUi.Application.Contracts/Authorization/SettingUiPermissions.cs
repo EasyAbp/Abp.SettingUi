@@ -4,7 +4,7 @@ namespace EasyAbp.Abp.SettingUi.Authorization
 {
     public class SettingUiPermissions
     {
-        public const string GroupName = "EasyAbp.Abp.SettingUi";
+        public const string GroupName = "SettingUi";
         public const string ShowSettingPage = GroupName + ".ShowSettingPage";
 
         public static string[] GetAll()
