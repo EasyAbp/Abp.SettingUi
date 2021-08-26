@@ -40,7 +40,7 @@ namespace MyAbpApp.Web
     [DependsOn(
         typeof(MyAbpAppHttpApiModule),
         typeof(MyAbpAppApplicationModule),
-        typeof(MyAbpAppEntityFrameworkCoreDbMigrationsModule),
+        typeof(MyAbpAppEntityFrameworkCoreModule),
         typeof(AbpAutofacModule),
         typeof(AbpIdentityWebModule),
         typeof(AbpAccountWebIdentityServerModule),

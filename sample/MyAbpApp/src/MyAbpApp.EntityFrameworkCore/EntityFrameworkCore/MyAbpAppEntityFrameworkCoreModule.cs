@@ -44,7 +44,7 @@ namespace MyAbpApp.EntityFrameworkCore
             Configure<AbpDbContextOptions>(options =>
             {
                 /* The main point to change your DBMS.
-                 * See also MyAbpAppMigrationsDbContextFactory for EF Core tooling. */
+                 * See also MyAbpAppDbContextFactory for EF Core tooling. */
                 options.UseSqlServer();
             });
         }
