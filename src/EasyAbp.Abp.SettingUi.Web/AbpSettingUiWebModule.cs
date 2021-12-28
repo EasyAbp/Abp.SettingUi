@@ -13,7 +13,8 @@ namespace EasyAbp.Abp.SettingUi.Web
 {
     [DependsOn(
         typeof(AbpAspNetCoreMvcUiThemeSharedModule),
-        typeof(AbpSettingManagementWebModule)
+        typeof(AbpSettingManagementWebModule),
+        typeof(AbpSettingUiApplicationContractsModule)
         )]
     public class AbpSettingUiWebModule : AbpModule
     {
