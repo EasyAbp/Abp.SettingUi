@@ -4,8 +4,8 @@
     string value = Model.Value;
     string checkedStr = string.Compare(value, "true", StringComparison.OrdinalIgnoreCase) == 0 ? "checked" : "";
 }
-<div class="custom-checkbox custom-control">
-    <input type="checkbox" id="@Model.Name" name="@Model.FormName" value="true" class="custom-control-input" @checkedStr/>
+<div class="form-check">
+    <input type="checkbox" id="@Model.Name" name="@Model.FormName" value="true" class="form-check-input" @checkedStr/>
     <input type="hidden" name="@Model.FormName" value="false"/>
-    <label class="custom-control-label" for="@Model.Name">@Model.Description</label>
+    <label class="form-check-label" for="@Model.Name">@Model.Description</label>
 </div>

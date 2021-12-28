@@ -1,0 +1,112 @@
+{
+  "modules": {
+    "settingUi": {
+      "rootPath": "settingUi",
+      "remoteServiceName": "EasyAbpAbpSettingUi",
+      "controllers": {
+        "EasyAbp.Abp.SettingUi.SettingUiController": {
+          "controllerName": "SettingUi",
+          "controllerGroupName": "SettingUi",
+          "type": "EasyAbp.Abp.SettingUi.SettingUiController",
+          "interfaces": [
+            {
+              "type": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
+            }
+          ],
+          "actions": {
+            "GroupSettingDefinitionsAsync": {
+              "uniqueName": "GroupSettingDefinitionsAsync",
+              "name": "GroupSettingDefinitionsAsync",
+              "httpMethod": "GET",
+              "url": "api/setting-ui",
+              "supportedVersions": [],
+              "parametersOnMethod": [],
+              "parameters": [],
+              "returnValue": {
+                "type": "System.Collections.Generic.List<EasyAbp.Abp.SettingUi.Dto.SettingGroup>",
+                "typeSimple": "[EasyAbp.Abp.SettingUi.Dto.SettingGroup]"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
+            },
+            "SetSettingValuesAsyncBySettingValues": {
+              "uniqueName": "SetSettingValuesAsyncBySettingValues",
+              "name": "SetSettingValuesAsync",
+              "httpMethod": "PUT",
+              "url": "api/setting-ui/set-setting-values",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "settingValues",
+                  "typeAsString": "System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.Dictionary<System.String,System.String>",
+                  "typeSimple": "{string:string}",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "settingValues",
+                  "name": "settingValues",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.Dictionary<System.String,System.String>",
+                  "typeSimple": "{string:string}",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
+            },
+            "ResetSettingValuesAsyncBySettingNames": {
+              "uniqueName": "ResetSettingValuesAsyncBySettingNames",
+              "name": "ResetSettingValuesAsync",
+              "httpMethod": "PUT",
+              "url": "api/setting-ui/reset-setting-values",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "settingNames",
+                  "typeAsString": "System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]], System.Private.CoreLib",
+                  "type": "System.Collections.Generic.List<System.String>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "settingNames",
+                  "name": "settingNames",
+                  "jsonName": null,
+                  "type": "System.Collections.Generic.List<System.String>",
+                  "typeSimple": "[string]",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "Body",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.Void",
+                "typeSimple": "System.Void"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
+            }
+          }
+        }
+      }
+    }
+  },
+  "types": {}
+}

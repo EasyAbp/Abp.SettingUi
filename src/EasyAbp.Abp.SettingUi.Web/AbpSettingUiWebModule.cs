@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using EasyAbp.Abp.SettingUi.Web.Pages;
-using Volo.Abp.AspNetCore.Mvc.Localization;
+﻿using EasyAbp.Abp.SettingUi.Web.Pages;
+using Microsoft.Extensions.DependencyInjection;
+using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
+using Volo.Abp.Http.ProxyScripting.Generators.JQuery;
 using Volo.Abp.Modularity;
+using Volo.Abp.SettingManagement;
 using Volo.Abp.SettingManagement.Web;
 using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
 using Volo.Abp.VirtualFileSystem;
@@ -13,7 +15,6 @@ namespace EasyAbp.Abp.SettingUi.Web
         typeof(AbpAspNetCoreMvcUiThemeSharedModule),
         typeof(AbpSettingManagementWebModule)
         )]
-    [DependsOn(typeof(AbpSettingUiHttpApiModule))]
     public class AbpSettingUiWebModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -34,6 +35,21 @@ namespace EasyAbp.Abp.SettingUi.Web
             Configure<SettingManagementPageOptions>(options =>
             {
                 options.Contributors.Add(new SettingUiPageContributor());
+            });
+
+            Configure<AbpBundlingOptions>(options =>
+            {
+                options.ScriptBundles.Configure(typeof(Volo.Abp.SettingManagement.Web.Pages.SettingManagement.IndexModel).FullName, bundle =>
+                    {
+                        bundle.AddFiles("/client-proxies/settingUi-proxy.js");
+                        bundle.AddFiles("/Pages/SettingManagement/SettingUi/Index.js");
+                    }
+                );
+            });
+
+            Configure<DynamicJavaScriptProxyOptions>(options =>
+            {
+                options.DisableModule(SettingUiRemoteServiceConsts.ModuleName);
             });
         }
     }

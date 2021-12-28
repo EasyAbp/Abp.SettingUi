@@ -49,7 +49,7 @@ namespace EasyAbp.Abp.SettingUi
 			_permissionDefinitionManager = permissionDefinitionManager;
 		}
 
-		public virtual async Task<List<SettingGroup>> GroupSettingDefinitions()
+		public virtual async Task<List<SettingGroup>> GroupSettingDefinitionsAsync()
 		{
 			if (!await AuthorizationService.IsGrantedAsync(SettingUiPermissions.ShowSettingPage))
 			{
@@ -57,7 +57,7 @@ namespace EasyAbp.Abp.SettingUi
 			}
 
 			// Merge all setting properties into one dictionary
-			var settingProperties = GetMergedSettingProperties();
+			var settingProperties = GetMergedSettingPropertiesAsync();
 
 			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions()
 				.Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName))
@@ -111,7 +111,7 @@ namespace EasyAbp.Abp.SettingUi
 			return groups;
 		}
 
-		public virtual async Task SetSettingValues(Dictionary<string, string> settingValues)
+		public virtual async Task SetSettingValuesAsync(Dictionary<string, string> settingValues)
 		{
 			foreach (var kv in settingValues)
 			{
@@ -130,11 +130,11 @@ namespace EasyAbp.Abp.SettingUi
 					continue;
 				}
 
-				await SetSetting(setting, kv.Value);
+				await SetSettingAsync(setting, kv.Value);
 			}
 		}
 
-		public virtual async Task ResetSettingValues(List<string> settingNames)
+		public virtual async Task ResetSettingValuesAsync(List<string> settingNames)
 		{
 			foreach (var name in settingNames)
 			{
@@ -144,11 +144,11 @@ namespace EasyAbp.Abp.SettingUi
 					continue;
 				}
 
-				await SetSetting(setting, setting.DefaultValue);
+				await SetSettingAsync(setting, setting.DefaultValue);
 			}
 		}
 
-		private Task SetSetting(SettingDefinition setting, string value)
+		protected virtual Task SetSettingAsync(SettingDefinition setting, string value)
 		{
 			if (setting.Providers.Any(p => p == UserSettingValueProvider.ProviderName))
 			{
@@ -164,7 +164,7 @@ namespace EasyAbp.Abp.SettingUi
 			return _settingManager.SetForCurrentTenantAsync(setting.Name, value);
 		}
 
-		private IDictionary<string, IDictionary<string, string>> GetMergedSettingProperties()
+		protected virtual IDictionary<string, IDictionary<string, string>> GetMergedSettingPropertiesAsync()
 		{
 			return _fileProvider
 				.GetDirectoryContents(SettingUiConst.SettingPropertiesFileFolder)
@@ -174,13 +174,13 @@ namespace EasyAbp.Abp.SettingUi
 				.ToDictionary(pair => pair.Key, pair => pair.Value);
 		}
 
-		private async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IList<PermissionDefinition> permissionDefinitions)
+		protected virtual async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IList<PermissionDefinition> permissionDefinitions)
 		{
 			var settingInfos = new List<SettingInfo>();
 			var settingDefinitions = _settingDefinitionManager.GetAll();
 			foreach (var settingDefinition in settingDefinitions)
 			{
-				var si = CreateSettingInfo(settingDefinition);
+				var si =  await CreateSettingInfoAsync(settingDefinition);
 				
 				var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
 				if (definedPermission != null)
@@ -231,7 +231,7 @@ namespace EasyAbp.Abp.SettingUi
 			return settingInfos;
 		}
 
-		private SettingInfo CreateSettingInfo(SettingDefinition settingDefinition)
+		protected virtual async Task<SettingInfo> CreateSettingInfoAsync(SettingDefinition settingDefinition)
 		{
 			string name = settingDefinition.Name;
 			string displayName;
@@ -260,7 +260,7 @@ namespace EasyAbp.Abp.SettingUi
 				description = settingDefinition.Description.Localize(_factory);
 			}
 
-			string value = AsyncHelper.RunSync(() => SettingProvider.GetOrNullAsync(name));
+			string value = await SettingProvider.GetOrNullAsync(name);
 
 			var si = new SettingInfo
 			{

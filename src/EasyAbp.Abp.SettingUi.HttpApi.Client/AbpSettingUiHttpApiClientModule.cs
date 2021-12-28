@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Http.Client;
 using Volo.Abp.Modularity;
+using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
 {
@@ -9,14 +10,17 @@ namespace EasyAbp.Abp.SettingUi
         typeof(AbpHttpClientModule))]
     public class AbpSettingUiHttpApiClientModule : AbpModule
     {
-        public const string RemoteServiceName = "EasyAbpAbpSettingUi";
-
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            context.Services.AddHttpClientProxies(
+            context.Services.AddStaticHttpClientProxies(
                 typeof(AbpSettingUiApplicationContractsModule).Assembly,
-                RemoteServiceName
+                SettingUiRemoteServiceConsts.RemoteServiceName
             );
+
+            Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.AddEmbedded<AbpSettingUiHttpApiClientModule>();
+            });
         }
     }
 }

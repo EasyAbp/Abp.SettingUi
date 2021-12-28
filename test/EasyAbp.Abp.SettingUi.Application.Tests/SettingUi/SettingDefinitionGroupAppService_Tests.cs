@@ -65,7 +65,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             // The TestSettingDefinitionsProvider should be executed by module system
 
             // Act
-            var groups = await _service.GroupSettingDefinitions();
+            var groups = await _service.GroupSettingDefinitionsAsync();
 
             // Assert
             var group = groups.Single(g => g.GroupName == "TestGroup1");
@@ -92,7 +92,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             // The TestSettingDefinitionsProvider should be executed by module system
 
             // Act
-            var groups = await _service.GroupSettingDefinitions();
+            var groups = await _service.GroupSettingDefinitionsAsync();
 
             // Assert
             // The property values of the Test.Setting3 are default
@@ -114,7 +114,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             };
 
             // Act
-            await _service.SetSettingValues(settingValues);
+            await _service.SetSettingValuesAsync(settingValues);
 
             // Assert
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
