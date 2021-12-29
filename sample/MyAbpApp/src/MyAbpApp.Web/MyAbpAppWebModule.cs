@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using EasyAbp.Abp.SettingUi;
 using EasyAbp.Abp.SettingUi.Localization;
@@ -209,11 +209,6 @@ namespace MyAbpApp.Web
             }
 
             app.UseAbpRequestLocalization();
-
-            if (!env.IsDevelopment())
-            {
-                app.UseErrorPage();
-            }
 
             app.UseCorrelationId();
             app.UseStaticFiles();

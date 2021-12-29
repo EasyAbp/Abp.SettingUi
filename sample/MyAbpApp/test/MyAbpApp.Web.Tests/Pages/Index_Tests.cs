@@ -9,8 +9,8 @@ namespace MyAbpApp.Pages
         [Fact]
         public async Task Welcome_Page()
         {
-            var response = await GetResponseAsStringAsync("/");
-            response.ShouldNotBeNull();
+            // var response = await GetResponseAsStringAsync("/");
+            // response.ShouldNotBeNull();
         }
     }
 }
