@@ -1,9 +1,12 @@
-﻿using Localization.Resources.AbpUi;
+﻿using System.Collections.Generic;
+using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Localization;
+using Localization.Resources.AbpUi;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Json.SystemTextJson;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace EasyAbp.Abp.SettingUi
 {
@@ -27,6 +30,13 @@ namespace EasyAbp.Abp.SettingUi
                 options.Resources
                     .Get<SettingUiResource>()
                     .AddBaseTypes(typeof(AbpUiResource));
+            });
+
+            Configure<AbpSystemTextJsonSerializerOptions>(options =>
+            {
+                // System.Text.Json seems cannot deserialize the Dictionary<string, object> type properly,
+                // So we let JSON.NET do this
+                options.UnsupportedTypes.AddIfNotContains(typeof(List<SettingGroup>));
             });
         }
     }

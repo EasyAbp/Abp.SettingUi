@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
@@ -25,6 +25,7 @@ namespace MyAbpApp.EntityFrameworkCore
         typeof(AbpTenantManagementEntityFrameworkCoreModule),
         typeof(AbpFeatureManagementEntityFrameworkCoreModule)
         )]
+    [DependsOn(typeof(AbpSettingManagementEntityFrameworkCoreModule))]
     public class MyAbpAppEntityFrameworkCoreModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)

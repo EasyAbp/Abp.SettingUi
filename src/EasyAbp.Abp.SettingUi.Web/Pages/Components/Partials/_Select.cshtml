@@ -20,7 +20,7 @@
 {
 <p class="form-text">@Model.Description</p>
 }
-<select id="@Model.Name" name="@Model.FormName" class="form-control">
+<select id="@Model.Name" name="@Model.FormName" class="form-select">
     @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
     {
         string selected = option == Model.Value ? "selected" : "";

@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using EasyAbp.Abp.SettingUi.Dto;
-using Volo.Abp.Application;
-using Volo.Abp.Modularity;
-using Volo.Abp.VirtualFileSystem;
+﻿using Volo.Abp.Application;
 using Volo.Abp.Authorization;
-using Volo.Abp.Json.SystemTextJson;
+using Volo.Abp.Modularity;
 
 namespace EasyAbp.Abp.SettingUi
 {
@@ -15,14 +11,5 @@ namespace EasyAbp.Abp.SettingUi
         )]
     public class AbpSettingUiApplicationContractsModule : AbpModule
     {
-        public override void ConfigureServices(ServiceConfigurationContext context)
-        {
-            Configure<AbpSystemTextJsonSerializerOptions>(options =>
-            {
-                // System.Text.Json seems cannot deserialize the Dictionary<string, object> type properly,
-                // So we let JSON.NET do this
-                options.UnsupportedTypes.AddIfNotContains(typeof(List<SettingGroup>));
-            });
-        }
     }
 }

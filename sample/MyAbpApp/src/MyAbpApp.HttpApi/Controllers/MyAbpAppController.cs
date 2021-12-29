@@ -5,7 +5,7 @@ namespace MyAbpApp.Controllers
 {
     /* Inherit your controllers from this class.
      */
-    public abstract class MyAbpAppController : AbpController
+    public abstract class MyAbpAppController : AbpControllerBase
     {
         protected MyAbpAppController()
         {

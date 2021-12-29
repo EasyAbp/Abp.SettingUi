@@ -34,6 +34,7 @@ using Volo.Abp.TenantManagement.Web;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.SettingManagement.Web;
 
 namespace MyAbpApp.Web
 {
@@ -51,6 +52,7 @@ namespace MyAbpApp.Web
         typeof(AbpSwashbuckleModule),
         typeof(AbpSettingUiWebModule)
     )]
+    [DependsOn(typeof(AbpSettingManagementWebModule))]
     public class MyAbpAppWebModule : AbpModule
     {
         public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -207,11 +209,6 @@ namespace MyAbpApp.Web
             }
 
             app.UseAbpRequestLocalization();
-
-            if (!env.IsDevelopment())
-            {
-                app.UseErrorPage();
-            }
 
             app.UseCorrelationId();
             app.UseStaticFiles();

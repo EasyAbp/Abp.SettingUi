@@ -17,7 +17,7 @@ namespace EasyAbp.Abp.SettingUi.Web.Pages
             }
 
             var settingUiAppService = context.ServiceProvider.GetRequiredService<ISettingUiAppService>();
-            foreach (var grp in await settingUiAppService.GroupSettingDefinitions())
+            foreach (var grp in await settingUiAppService.GroupSettingDefinitionsAsync())
             {
                 context.Groups.Add(new SettingPageGroup(grp.GroupName, grp.GroupDisplayName, typeof(SettingViewComponent), grp));
             }

@@ -6,6 +6,11 @@
     $("form").submit(function (e) {
         e.preventDefault();
 
+        // Skip abp `EmailSettingsForm`
+        if (e.currentTarget.id == 'EmailSettingsForm') {
+            return;
+        }
+
         if (!$(e.currentTarget).valid()) {
             return;
         }
@@ -13,7 +18,8 @@
         var input = $(e.currentTarget).serializeFormToObject();
         service.setSettingValues(input)
             .then(function (result) {
-                abp.notify.success(l("SuccessfullySaved"));
+                //abp.notify.success(l("SuccessfullySaved"));
+                $(document).trigger("AbpSettingSaved");
             });
     });
 

@@ -5,6 +5,8 @@ using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
 using Volo.Abp.PermissionManagement;
 using Volo.Abp.TenantManagement;
+using Volo.Abp.SettingManagement;
+using Volo.Abp.VirtualFileSystem;
 
 namespace MyAbpApp
 {
@@ -16,6 +18,7 @@ namespace MyAbpApp
         typeof(AbpTenantManagementHttpApiClientModule),
         typeof(AbpFeatureManagementHttpApiClientModule)
     )]
+    [DependsOn(typeof(AbpSettingManagementHttpApiClientModule))]
     public class MyAbpAppHttpApiClientModule : AbpModule
     {
         public const string RemoteServiceName = "Default";
@@ -26,6 +29,12 @@ namespace MyAbpApp
                 typeof(MyAbpAppApplicationContractsModule).Assembly,
                 RemoteServiceName
             );
+            
+            Configure<AbpVirtualFileSystemOptions>(options =>
+            {
+                options.FileSets.AddEmbedded<MyAbpAppHttpApiClientModule>();
+            });
+
         }
     }
 }
