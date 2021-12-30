@@ -8,7 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["sample/MyAbpApp/NuGet.Config", "sample/MyAbpApp/"]
-COPY ["NuGet.Config", "."]
 COPY ["sample/MyAbpApp/src/MyAbpApp.Web/MyAbpApp.Web.csproj", "sample/MyAbpApp/src/MyAbpApp.Web/"]
 COPY ["src/EasyAbp.Abp.SettingUi.Web/EasyAbp.Abp.SettingUi.Web.csproj", "src/EasyAbp.Abp.SettingUi.Web/"]
 COPY ["src/EasyAbp.Abp.SettingUi.HttpApi/EasyAbp.Abp.SettingUi.HttpApi.csproj", "src/EasyAbp.Abp.SettingUi.HttpApi/"]
