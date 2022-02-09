@@ -27,7 +27,7 @@ namespace MyAbpApp
         {
             context.Services.PreConfigure<IMvcBuilder>(builder =>
             {
-                builder.PartManager.ApplicationParts.Add(new AssemblyPart(typeof(MyAbpAppWebModule).Assembly));
+                builder.PartManager.ApplicationParts.Add(new CompiledRazorAssemblyPart(typeof(MyAbpAppWebModule).Assembly));
             });
         }
 
