@@ -213,7 +213,7 @@ So how can we custom the group of the setting? There are two ways:
 
     * `MyAbpApp.Domain` project - `Settings/MyAbpAppSettingDefinitionProvider` class
 
-        ``` json
+        ``` csharp
         new SettingDefinition(
             "Connection.Port",
             8080.ToString(),
