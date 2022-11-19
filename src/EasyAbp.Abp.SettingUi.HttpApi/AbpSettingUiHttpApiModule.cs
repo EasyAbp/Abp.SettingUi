@@ -25,13 +25,6 @@ namespace EasyAbp.Abp.SettingUi
 
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
-            Configure<AbpLocalizationOptions>(options =>
-            {
-                options.Resources
-                    .Get<SettingUiResource>()
-                    .AddBaseTypes(typeof(AbpUiResource));
-            });
-
             Configure<AbpSystemTextJsonSerializerOptions>(options =>
             {
                 // System.Text.Json seems cannot deserialize the Dictionary<string, object> type properly,

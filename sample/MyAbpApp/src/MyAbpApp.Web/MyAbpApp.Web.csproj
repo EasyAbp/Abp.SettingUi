@@ -42,16 +42,16 @@
     <ProjectReference Include="..\MyAbpApp.Application\MyAbpApp.Application.csproj" />
     <ProjectReference Include="..\MyAbpApp.HttpApi\MyAbpApp.HttpApi.csproj" />
     <ProjectReference Include="..\MyAbpApp.EntityFrameworkCore\MyAbpApp.EntityFrameworkCore.csproj" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" Version="1.0.0-beta.3" />
-    <PackageReference Include="Volo.Abp.Autofac" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.Swashbuckle" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.Identity.Web" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.Account.Web.IdentityServer" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.TenantManagement.Web" Version="5.3.1" />
-    <PackageReference Include="Volo.Abp.FeatureManagement.Web" Version="5.3.1" />
-	<PackageReference Include="Volo.Abp.SettingManagement.Web" Version="5.3.1" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite" Version="1.0.0" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Swashbuckle" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Identity.Web" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Account.Web.IdentityServer" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Web" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Web" Version="$(AbpVersion)" />
+	<PackageReference Include="Volo.Abp.SettingManagement.Web" Version="$(AbpVersion)" />
   </ItemGroup>
 
 </Project>

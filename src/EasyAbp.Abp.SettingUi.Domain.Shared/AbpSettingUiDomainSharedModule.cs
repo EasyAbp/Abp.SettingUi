@@ -2,6 +2,7 @@
 using Volo.Abp.Modularity;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
+using Volo.Abp.SettingManagement.Localization;
 using Volo.Abp.UI;
 using Volo.Abp.Validation;
 using Volo.Abp.Validation.Localization;
@@ -24,6 +25,7 @@ namespace EasyAbp.Abp.SettingUi
             {
                 options.Resources
                     .Add<SettingUiResource>("en")
+                    .AddBaseTypes(typeof(AbpSettingManagementResource))
                     .AddVirtualJson("/Localization/SettingUi");
             });
         }
