@@ -13,11 +13,16 @@
             <abp-card-body>
                 @foreach (var settingHtmlInfo in group)
                 {
-                    <label for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
-                    @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
+                    <div class="mb-3">
+                        <label for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
+                        @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
+                    </div>
                 }
-                <abp-button type="submit" button-type="Primary" text="@L["Save"].Value" class="float-end"/>
-                <abp-button button-type="Warning" text="@L["Reset"].Value" class="float-end reset"/>
+                <hr class="my-4">
+                <div>
+                    <abp-button type="submit" button-type="Primary" text="@L["Save"].Value" />
+                    <abp-button button-type="Warning" text="@L["Reset"].Value" />
+                </div>
             </abp-card-body>
         </abp-card>
     </form>
