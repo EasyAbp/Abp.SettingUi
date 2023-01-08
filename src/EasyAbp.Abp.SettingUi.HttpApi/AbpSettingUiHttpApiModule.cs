@@ -22,15 +22,5 @@ namespace EasyAbp.Abp.SettingUi
                 mvcBuilder.AddApplicationPartIfNotExists(typeof(AbpSettingUiHttpApiModule).Assembly);
             });
         }
-
-        public override void ConfigureServices(ServiceConfigurationContext context)
-        {
-            Configure<AbpSystemTextJsonSerializerOptions>(options =>
-            {
-                // System.Text.Json seems cannot deserialize the Dictionary<string, object> type properly,
-                // So we let JSON.NET do this
-                options.UnsupportedTypes.AddIfNotContains(typeof(List<SettingGroup>));
-            });
-        }
     }
 }
