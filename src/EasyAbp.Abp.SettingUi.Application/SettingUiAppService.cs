@@ -59,10 +59,10 @@ namespace EasyAbp.Abp.SettingUi
 			// Merge all setting properties into one dictionary
 			var settingProperties = GetMergedSettingPropertiesAsync();
 
-			var definedSettingUiPermissions = _permissionDefinitionManager.GetPermissions()
+			var definedSettingUiPermissions = (await _permissionDefinitionManager.GetPermissionsAsync())
 				.Where(p => p.Name.StartsWith(SettingUiPermissions.GroupName))
-				.ToList()
-				;
+				.ToList();
+
 			// Set properties of the setting definitions
 			var settingDefinitions = await SetSettingDefinitionPropertiesAsync(settingProperties, definedSettingUiPermissions);
 
