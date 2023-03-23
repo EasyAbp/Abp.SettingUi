@@ -18,7 +18,7 @@
 
 @if (!Model.Description.IsNullOrEmpty())
 {
-<p class="form-text">@Model.Description</p>
+<p class="form-text mt-0 mb-2">@Model.Description</p>
 }
 <select id="@Model.Name" name="@Model.FormName" class="form-select">
     @foreach (var option in optionStr.Split(SettingUiConst.OptionsSeparator))
