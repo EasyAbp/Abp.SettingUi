@@ -1,4 +1,5 @@
 ﻿using EasyAbp.Abp.SettingUi.Localization;
+using Volo.Abp.Domain;
 using Volo.Abp.Modularity;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
@@ -12,6 +13,7 @@ namespace EasyAbp.Abp.SettingUi
 {
     [DependsOn(
         typeof(AbpValidationModule),
+        typeof(AbpDddDomainSharedModule),
         typeof(AbpUiModule),
         typeof(AbpSettingManagementDomainSharedModule)
     )]
