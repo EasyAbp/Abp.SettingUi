@@ -35,15 +35,15 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 .WithProperty(SettingUiConst.Type, "number");
             var setting2 = new SettingDefinition("Test.Setting2", "2");
             var setting3 = new SettingDefinition("Test.Setting3", "3");
-            settingDefinitionManager.GetAll().Returns(new List<SettingDefinition>
+            settingDefinitionManager.GetAllAsync().Returns(new List<SettingDefinition>
             {
                 setting1,
                 setting2,
                 setting3
             });
-            settingDefinitionManager.GetOrNull("Test.Setting1").Returns(setting1);
-            settingDefinitionManager.GetOrNull("Test.Setting2").Returns(setting2);
-            settingDefinitionManager.GetOrNull("Test.Setting3").Returns(setting3);
+            settingDefinitionManager.GetOrNullAsync("Test.Setting1").Returns(setting1);
+            settingDefinitionManager.GetOrNullAsync("Test.Setting2").Returns(setting2);
+            settingDefinitionManager.GetOrNullAsync("Test.Setting3").Returns(setting3);
             services.AddSingleton(settingDefinitionManager);
 
             // Mock ISettingManager

@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp;
+﻿using Volo.Abp;
 using Volo.Abp.Authorization;
 using Volo.Abp.Autofac;
-using Volo.Abp.Data;
 using Volo.Abp.Modularity;
 using Volo.Abp.SettingManagement;
-using Volo.Abp.Threading;
+using Volo.Abp.SettingManagement.EntityFrameworkCore;
 
 namespace EasyAbp.Abp.SettingUi
 {
@@ -14,7 +12,8 @@ namespace EasyAbp.Abp.SettingUi
         typeof(AbpTestBaseModule),
         typeof(AbpAuthorizationModule), 
         typeof(AbpSettingUiDomainModule),
-        typeof(AbpSettingManagementDomainModule)
+        typeof(AbpSettingManagementDomainModule),
+        typeof(AbpSettingManagementEntityFrameworkCoreModule)
     )]
     public class SettingUiTestBaseModule : AbpModule
     {

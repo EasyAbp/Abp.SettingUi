@@ -22,10 +22,10 @@ namespace EasyAbp.Abp.SettingUi.SettingProperties
         }
 
         [Fact]
-        public Task BuiltIn_Setting_Properties_Should_Be_Defined()
+        public async Task BuiltIn_Setting_Properties_Should_Be_Defined()
         {
             // Arrange
-            var settingDefinitions = _settingDefinitionManager.GetAll();
+            var settingDefinitions = await _settingDefinitionManager.GetAllAsync();
             var fileInfo = GetRequiredService<IVirtualFileProvider>().GetFileInfo("/SettingProperties/AbpSettingUiSettingProperties.json");
             var jsonSerializer = GetRequiredService<IJsonSerializer>();
 
@@ -38,9 +38,6 @@ namespace EasyAbp.Abp.SettingUi.SettingProperties
                 _output.WriteLine($"Check property of the setting {settingDefinition.Name}");
                 propertyDict.ShouldContainKey(settingDefinition.Name, $"Setting property not found, setting name: {settingDefinition.Name}");
             }
-
-
-            return Task.CompletedTask;
         }
     }
 }

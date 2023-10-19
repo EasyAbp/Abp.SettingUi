@@ -124,7 +124,7 @@ namespace EasyAbp.Abp.SettingUi
 				}
 
 				string name = pascalCaseName.RemovePreFix(SettingUiConst.FormNamePrefix).UnderscoreToDot();
-				var setting = _settingDefinitionManager.GetOrNull(name);
+				var setting = await _settingDefinitionManager.GetOrNullAsync(name);
 				if (setting == null)
 				{
 					continue;
@@ -138,7 +138,7 @@ namespace EasyAbp.Abp.SettingUi
 		{
 			foreach (var name in settingNames)
 			{
-				var setting = _settingDefinitionManager.GetOrNull(name);
+				var setting = await _settingDefinitionManager.GetOrNullAsync(name);
 				if (setting == null)
 				{
 					continue;
@@ -177,7 +177,7 @@ namespace EasyAbp.Abp.SettingUi
 		protected virtual async Task<List<SettingInfo>> SetSettingDefinitionPropertiesAsync(IDictionary<string, IDictionary<string, string>> settingProperties, IList<PermissionDefinition> permissionDefinitions)
 		{
 			var settingInfos = new List<SettingInfo>();
-			var settingDefinitions = _settingDefinitionManager.GetAll();
+			var settingDefinitions = await _settingDefinitionManager.GetAllAsync();
 			foreach (var settingDefinition in settingDefinitions)
 			{
 				var si =  await CreateSettingInfoAsync(settingDefinition);
