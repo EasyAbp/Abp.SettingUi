@@ -8,14 +8,8 @@ using Volo.Abp.AspNetCore.TestBase;
 
 namespace MyAbpApp
 {
-    public abstract class MyAbpAppWebTestBase : AbpAspNetCoreIntegratedTestBase<MyAbpAppWebTestStartup>
+    public abstract class MyAbpAppWebTestBase : AbpWebApplicationFactoryIntegratedTest<Program>
     {
-        protected override IHostBuilder CreateHostBuilder()
-        {
-            return base
-                .CreateHostBuilder()
-                .UseContentRoot(WebContentDirectoryFinder.CalculateContentRootFolder());
-        }
 
         protected virtual async Task<T> GetResponseAsObjectAsync<T>(string url, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
         {

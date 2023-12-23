@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using MyAbpApp.Data;
 using Serilog;
 using Volo.Abp;
+using Volo.Abp.Data;
 
 namespace MyAbpApp.DbMigrator
 {
@@ -22,6 +23,7 @@ namespace MyAbpApp.DbMigrator
             using (var application = await AbpApplicationFactory.CreateAsync<MyAbpAppDbMigratorModule>(options =>
             {
                 options.UseAutofac();
+                options.AddDataMigrationEnvironment();
                 options.Services.AddLogging(c => c.AddSerilog());
             }))
             {
