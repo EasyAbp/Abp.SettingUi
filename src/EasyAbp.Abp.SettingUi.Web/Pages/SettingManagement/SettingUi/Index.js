@@ -46,18 +46,22 @@
         })
     }
 
-    $('#tabs-nav .nav-item .nav-link').click(function () {
-        var _this = $(this);
-        if (_this.attr('data-bs-target') !== undefined) {
-            return;
-        }
+    var bind_nav_event_fn = function (element) {
         var btn_set = setInterval(function () {
-            var _id = '#' + _this.data('id') + " ";
+            var _id = '#' + element.data('id') + " ";
             event_fn(_id);
             if ($(_id + " form").length > 0) {
                 clearInterval(btn_set);
             }
         }, 200);
+    }
+
+    $('#tabs-nav .nav-item .nav-link').click(function () {
+        var _this = $(this);
+        if (_this.attr('data-bs-target') !== undefined) {
+            return;
+        }
+        bind_nav_event_fn(_this)
     });
 
     if (location.hash) {
@@ -65,4 +69,7 @@
         $("#SettingManagementWrapper li.nav-item > a.nav-link")[index].click();
         history.replaceState(null, null, ' ');  // remove hash from the location url
     }
+
+    // The first nav will automatically click and loading before on this script.
+    bind_nav_event_fn($("#SettingManagementWrapper li.nav-item > a.nav-link").first());
 })(jQuery);
