@@ -52,6 +52,11 @@
             event_fn(_id);
             if ($(_id + " form").length > 0) {
                 clearInterval(btn_set);
+            } else {
+                var target = element.attr('data-bs-target');
+                if (target !== undefined && $(target).length > 0) {
+                    clearInterval(btn_set);
+                }
             }
         }, 200);
     }
