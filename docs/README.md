@@ -22,10 +22,6 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Display settings with appropriate input controls
 * Control display of settings by permissions
 
-## Online Demo
-
-We have launched an online demo for this module: [https://settingui.samples.easyabp.io](https://settingui.samples.easyabp.io)
-
 ## Installation
 
 ### Add ABP packages with [AbpHelper](https://github.com/EasyAbp/AbpHelper.CLI) (Recommended)
