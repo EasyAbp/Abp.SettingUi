@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
+using Volo.Abp.MultiTenancy;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
 using Xunit;
@@ -34,7 +36,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 .WithProperty(SettingUiConst.Group2, "TestGroup2")
                 .WithProperty(SettingUiConst.Type, "number");
             var setting2 = new SettingDefinition("Test.Setting2", "2");
-            var setting3 = new SettingDefinition("Test.Setting3", "3");
+            var setting3 = new SettingDefinition("Test.Setting3", "3", isEncrypted: true);
             settingDefinitionManager.GetAllAsync().Returns(new List<SettingDefinition>
             {
                 setting1,
@@ -120,6 +122,28 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting2", "value2");
             await _settingManager.DidNotReceive().SetForCurrentTenantAsync("RequestToken", "value3");
+        }
+
+        [Fact]
+        public async Task Should_Hide_Encrypted_Default_Value_For_Tenants()
+        {
+            var currentTenant = GetRequiredService<ICurrentTenant>();
+
+            var result = await _service.GroupSettingDefinitionsAsync();
+
+            var setting3 = result.First(x => x.GroupName == SettingUiConst.DefaultGroup).SettingInfos
+                .First(x => x.Name == "Test.Setting3");
+
+            setting3.Value.ShouldBe("3");
+
+            using var changeTenant = currentTenant.Change(Guid.NewGuid());
+
+            result = await _service.GroupSettingDefinitionsAsync();
+
+            setting3 = result.First(x => x.GroupName == SettingUiConst.DefaultGroup).SettingInfos
+                .First(x => x.Name == "Test.Setting3");
+
+            setting3.Value.ShouldBeNullOrEmpty();
         }
     }
 }
