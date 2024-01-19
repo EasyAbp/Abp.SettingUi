@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyAbp.Abp.SettingUi.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using NSubstitute;
 using Shouldly;
 using Volo.Abp.MultiTenancy;
@@ -18,6 +20,9 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
         private readonly ITestOutputHelper _output;
         private readonly ISettingUiAppService _service;
         private ISettingManager _settingManager;
+        private IOptions<AbpSettingUiOptions> _options;
+
+        private readonly AbpSettingUiOptions _optionsValue = new();
 
         public SettingDefinitionGroupAppService_Tests(ITestOutputHelper output)
         {
@@ -58,6 +63,11 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             settingProvider.GetOrNullAsync("Test.Setting2").Returns(Task.FromResult("2"));
             settingProvider.GetOrNullAsync("Test.Setting3").Returns(Task.FromResult("3"));
             services.AddSingleton(settingProvider);
+
+            // Mock IOptions<AbpSettingUiOptions>
+            _options = Substitute.For<IOptions<AbpSettingUiOptions>>();
+            _options.Value.Returns(_optionsValue);
+            services.AddSingleton(_options);
         }
 
         [Fact]
@@ -144,6 +154,20 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 .First(x => x.Name == "Test.Setting3");
 
             setting3.Value.ShouldBeNullOrEmpty();
+        }
+
+        [Fact]
+        public async Task Should_Remove_Ungrouped_Items()
+        {
+            var result = await _service.GroupSettingDefinitionsAsync();
+
+            result.ShouldContain(x => x.GroupName == SettingUiConst.DefaultGroup);
+
+            _optionsValue.DisableDefaultGroup = true;
+
+            result = await _service.GroupSettingDefinitionsAsync();
+
+            result.ShouldNotContain(x => x.GroupName == SettingUiConst.DefaultGroup);
         }
     }
 }

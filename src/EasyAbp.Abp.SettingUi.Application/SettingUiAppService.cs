@@ -6,9 +6,11 @@ using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
+using EasyAbp.Abp.SettingUi.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
 using Volo.Abp.Authorization.Permissions;
@@ -23,6 +25,7 @@ namespace EasyAbp.Abp.SettingUi
 {
 	public class SettingUiAppService : ApplicationService, ISettingUiAppService
 	{
+		private readonly AbpSettingUiOptions _options;
 		private readonly IStringLocalizer<SettingUiResource> _localizer;
 		private readonly IStringLocalizerFactory _factory;
 		private readonly IVirtualFileProvider _fileProvider;
@@ -31,7 +34,9 @@ namespace EasyAbp.Abp.SettingUi
 		private readonly ISettingManager _settingManager;
 		private readonly IPermissionDefinitionManager _permissionDefinitionManager;
 
-		public SettingUiAppService(IStringLocalizer<SettingUiResource> localizer,
+		public SettingUiAppService(
+			IOptions<AbpSettingUiOptions> options,
+			IStringLocalizer<SettingUiResource> localizer,
 			IStringLocalizerFactory factory,
 			IVirtualFileProvider fileProvider,
 			IJsonSerializer jsonSerializer,
@@ -39,6 +44,7 @@ namespace EasyAbp.Abp.SettingUi
 			ISettingManager settingManager,
 			IPermissionDefinitionManager permissionDefinitionManager)
 		{
+			_options = options.Value;
 			_localizer = localizer;
 			_factory = factory;
 			_fileProvider = fileProvider;
@@ -104,6 +110,16 @@ namespace EasyAbp.Abp.SettingUi
 
 					settingGroup.SettingInfos = settingInfos;
 					groups.Add(settingGroup);
+				}
+			}
+
+			if (_options.DisableDefaultGroup)
+			{
+				// remove the default group
+				var defaultGroup = groups.Find(x => x.GroupName == SettingUiConst.DefaultGroup);
+				if (defaultGroup is not null)
+				{
+					groups.Remove(defaultGroup);
 				}
 			}
 
