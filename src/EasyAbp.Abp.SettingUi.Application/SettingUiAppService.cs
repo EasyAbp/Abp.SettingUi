@@ -7,6 +7,7 @@ using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.Options;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Localization;
@@ -159,11 +160,11 @@ namespace EasyAbp.Abp.SettingUi
 					continue;
 				}
 
-				await SetSettingAsync(setting, setting.DefaultValue);
+				await SetSettingAsync(setting, null); // use fallback value
 			}
 		}
 
-		protected virtual Task SetSettingAsync(SettingDefinition setting, string value)
+		protected virtual Task SetSettingAsync(SettingDefinition setting, [CanBeNull] string value)
 		{
 			if (setting.Providers.Any(p => p == UserSettingValueProvider.ProviderName))
 			{
