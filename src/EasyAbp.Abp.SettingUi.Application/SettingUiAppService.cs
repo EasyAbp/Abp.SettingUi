@@ -17,7 +17,6 @@ using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
-using Volo.Abp.Threading;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
@@ -130,7 +129,7 @@ namespace EasyAbp.Abp.SettingUi
 					continue;
 				}
 
-				await SetSettingAsync(setting, kv.Value);
+				await SetSettingAsync(setting, kv.Value); // todo: needs permission check?
 			}
 		}
 
@@ -168,6 +167,7 @@ namespace EasyAbp.Abp.SettingUi
 		{
 			return _fileProvider
 				.GetDirectoryContents(SettingUiConst.SettingPropertiesFileFolder)
+				.Where(x => x.Name.EndsWith(".json"))
 				.Select(content =>
 					_jsonSerializer.Deserialize<IDictionary<string, IDictionary<string, string>>>(content.ReadAsString()))
 				.SelectMany(dict => dict)
@@ -260,7 +260,10 @@ namespace EasyAbp.Abp.SettingUi
 				description = settingDefinition.Description.Localize(_factory);
 			}
 
-			string value = await SettingProvider.GetOrNullAsync(name);
+			/* Hide default/global value for tenants if the setting item is encrypted. */
+			var value = settingDefinition.IsEncrypted && CurrentTenant.IsAvailable
+				? await _settingManager.GetOrNullForCurrentTenantAsync(name, false)
+				: await SettingProvider.GetOrNullAsync(name);
 
 			var si = new SettingInfo
 			{
