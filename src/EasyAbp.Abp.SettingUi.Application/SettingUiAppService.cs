@@ -176,8 +176,9 @@ namespace EasyAbp.Abp.SettingUi
 				return _settingManager.SetGlobalAsync(setting.Name, value);
 			}
 
-			//Default
-			return _settingManager.SetForCurrentTenantAsync(setting.Name, value);
+			return ShouldManageAsGlobal(setting)
+				? _settingManager.SetGlobalAsync(setting.Name, value)
+				: _settingManager.SetForCurrentTenantAsync(setting.Name, value);
 		}
 
 		protected virtual IDictionary<string, IDictionary<string, string>> GetMergedSettingPropertiesAsync()
@@ -277,10 +278,7 @@ namespace EasyAbp.Abp.SettingUi
 				description = settingDefinition.Description.Localize(_factory);
 			}
 
-			/* Hide default/global value for tenants if the setting item is encrypted. */
-			var value = settingDefinition.IsEncrypted && CurrentTenant.IsAvailable
-				? await _settingManager.GetOrNullForCurrentTenantAsync(name, false)
-				: await SettingProvider.GetOrNullAsync(name);
+			var value = await GetSettingValueAsync(settingDefinition);
 
 			var si = new SettingInfo
 			{
@@ -298,6 +296,27 @@ namespace EasyAbp.Abp.SettingUi
 			}
 
 			return si;
+		}
+
+		protected virtual async Task<string> GetSettingValueAsync(SettingDefinition settingDefinition)
+		{
+			/* Hide default/global value for tenants if the setting item is encrypted. */
+			if (settingDefinition.IsEncrypted && CurrentTenant.IsAvailable)
+			{
+				return await _settingManager.GetOrNullForCurrentTenantAsync(settingDefinition.Name, false);
+			}
+
+			return ShouldManageAsGlobal(settingDefinition)
+				? await _settingManager.GetOrNullGlobalAsync(settingDefinition.Name)
+				: await SettingProvider.GetOrNullAsync(settingDefinition.Name);
+		}
+
+		protected virtual bool ShouldManageAsGlobal(SettingDefinition settingDefinition)
+		{
+			// todo: settingDefinition.Providers.Count != 0 can be improved.
+			return !CurrentTenant.IsAvailable &&
+			       _options.ManageGlobalSettingsOnHostSide &&
+			       settingDefinition.Providers.Count == 0;
 		}
 	}
 }

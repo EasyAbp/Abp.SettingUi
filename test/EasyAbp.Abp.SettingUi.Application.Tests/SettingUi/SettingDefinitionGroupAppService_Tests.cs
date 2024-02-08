@@ -132,6 +132,15 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting2", "value2");
             await _settingManager.DidNotReceive().SetForCurrentTenantAsync("RequestToken", "value3");
+
+            // Act
+            _optionsValue.ManageGlobalSettingsOnHostSide = true;
+            await _service.SetSettingValuesAsync(settingValues);
+
+            // Assert
+            await _settingManager.Received().SetGlobalAsync("Test.Setting1", "value1");
+            await _settingManager.Received().SetGlobalAsync("Test.Setting2", "value2");
+            await _settingManager.DidNotReceive().SetGlobalAsync("RequestToken", "value3");
         }
 
         [Fact]
