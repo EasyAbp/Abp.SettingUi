@@ -1,4 +1,5 @@
 ﻿using EasyAbp.Abp.SettingUi.Web.Pages;
+using EasyAbp.Abp.SettingUi.Web.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
@@ -35,7 +36,7 @@ namespace EasyAbp.Abp.SettingUi.Web
 
             Configure<SettingManagementPageOptions>(options =>
             {
-                options.Contributors.Add(new SettingUiPageContributor());
+                options.Contributors.Add(new SettingUiSettingPageContributor());
             });
 
             Configure<AbpBundlingOptions>(options =>

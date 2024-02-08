@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Web.Pages.Components;
+using EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingUi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.SettingManagement.Web.Pages.SettingManagement;
 
-namespace EasyAbp.Abp.SettingUi.Web.Pages
+namespace EasyAbp.Abp.SettingUi.Web.Settings
 {
-    public class SettingUiPageContributor : ISettingPageContributor
+    public class SettingUiSettingPageContributor : ISettingPageContributor
     {
         public async Task ConfigureAsync(SettingPageCreationContext context)
         {
