@@ -15,7 +15,7 @@
                 {
                     <div class="mb-3">
                         <label class="form-label" for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
-                        @await Html.PartialAsync($"~/Pages/Components/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
+                        @await Html.PartialAsync($"~/Pages/Components/SettingUi/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
                     </div>
                 }
                 <hr class="my-3">

@@ -5,17 +5,16 @@ using EasyAbp.Abp.SettingUi.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.UI.Widgets;
-using Volo.Abp.Data;
 
-namespace EasyAbp.Abp.SettingUi.Web.Pages.Components
+namespace EasyAbp.Abp.SettingUi.Web.Pages.Components.SettingUi
 {
-    [Widget(StyleFiles = new[] { "/Pages/Components/Default.css" })]
+    [Widget(StyleFiles = new[] { "/Pages/Components/SettingUi/Default.css" })]
     public class SettingViewComponent : AbpViewComponent
     {
         public IViewComponentResult Invoke(SettingGroup parameter)
         {
             var settingInfos = parameter.SettingInfos.Select(si => new SettingHtmlInfo(si));
-            return View("~/Pages/Components/Default.cshtml", settingInfos);
+            return View("~/Pages/Components/SettingUi/Default.cshtml", settingInfos);
         }
     }
 
