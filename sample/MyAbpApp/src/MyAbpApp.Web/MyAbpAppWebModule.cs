@@ -180,7 +180,7 @@ namespace MyAbpApp.Web
 
         private void ConfigureAutoApiControllers()
         {
-            Configure<AbpAspNetCoreMvcOptions>(options =>
+            PreConfigure<AbpAspNetCoreMvcOptions>(options =>
             {
                 options.ConventionalControllers.Create(typeof(MyAbpAppApplicationModule).Assembly);
             });
