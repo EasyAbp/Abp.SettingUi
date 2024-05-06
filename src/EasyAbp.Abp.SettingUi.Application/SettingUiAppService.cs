@@ -146,6 +146,17 @@ namespace EasyAbp.Abp.SettingUi
 					continue;
 				}
 
+				// new value is null.
+				if (kv.Value.IsNullOrEmpty())
+				{
+					// it's an encrypted setting value, and it's currently on the tenant side.
+					if (setting.IsEncrypted && CurrentTenant.IsAvailable)
+					{
+						// don't update.
+						continue;
+					}
+				}
+
 				await SetSettingAsync(setting, kv.Value); // todo: needs permission check?
 			}
 		}
