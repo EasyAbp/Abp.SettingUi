@@ -135,7 +135,7 @@ namespace MyAbpApp.Web
                 Configure<AbpVirtualFileSystemOptions>(options =>
                 {
                     char sept = Path.DirectorySeparatorChar;
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain.Shared"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"zMyAbpApp.Domain.Shared"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application.Contracts"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application"));
@@ -165,7 +165,7 @@ namespace MyAbpApp.Web
                 options.Languages.Add(new LanguageInfo("tr", "tr", "Türkçe"));
                 options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
                 options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
-                options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch", "de"));
+                options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch"));
                 options.Languages.Add(new LanguageInfo("es", "es", "Español"));
             });
         }
