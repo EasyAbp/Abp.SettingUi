@@ -3,6 +3,29 @@
   "texts": {
     "Menu:Home": "Principal",
     "Welcome": "Seja bem-vindo!",
-    "LongWelcomeMessage": "Bem-vindo a esta aplicação. Este é um projeto inicial baseado no ABP framework. Para mais informações, visite abp.io."
+    "LongWelcomeMessage": "Bem-vindo a esta aplicação. Este é um projeto inicial baseado no ABP framework. Para mais informações, visite abp.io.",
+    "Server": "Servidor",
+    "Connection": "Conexão",
+    "SettingExample": "Configuração Exemplo",
+    "ASettings": "A",
+    "BSettings": "B",
+    "DisplayName:Connection.Ip": "IP",
+    "DisplayName:Connection.Port": "Porta",
+    "DisplayName:Connection.Protocol": "Protocolo",
+    "DisplayName:ASettings.Setting1": "Configuração 1",
+    "DisplayName:ASettings.Setting2": "Configuração 2",
+    "DisplayName:ASettings.Setting3": "Configuração 3",
+    "DisplayName:BSettings.Setting1": "Configuração 1",
+    "Description:Connection.Ip": "O endereço IP do servidor.",
+    "Description:Connection.Port": "O número da Porta do servidor.",
+    "Description:Connection.Protocol": "O protocolo da conexão.",
+    "Permission:SettingUi.System": "Mostrar Configurações de 'Sistema'",
+    "Permission:SettingUi.System.Password": "Mostrar Configurações de 'Senha'",
+    "Permission:SettingUi.System.Password.RequiredLength": "Mostrar Configuração 'Comprimento requerido'",
+    "Permission:SettingUi.System.Password.RequiredUniqueChars": "Mostrar Configuração 'Número obrigatório de caracteres exclusivos'",
+    "Permission:SettingUi.SettingExample": "Mostrar Configurações de 'Configuração Exemplo'",
+    "Permission:SettingUi.SettingExample.ASettings": "Mostrar Configurações 'A'",
+    "Permission:SettingUi.SettingExample.ASettings.Setting1": "Mostrar Configuração 'Configuração 1'",
+    "Permission:SettingUi.SettingExample.BSettings": "Mostrar Configurações 'B'"
   }
 }
