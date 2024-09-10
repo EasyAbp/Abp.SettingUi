@@ -1,0 +1,31 @@
+{
+    "culture": "pt-BR",
+    "texts": {
+        "Settings": "Configurações",
+        "System": "Sistema",
+        "Localization": "Localização",
+        "Password": "Senha",
+        "Lockout": "Bloqueio",
+        "SignIn": "Entrar",
+        "User": "Usuário",
+        "OrganizationUnit": "Unidade Organizacional",
+        "Account": "Conta",
+        "Mail": "E-Mail",
+        "Smtp": "SMTP",
+        "TimeZone": "Fuso horário",
+        "Others": "Outros",
+        "Permission:SettingUi": "Tela de Configurações",
+        "Permission:SettingUi.ShowSettingPage": "Mostrar Tela de Configurações",
+        "Permission:SettingUi.Tenant": "Configurações de Inquilino",
+        "Permission:SettingUi.User": "Configurações de Usuário",
+        "Permission:SettingUi.Host": "Configurações de Host",
+        "Save": "Salvar",
+        "Reset": "Redefinir",
+        "SuccessfullySaved": "Salvo com sucesso",
+        "ResetConfirm": "Redefinir as configurações no grupo '{0}' para o padrão",
+        "TwoFactor": "Dois Fatores",
+        "Optional": "Opcional",
+        "Disabled": "Desativado",
+        "Forced": "Forçado"
+    }
+}
