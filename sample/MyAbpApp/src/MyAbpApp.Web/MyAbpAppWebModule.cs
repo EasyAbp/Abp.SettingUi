@@ -135,7 +135,7 @@ namespace MyAbpApp.Web
                 Configure<AbpVirtualFileSystemOptions>(options =>
                 {
                     char sept = Path.DirectorySeparatorChar;
-                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"zMyAbpApp.Domain.Shared"));
+                    options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainSharedModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain.Shared"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppDomainModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Domain"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationContractsModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application.Contracts"));
                     options.FileSets.ReplaceEmbeddedByPhysical<MyAbpAppApplicationModule>(Path.Combine(hostingEnvironment.ContentRootPath, $"..{sept}MyAbpApp.Application"));
