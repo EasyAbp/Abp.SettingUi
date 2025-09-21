@@ -1,36 +1,37 @@
-{
-    "culture": "zh-Hans",
-    "texts": {
-      "Menu:Home": "首页",
-      "Welcome": "欢迎",
-      "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io.",
+﻿{
+  "culture": "zh-Hans",
+  "texts": {
+    "Menu:Home": "首页",
+    "Welcome": "欢迎",
+    "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io.",
 
-      "Server": "服务器",
-      "Connection": "连接",
-      "SettingExample": "设置示例",
-      "ASettings": "A",
-      "BSettings": "B",
+    "Server": "服务器",
+    "Connection": "连接",
+    "SettingExample": "设置示例",
+    "ASettings": "A",
+    "BSettings": "B",
 
-      "DisplayName:Connection.Ip": "IP",
-      "DisplayName:Connection.Port": "端口",
-      "DisplayName:Connection.Protocol": "协议",
-      "DisplayName:ASettings.Setting1": "设置1",
-      "DisplayName:ASettings.Setting2": "设置2",
-      "DisplayName:ASettings.Setting3": "设置3",
-      "DisplayName:BSettings.Setting1": "设置1",
-      
-      "Description:Connection.Ip": "服务器的IP地址.",
-      "Description:Connection.Port": "服务器的端口号.",
-      "Description:Connection.Protocol": "连接的协议.",
+    "DisplayName:Connection.Ip": "IP",
+    "DisplayName:Connection.Port": "端口",
+    "DisplayName:Connection.Protocol": "协议",
+    "DisplayName:ASettings.Setting1": "设置1",
+    "DisplayName:ASettings.Setting2": "设置2",
+    "DisplayName:ASettings.Setting3": "设置3",
+    "DisplayName:BSettings.Setting1": "设置1",
+    "DisplayName:BSettings.Setting2": "设置2",
 
-      "Permission:SettingUi.System": "显示'系统'设置",
-      "Permission:SettingUi.System.Password": "显示'密码'设置",
-      "Permission:SettingUi.System.Password.RequiredLength": "显示'要求长度'设置",
-      "Permission:SettingUi.System.Password.RequiredUniqueChars": "显示'要求唯一字符数量'设置",
+    "Description:Connection.Ip": "服务器的IP地址.",
+    "Description:Connection.Port": "服务器的端口号.",
+    "Description:Connection.Protocol": "连接的协议.",
 
-      "Permission:SettingUi.SettingExample": "显示'设置示例'设置",
-      "Permission:SettingUi.SettingExample.ASettings": "显示'A'设置",
-      "Permission:SettingUi.SettingExample.ASettings.Setting1": "显示'设置1'设置",
-      "Permission:SettingUi.SettingExample.BSettings": "显示'B'设置"
-    }
+    "Permission:SettingUi.System": "显示'系统'设置",
+    "Permission:SettingUi.System.Password": "显示'密码'设置",
+    "Permission:SettingUi.System.Password.RequiredLength": "显示'要求长度'设置",
+    "Permission:SettingUi.System.Password.RequiredUniqueChars": "显示'要求唯一字符数量'设置",
+
+    "Permission:SettingUi.SettingExample": "显示'设置示例'设置",
+    "Permission:SettingUi.SettingExample.ASettings": "显示'A'设置",
+    "Permission:SettingUi.SettingExample.ASettings.Setting1": "显示'设置1'设置",
+    "Permission:SettingUi.SettingExample.BSettings": "显示'B'设置"
   }
+}
