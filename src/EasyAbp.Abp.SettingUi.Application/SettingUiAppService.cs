@@ -209,6 +209,11 @@ namespace EasyAbp.Abp.SettingUi
 			var settingDefinitions = await _settingDefinitionManager.GetAllAsync();
 			foreach (var settingDefinition in settingDefinitions)
 			{
+				if (!settingDefinition.IsVisibleToClients)
+				{
+					continue;
+				}
+
 				var si =  await CreateSettingInfoAsync(settingDefinition);
 				
 				var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith(si.Name));

@@ -1,4 +1,4 @@
-{
+﻿{
   "culture": "en",
   "texts": {
     "Menu:Home": "Home",
@@ -18,7 +18,8 @@
     "DisplayName:ASettings.Setting2": "Setting 2",
     "DisplayName:ASettings.Setting3": "Setting 3",
     "DisplayName:BSettings.Setting1": "Setting 1",
-    
+    "DisplayName:BSettings.Setting2": "Setting 2",
+
     "Description:Connection.Ip": "The IP address of the server.",
     "Description:Connection.Port": "The Port number of the server.",
     "Description:Connection.Protocol": "The protocol of the connection.",
@@ -27,7 +28,7 @@
     "Permission:SettingUi.System.Password": "Show 'Password' Settings",
     "Permission:SettingUi.System.Password.RequiredLength": "Show 'RequiredLength' Setting",
     "Permission:SettingUi.System.Password.RequiredUniqueChars": "Show 'RequiredUniqueChars' Setting",
-    
+
     "Permission:SettingUi.SettingExample": "Show 'SettingExample' Settings",
     "Permission:SettingUi.SettingExample.ASettings": "Show 'A' Settings",
     "Permission:SettingUi.SettingExample.ASettings.Setting1": "Show `Setting1' Setting",
