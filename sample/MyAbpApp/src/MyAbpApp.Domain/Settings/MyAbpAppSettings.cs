@@ -26,7 +26,8 @@
 				public const string GroupName = "BSettings";
 
 				public const string Setting1 = GroupName + ".Setting1";
-			}
+				public const string Setting2 = GroupName + ".Setting2";
+            }
 		}
 	}
 }
