@@ -10,10 +10,13 @@
       "SettingExample": "设置示例",
       "ASettings": "A",
       "BSettings": "B",
+      "DateTimeTest": "日期时间测试",
 
       "DisplayName:Connection.Ip": "IP",
       "DisplayName:Connection.Port": "端口",
       "DisplayName:Connection.Protocol": "协议",
+      "DisplayName:DateTimeTest.Date": "日期",
+      "DisplayName:DateTimeTest.DateTime": "日期时间",
       "DisplayName:ASettings.Setting1": "设置1",
       "DisplayName:ASettings.Setting2": "设置2",
       "DisplayName:ASettings.Setting3": "设置3",
@@ -22,6 +25,8 @@
       "Description:Connection.Ip": "服务器的IP地址.",
       "Description:Connection.Port": "服务器的端口号.",
       "Description:Connection.Protocol": "连接的协议.",
+      "Description:DateTimeTest.Date": "输入一个日期值.",
+      "Description:DateTimeTest.DateTime": "输入一个日期时间值.",
 
       "Permission:SettingUi.System": "显示'系统'设置",
       "Permission:SettingUi.System.Password": "显示'密码'设置",

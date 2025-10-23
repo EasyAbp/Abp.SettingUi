@@ -272,6 +272,8 @@
 
 * text (默认)
 * number
+* date
+* dateTime
 * checkbox
 * select
   * 需要一个额外属性 "Options" 来提供选项, 是一个使用竖线(|)分隔的字符串

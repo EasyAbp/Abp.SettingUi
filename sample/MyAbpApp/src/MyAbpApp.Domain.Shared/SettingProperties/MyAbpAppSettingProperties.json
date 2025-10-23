@@ -9,5 +9,15 @@
     "Group2": "Connection",
     "Type": "select",
     "Options": "|HTTP|TCP|RDP|FTP|SFTP"
+  },
+  "DateTimeTest.Date": {
+    "Group1": "DateTimeTest",
+    "Group2": "DateTimeTest",
+    "Type": "date"
+  },
+  "DateTimeTest.DateTime": {
+    "Group1": "DateTimeTest",
+    "Group2": "DateTimeTest",
+    "Type": "dateTime"
   }
 }
