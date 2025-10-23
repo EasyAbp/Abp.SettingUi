@@ -10,10 +10,13 @@
     "SettingExample": "Setting Example",
     "ASettings": "A",
     "BSettings": "B",
+    "DateTimeTest": "Date time test",
 
     "DisplayName:Connection.Ip": "IP",
     "DisplayName:Connection.Port": "Port",
     "DisplayName:Connection.Protocol": "Protocol",
+    "DisplayName:DateTimeTest.Date": "Date",
+    "DisplayName:DateTimeTest.DateTime": "Date time",
     "DisplayName:ASettings.Setting1": "Setting 1",
     "DisplayName:ASettings.Setting2": "Setting 2",
     "DisplayName:ASettings.Setting3": "Setting 3",
@@ -22,6 +25,8 @@
     "Description:Connection.Ip": "The IP address of the server.",
     "Description:Connection.Port": "The Port number of the server.",
     "Description:Connection.Protocol": "The protocol of the connection.",
+    "Description:DateTimeTest.Date": "Input a date value.",
+    "Description:DateTimeTest.DateTime": "Input a date time value.",
 
     "Permission:SettingUi.System": "Show 'System' Settings",
     "Permission:SettingUi.System.Password": "Show 'Password' Settings",

@@ -1,0 +1,8 @@
+﻿@model SettingHtmlInfo
+
+@if (!Model.Description.IsNullOrEmpty())
+{
+    <p class="form-text mt-0 mb-2">@Model.Description</p>
+}
+<abp-date-picker asp-for="Value" id="@Model.Name" name="@Model.FormName" value="@Model.Value" time-picker="true"
+                 time-picker-seconds="true" suppress-label="true"></abp-date-picker>

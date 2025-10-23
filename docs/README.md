@@ -269,6 +269,8 @@ For now SettingUi supports following setting types:
 
 * text (default)
 * number
+* date
+* dateTime
 * checkbox
 * select
   * Needs an additional property "Options" to provide select options, which is a string separated by a vertical bar (|)
