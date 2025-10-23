@@ -20,6 +20,7 @@ using Volo.Abp.Json;
 using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
+using Volo.Abp.Timing;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
@@ -33,6 +34,8 @@ namespace EasyAbp.Abp.SettingUi
 		private readonly IJsonSerializer _jsonSerializer;
 		private readonly ISettingDefinitionManager _settingDefinitionManager;
 		private readonly ISettingManager _settingManager;
+		private readonly ITimezoneProvider _timezoneProvider;
+		private readonly ICurrentTimezoneProvider _currentTimezoneProvider;
 		private readonly IPermissionDefinitionManager _permissionDefinitionManager;
 
 		public SettingUiAppService(
@@ -43,6 +46,8 @@ namespace EasyAbp.Abp.SettingUi
 			IJsonSerializer jsonSerializer,
 			ISettingDefinitionManager settingDefinitionManager,
 			ISettingManager settingManager,
+			ITimezoneProvider timezoneProvider,
+			ICurrentTimezoneProvider currentTimezoneProvider,
 			IPermissionDefinitionManager permissionDefinitionManager)
 		{
 			_options = options.Value;
@@ -52,6 +57,8 @@ namespace EasyAbp.Abp.SettingUi
 			_jsonSerializer = jsonSerializer;
 			_settingDefinitionManager = settingDefinitionManager;
 			_settingManager = settingManager;
+			_timezoneProvider = timezoneProvider;
+			_currentTimezoneProvider = currentTimezoneProvider;
 			_permissionDefinitionManager = permissionDefinitionManager;
 		}
 
@@ -129,6 +136,8 @@ namespace EasyAbp.Abp.SettingUi
 
 		public virtual async Task SetSettingValuesAsync(Dictionary<string, string> settingValues)
 		{
+			var definitions = await GroupSettingDefinitionsAsync();
+
 			foreach (var kv in settingValues)
 			{
 				// The key of the settingValues is in camel_Case, like "setting_Abp_Localization_DefaultLanguage",
@@ -157,7 +166,48 @@ namespace EasyAbp.Abp.SettingUi
 					}
 				}
 
-				await SetSettingAsync(setting, kv.Value); // todo: needs permission check?
+				var value = kv.Value;
+				var definition = definitions.SelectMany(x => x.SettingInfos).FirstOrDefault(x => x.Name == name);
+
+				if (definition is not null)
+				{
+					if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
+					    ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
+					{
+						if (DateTime.TryParse(value, out var dateTime))
+						{
+							// If the DateTime has no timezone info (most cases from input)
+							if (dateTime.Kind == DateTimeKind.Unspecified)
+							{
+								// Try to get user's timezone
+								var userTz = _currentTimezoneProvider.TimeZone;
+								if (!userTz.IsNullOrWhiteSpace())
+								{
+									try
+									{
+										var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
+										// Treat the input as user's local time and convert to UTC
+										value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
+										return;
+									}
+									catch
+									{
+										// skip handling this...
+									}
+								}
+								else
+								{
+									value = Clock.Normalize(dateTime).ToString("O");
+								}
+							}
+							else
+							{
+								value = Clock.Normalize(dateTime).ToString("O");
+							}
+						}
+					}					
+				}
+				await SetSettingAsync(setting, value); // todo: needs permission check?
 			}
 		}
 
