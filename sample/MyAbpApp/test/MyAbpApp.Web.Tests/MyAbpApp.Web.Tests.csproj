@@ -3,7 +3,7 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <RootNamespace>MyAbpApp</RootNamespace>
@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
     <ProjectReference Include="..\MyAbpApp.Application.Tests\MyAbpApp.Application.Tests.csproj" />
     <ProjectReference Include="..\..\src\MyAbpApp.Web\MyAbpApp.Web.csproj" />

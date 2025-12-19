@@ -15,6 +15,7 @@ namespace MyAbpApp
         typeof(MyAbpAppDomainModule),
         typeof(AbpAccountApplicationModule),
         typeof(MyAbpAppApplicationContractsModule),
+        typeof(AbpAutoMapperModule),
         typeof(AbpIdentityApplicationModule),
         typeof(AbpPermissionManagementApplicationModule),
         typeof(AbpTenantManagementApplicationModule),

@@ -60,6 +60,9 @@ namespace EasyAbp.Abp.SettingUi
 			_timezoneProvider = timezoneProvider;
 			_currentTimezoneProvider = currentTimezoneProvider;
 			_permissionDefinitionManager = permissionDefinitionManager;
+
+            LocalizationResource = typeof(SettingUiResource);
+            ObjectMapperContext = typeof(AbpSettingUiApplicationModule);
 		}
 
 		public virtual async Task<List<SettingGroup>> GroupSettingDefinitionsAsync()
