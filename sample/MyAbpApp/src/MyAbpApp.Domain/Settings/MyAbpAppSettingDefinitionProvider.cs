@@ -56,13 +56,13 @@ namespace MyAbpApp.Settings
                         "500")
                     .WithProperty(SettingUiConst.Group1, MyAbpAppSettings.SettingExample.Default)
                     .WithProperty(SettingUiConst.Group2, MyAbpAppSettings.SettingExample.ASettings.GroupName)
-                    .WithProperty(SettingUiConst.Type, "number"),
+                    .WithProperty(SettingUiConst.Type, SettingUiConst.SettingTypes.Number),
                 new SettingDefinition(
                         MyAbpAppSettings.SettingExample.ASettings.Setting3,
                         "true")
                     .WithProperty(SettingUiConst.Group1, MyAbpAppSettings.SettingExample.Default)
                     .WithProperty(SettingUiConst.Group2, MyAbpAppSettings.SettingExample.ASettings.GroupName)
-                    .WithProperty(SettingUiConst.Type, "checkbox"),
+                    .WithProperty(SettingUiConst.Type, SettingUiConst.SettingTypes.Checkbox),
                 new SettingDefinition(
                         MyAbpAppSettings.SettingExample.BSettings.Setting1,
                         "setting 1 value")
