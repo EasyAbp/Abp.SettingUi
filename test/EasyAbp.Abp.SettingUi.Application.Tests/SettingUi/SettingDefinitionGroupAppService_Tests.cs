@@ -39,7 +39,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             var setting1 = new SettingDefinition("Test.Setting1", "1")
                 .WithProperty(SettingUiConst.Group1, "TestGroup1")
                 .WithProperty(SettingUiConst.Group2, "TestGroup2")
-                .WithProperty(SettingUiConst.Type, "number");
+                .WithProperty(SettingUiConst.Type, SettingUiConst.Components.Number);
             var setting2 = new SettingDefinition("Test.Setting2", "2");
             var setting3 = new SettingDefinition("Test.Setting3", "3", isEncrypted: true);
             settingDefinitionManager.GetAllAsync().Returns(new List<SettingDefinition>
@@ -88,7 +88,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             var setting1 = group.SettingInfos.Single(si => si.Name == "Test.Setting1");
             setting1.Properties[SettingUiConst.Group1].ShouldBe("TestGroup1");
             setting1.Properties[SettingUiConst.Group2].ShouldBe("TestGroup2");
-            setting1.Properties[SettingUiConst.Type].ShouldBe("number");
+            setting1.Properties[SettingUiConst.Type].ShouldBe(SettingUiConst.Components.Number);
 
             // The property values of the Test.Setting2 are from the TestSettingProperties.json file
             var setting2 = group.SettingInfos.Single(si => si.Name == "Test.Setting2");

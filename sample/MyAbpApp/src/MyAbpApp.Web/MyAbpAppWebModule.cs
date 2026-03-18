@@ -89,7 +89,7 @@ namespace MyAbpApp.Web
             Configure<AbpSettingUiOptions>(options =>
             {
                 //Exclude "IsVisibleToClients = false" Settings
-                options.ExcludeInVisibleToClientSettings = true;
+                //options.ExcludeInVisibleToClientSettings = true;
             });
         }
 
