@@ -13,4 +13,9 @@ public class AbpSettingUiOptions
     /// 2. If the host setting value is different from the global setting value, it shows and manages the global one.
     /// </summary>
     public bool ManageGlobalSettingsOnHostSide { get; set; }
+
+    /// <summary>
+    /// If true, the settings with <code>IsVisibleToClients = false</code> will be excluded when getting setting definitions for management.
+    /// </summary>
+    public bool ExcludeInVisibleToClientSettings { get; set; }
 }

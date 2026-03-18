@@ -56,7 +56,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             // Mock ISettingManager
             _settingManager = Substitute.For<ISettingManager>();
             services.AddSingleton(_settingManager);
-            
+
             // Mock ISettingProvider
             var settingProvider = Substitute.For<ISettingProvider>();
             settingProvider.GetOrNullAsync("Test.Setting1").Returns(Task.FromResult("1"));
