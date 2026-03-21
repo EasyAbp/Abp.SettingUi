@@ -70,6 +70,14 @@
 
 1. 刷新浏览器, 然后你就可以使用 "Administration" - "Settings" 菜单来看见所有ABP内置的设置了
 
+## 跳过`InVisibleToClients`设置
+```
+ Configure<AbpSettingUiOptions>(options =>
+ {
+     //Exclude "IsVisibleToClients = false" Settings
+     options.ExcludeInVisibleToClientSettings = true;
+ });
+```
 ## 管理自定义设置
 
 除了ABP自定义设置以外, 你也可以使用这个模块来管理你自己的设置.

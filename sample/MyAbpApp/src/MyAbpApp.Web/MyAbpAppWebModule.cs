@@ -35,6 +35,7 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Volo.Abp.SettingManagement.Web;
+using EasyAbp.Abp.SettingUi.Options;
 
 namespace MyAbpApp.Web
 {
@@ -84,6 +85,12 @@ namespace MyAbpApp.Web
             ConfigureNavigationServices();
             ConfigureAutoApiControllers();
             ConfigureSwaggerServices(context.Services);
+
+            Configure<AbpSettingUiOptions>(options =>
+            {
+                //Exclude "IsVisibleToClients = false" Settings
+                //options.ExcludeInVisibleToClientSettings = true;
+            });
         }
 
         private void ConfigureUrls(IConfiguration configuration)
@@ -214,7 +221,7 @@ namespace MyAbpApp.Web
             {
                 app.UseErrorPage();
             }
-            
+
             app.UseCorrelationId();
             app.UseRouting();
             app.MapAbpStaticAssets();

@@ -68,6 +68,15 @@ In order to let SettingUi module use localization resources from this applicatio
 
 1. Refresh the browser then you can use "Administration" - "Settings" menu to see all ABP built-in settings
 
+## Skip the InVisibleToClients settings
+```
+ Configure<AbpSettingUiOptions>(options =>
+ {
+     //Exclude "IsVisibleToClients = false" Settings
+     options.ExcludeInVisibleToClientSettings = true;
+ });
+```
+
 ## Manage custom settings
 
 Beside ABP built-in settings, you can also use this module to manage your own settings.
