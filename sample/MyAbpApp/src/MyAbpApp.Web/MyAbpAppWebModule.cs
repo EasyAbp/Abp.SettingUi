@@ -13,7 +13,7 @@ using MyAbpApp.EntityFrameworkCore;
 using MyAbpApp.Localization;
 using MyAbpApp.MultiTenancy;
 using MyAbpApp.Web.Menus;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Volo.Abp;
 using Volo.Abp.Account.Web;
 using Volo.Abp.AspNetCore.Authentication.JwtBearer;
