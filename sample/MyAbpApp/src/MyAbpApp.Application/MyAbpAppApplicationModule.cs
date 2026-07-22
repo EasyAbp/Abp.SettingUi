@@ -1,6 +1,6 @@
 using EasyAbp.Abp.SettingUi;
 using Volo.Abp.Account;
-using Volo.Abp.AutoMapper;
+using Volo.Abp.Mapperly;
 using Volo.Abp.Emailing;
 using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
@@ -15,7 +15,7 @@ namespace MyAbpApp
         typeof(MyAbpAppDomainModule),
         typeof(AbpAccountApplicationModule),
         typeof(MyAbpAppApplicationContractsModule),
-        typeof(AbpAutoMapperModule),
+        typeof(AbpMapperlyModule),
         typeof(AbpIdentityApplicationModule),
         typeof(AbpPermissionManagementApplicationModule),
         typeof(AbpTenantManagementApplicationModule),
@@ -26,12 +26,5 @@ namespace MyAbpApp
     [DependsOn(typeof(AbpSettingManagementApplicationModule))]
     public class MyAbpAppApplicationModule : AbpModule
     {
-        public override void ConfigureServices(ServiceConfigurationContext context)
-        {
-            Configure<AbpAutoMapperOptions>(options =>
-            {
-                options.AddMaps<MyAbpAppApplicationModule>();
-            });
-        }
     }
 }

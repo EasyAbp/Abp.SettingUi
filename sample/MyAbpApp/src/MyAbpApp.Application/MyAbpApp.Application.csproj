@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.Account.Application" Version="$(AbpVersion)" />
-    <PackageReference Include="Volo.Abp.AutoMapper" Version="$(AbpVersion)" />
+    <PackageReference Include="Volo.Abp.Mapperly" Version="$(AbpVersion)" />
     <PackageReference Include="Volo.Abp.Emailing" Version="$(AbpVersion)" />
     <PackageReference Include="Volo.Abp.Identity.Application" Version="$(AbpVersion)" />
     <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="$(AbpVersion)" />
