@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
@@ -7,6 +8,7 @@ using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.Options;
+using EasyAbp.Abp.SettingUi.Validation;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
@@ -21,6 +23,7 @@ using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
 using Volo.Abp.Timing;
+using Volo.Abp.Validation;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
@@ -217,6 +220,18 @@ namespace EasyAbp.Abp.SettingUi
                 pendingValues.Add(new KeyValuePair<SettingDefinition, string>(setting, value));
             }
 
+            // Validate all values before writing any, so an invalid value saves nothing.
+            var validationErrors = new List<ValidationResult>();
+            foreach (var pendingValue in pendingValues)
+            {
+                await ValidateSettingValueAsync(pendingValue.Key, pendingValue.Value, validationErrors);
+            }
+
+            if (validationErrors.Any())
+            {
+                throw new AbpValidationException(validationErrors);
+            }
+
             foreach (var pendingValue in pendingValues)
             {
                 await SetSettingAsync(pendingValue.Key, pendingValue.Value);
@@ -270,6 +285,24 @@ namespace EasyAbp.Abp.SettingUi
             {
                 throw new AbpAuthorizationException($"Authorization failed! The setting '{setting.Name}' is not available to the current user.");
             }
+        }
+
+        /// <summary>
+        /// Runs every registered <see cref="ISettingUiValueValidator"/> on a value
+        /// <see cref="SetSettingValuesAsync"/> is about to write, and adds their errors to <paramref name="errors"/>.
+        /// </summary>
+        protected virtual async Task ValidateSettingValueAsync(SettingDefinition setting, [CanBeNull] string value,
+            List<ValidationResult> errors)
+        {
+            var validators = LazyServiceProvider.LazyGetRequiredService<IEnumerable<ISettingUiValueValidator>>();
+
+            var context = new SettingUiValueValidationContext(setting, value);
+            foreach (var validator in validators)
+            {
+                await validator.ValidateAsync(context);
+            }
+
+            errors.AddRange(context.Errors);
         }
 
         protected virtual Task SetSettingAsync(SettingDefinition setting, [CanBeNull] string value)

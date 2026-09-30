@@ -300,6 +300,46 @@ For now SettingUi supports following setting types:
 
 This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample).
 
+## Validate setting values
+
+The input types above only validate in the browser. To validate a value on the server before it is saved, implement `ISettingUiValueValidator` (namespace `EasyAbp.Abp.SettingUi.Validation`) and register it in the dependency injection container:
+
+* `MyAbpApp.Application` project - `Settings/ConnectionPortSettingUiValueValidator` class
+
+    ``` csharp
+    [ExposeServices(typeof(ISettingUiValueValidator))]
+    public class ConnectionPortSettingUiValueValidator : ISettingUiValueValidator, ITransientDependency
+    {
+        private readonly IStringLocalizer<MyAbpAppResource> _localizer;
+
+        public ConnectionPortSettingUiValueValidator(IStringLocalizer<MyAbpAppResource> localizer)
+        {
+            _localizer = localizer;
+        }
+
+        public Task ValidateAsync(SettingUiValueValidationContext context)
+        {
+            if (context.SettingDefinition.Name != "Connection.Port")
+            {
+                return Task.CompletedTask; // Not a setting this validator handles
+            }
+
+            if (!int.TryParse(context.Value, out var port) || port < 1 || port > 65535)
+            {
+                context.Errors.Add(new ValidationResult(
+                    _localizer["InvalidPort"], // e.g. "The port must be a number between 1 and 65535."
+                    new[] { context.SettingDefinition.Name }));
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+    ```
+
+* Every registered validator is called for every value a save is about to write (`context.Value` is the value as it will be stored, and can be empty), so return without adding errors for the settings you do not handle.
+* The values of one save are all validated before any of them is written. If any validator adds an error, the errors are thrown together as an `AbpValidationException` and nothing is saved; the page shows the messages to the user. A validator may also throw a `UserFriendlyException` or `BusinessException` itself, with the same effect.
+* Resetting settings is not validated: it restores the default value of the setting definition.
+
 # Localization
 
 The SettingUi module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
