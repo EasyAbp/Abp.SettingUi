@@ -377,16 +377,11 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 // Setting permission check, once the groups are known
-                var permissionName = GetSettingPermissionName(si);
-                var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name == permissionName);
-                if (definedPermission == null)
+                var permissionNames = FindSettingPermissionNames(si, permissionDefinitions);
+                if (permissionNames.Any())
                 {
-                    WarnAboutMisnamedSettingPermission(si, permissionName, permissionDefinitions);
-                }
-                else
-                {
-                    si.Permission = definedPermission.Name;
-                    if (!await AuthorizationService.IsGrantedAsync(si.Permission))
+                    si.Permission = permissionNames.First();
+                    if (!await IsGrantedAllAsync(permissionNames))
                     {
                         continue;
                     }
@@ -410,20 +405,51 @@ namespace EasyAbp.Abp.SettingUi
         }
 
         /// <summary>
-        /// Up to version 2.10, a setting permission was any permission whose name ended with the setting name.
-        /// A permission that still relies on that no longer applies, so log it for the application to rename.
+        /// The permissions that must all be granted to show a setting; empty if the setting is unrestricted.
+        /// <para>
+        /// The permission named <see cref="GetSettingPermissionName"/> is used when it is defined. Otherwise, for
+        /// compatibility with version 2.10 and earlier, every SettingUi permission whose name ends with the setting name
+        /// is used and a warning is logged so the application can rename it. Requiring all of them, where 2.10 used
+        /// whichever came first, never shows a setting that 2.10 hid, and does not depend on definition order.
+        /// </para>
         /// </summary>
-        protected virtual void WarnAboutMisnamedSettingPermission(SettingInfo settingInfo, string expectedPermissionName,
+        protected virtual List<string> FindSettingPermissionNames(SettingInfo settingInfo,
             IList<PermissionDefinition> permissionDefinitions)
         {
-            var misnamedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith("." + settingInfo.Name));
-            if (misnamedPermission != null)
+            var expectedPermissionName = GetSettingPermissionName(settingInfo);
+            if (permissionDefinitions.Any(p => p.Name == expectedPermissionName))
+            {
+                return new List<string> { expectedPermissionName };
+            }
+
+            var legacyPermissionNames = permissionDefinitions
+                .Where(p => p.Name != SettingUiPermissions.ShowSettingPage && p.Name.EndsWith(settingInfo.Name))
+                .Select(p => p.Name)
+                .ToList();
+
+            if (legacyPermissionNames.Any())
             {
                 Logger.LogWarning(
-                    "The permission {PermissionName} ends with the name of the setting {SettingName} but is not applied to it: " +
-                    "a setting permission must be named {ExpectedPermissionName} (SettingUi.{{Group1}}.{{Group2}}.{{SettingName}}).",
-                    misnamedPermission.Name, settingInfo.Name, expectedPermissionName);
+                    "The setting {SettingName} is protected by {LegacyPermissionNames} only because the permission name " +
+                    "ends with the setting name. This is deprecated: name the setting permission {ExpectedPermissionName} " +
+                    "(SettingUi.{{Group1}}.{{Group2}}.{{SettingName}}).",
+                    settingInfo.Name, string.Join(", ", legacyPermissionNames), expectedPermissionName);
             }
+
+            return legacyPermissionNames;
+        }
+
+        protected virtual async Task<bool> IsGrantedAllAsync(IEnumerable<string> permissionNames)
+        {
+            foreach (var permissionName in permissionNames)
+            {
+                if (!await AuthorizationService.IsGrantedAsync(permissionName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected virtual async Task<SettingInfo> CreateSettingInfoAsync(SettingDefinition settingDefinition)

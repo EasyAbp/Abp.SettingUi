@@ -4,9 +4,11 @@ using Volo.Abp.Localization;
 namespace EasyAbp.Abp.SettingUi.Authorization
 {
     /// <summary>
-    /// Permissions for the settings of <see cref="SettingUi.SettingUiAppServiceAuthorization_Tests"/> and
-    /// <see cref="SettingUi.SettingUiSettingPermission_Tests"/>, named by the documented convention:
-    /// SettingUi.{Group1}, SettingUi.{Group1}.{Group2} and SettingUi.{Group1}.{Group2}.{SettingName}.
+    /// Permissions for the settings of <see cref="SettingUi.SettingUiAppServiceAuthorization_Tests"/>,
+    /// <see cref="SettingUi.SettingUiSettingPermission_Tests"/> and
+    /// <see cref="SettingUi.SettingUiLegacySettingPermission_Tests"/>. Most are named by the documented convention:
+    /// SettingUi.{Group1}, SettingUi.{Group1}.{Group2} and SettingUi.{Group1}.{Group2}.{SettingName}; the Legacy ones
+    /// only end with the setting name, which is all version 2.10 required.
     /// </summary>
     public class TestSettingUiPermissionDefinitionProvider : PermissionDefinitionProvider
     {
@@ -19,6 +21,13 @@ namespace EasyAbp.Abp.SettingUi.Authorization
         public const string ServerIpSetting = NetworkAddressGroup + ".Server.Ip";
         public const string IpSetting = NetworkAddressGroup + ".Ip";
 
+        // Settings in Group1 "Legacy", Group2 "Old" (no group permissions defined)
+        public const string LegacyOldSetting = SettingUiPermissions.GroupName + ".Legacy.Old.Setting";
+        public const string LegacyBothSetting = SettingUiPermissions.GroupName + ".Legacy.Both.Setting";
+        public const string ExactBothSetting = SettingUiPermissions.GroupName + ".Legacy.Old.Both.Setting";
+        public const string LegacyTwinSetting = SettingUiPermissions.GroupName + ".Legacy.Twin.Setting";
+        public const string OtherTwinSetting = SettingUiPermissions.GroupName + ".Other.Twin.Setting";
+
         public override void Define(IPermissionDefinitionContext context)
         {
             var showSettingPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);
@@ -30,6 +39,11 @@ namespace EasyAbp.Abp.SettingUi.Authorization
             // Defined before IpSetting, so a suffix match for the "Ip" setting finds this one first.
             networkAddressGroup.AddChild(ServerIpSetting, new FixedLocalizableString(ServerIpSetting));
             networkAddressGroup.AddChild(IpSetting, new FixedLocalizableString(IpSetting));
+
+            foreach (var name in new[] { LegacyOldSetting, LegacyBothSetting, ExactBothSetting, LegacyTwinSetting, OtherTwinSetting })
+            {
+                showSettingPage.AddChild(name, new FixedLocalizableString(name));
+            }
         }
     }
 }
