@@ -405,8 +405,12 @@ public override void Define(IPermissionDefinitionContext context)
 
 In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
 
+> The setting permission name must be exactly `SettingUi.{Group1}.{Group2}.{SettingName}`. Before version 2.11 any SettingUi permission whose name merely ended with the setting name was used, so a permission of one setting could hide or show another (`Ip` and `Server.Ip`, for example). A permission that relied on that is no longer applied and a warning is logged for it; rename it, or override `SettingUiAppService.GetSettingPermissionName` to keep another naming scheme.
+
 
 Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.
+
+The same permissions also control which settings can be changed: saving or resetting a setting requires `SettingUi.ShowSettingPage`, and a request that names a setting the user is not shown (hidden by a group or setting permission, `DisableDefaultGroup` or `ExcludeInVisibleToClientSettings`) is rejected as unauthorized without changing anything.
 
 The following figure is a screenshot of Setting Ui permissions, and the displayed result:
 

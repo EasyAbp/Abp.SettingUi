@@ -29,7 +29,8 @@ namespace MyAbpApp.Permissions
 		{
 			public const string GroupName = Default + ".ASettings";
 
-			public const string Setting1 = GroupName + ".Setting1";
+			// SettingUi.{Group1}.{Group2}.{SettingName}, the setting name being "ASettings.Setting1"
+			public const string Setting1 = GroupName + ".ASettings.Setting1";
 		}
 
 		public static class BSettings

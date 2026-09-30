@@ -12,6 +12,7 @@ using EasyAbp.Abp.SettingUi.Validation;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Volo.Abp.Application.Services;
@@ -342,16 +343,6 @@ namespace EasyAbp.Abp.SettingUi
             {
 				var si =  await CreateSettingInfoAsync(settingDefinition);
 
-                var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
-                if (definedPermission != null)
-                {
-                    si.Permission = definedPermission.Name;
-                    if (!await AuthorizationService.IsGrantedAsync(si.Permission))
-                    {
-                        continue;
-                    }
-                }
-
                 if (settingProperties.ContainsKey(si.Name))
                 {
                     // This Setting is defined in the property file,
@@ -385,10 +376,54 @@ namespace EasyAbp.Abp.SettingUi
                     si.Properties[SettingUiConst.Type] = SettingUiConst.DefaultType;
                 }
 
+                // Setting permission check, once the groups are known
+                var permissionName = GetSettingPermissionName(si);
+                var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name == permissionName);
+                if (definedPermission == null)
+                {
+                    WarnAboutMisnamedSettingPermission(si, permissionName, permissionDefinitions);
+                }
+                else
+                {
+                    si.Permission = definedPermission.Name;
+                    if (!await AuthorizationService.IsGrantedAsync(si.Permission))
+                    {
+                        continue;
+                    }
+                }
+
                 settingInfos.Add(si);
             }
 
             return settingInfos;
+        }
+
+        /// <summary>
+        /// The name of the permission that, when defined, must be granted to show a setting:
+        /// <c>SettingUi.{Group1}.{Group2}.{SettingName}</c>, for example
+        /// <c>SettingUi.System.Password.Abp.Identity.Password.RequiredLength</c>.
+        /// </summary>
+        protected virtual string GetSettingPermissionName(SettingInfo settingInfo)
+        {
+            return $"{SettingUiPermissions.GroupName}.{settingInfo.Properties[SettingUiConst.Group1]}." +
+                   $"{settingInfo.Properties[SettingUiConst.Group2]}.{settingInfo.Name}";
+        }
+
+        /// <summary>
+        /// Up to version 2.10, a setting permission was any permission whose name ended with the setting name.
+        /// A permission that still relies on that no longer applies, so log it for the application to rename.
+        /// </summary>
+        protected virtual void WarnAboutMisnamedSettingPermission(SettingInfo settingInfo, string expectedPermissionName,
+            IList<PermissionDefinition> permissionDefinitions)
+        {
+            var misnamedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith("." + settingInfo.Name));
+            if (misnamedPermission != null)
+            {
+                Logger.LogWarning(
+                    "The permission {PermissionName} ends with the name of the setting {SettingName} but is not applied to it: " +
+                    "a setting permission must be named {ExpectedPermissionName} (SettingUi.{{Group1}}.{{Group2}}.{{SettingName}}).",
+                    misnamedPermission.Name, settingInfo.Name, expectedPermissionName);
+            }
         }
 
         protected virtual async Task<SettingInfo> CreateSettingInfoAsync(SettingDefinition settingDefinition)
