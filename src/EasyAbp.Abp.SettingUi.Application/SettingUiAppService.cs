@@ -139,7 +139,11 @@ namespace EasyAbp.Abp.SettingUi
 
         public virtual async Task SetSettingValuesAsync(Dictionary<string, string> settingValues)
         {
-            var definitions = await GroupSettingDefinitionsAsync();
+            // Only the settings the caller is shown can be changed; computed once for the whole request.
+            var visibleSettingInfos = await GetVisibleSettingInfosAsync();
+
+            // Check every posted setting before writing any, so a rejected request changes nothing.
+            var pendingValues = new List<KeyValuePair<SettingDefinition, string>>();
 
             foreach (var kv in settingValues)
             {
@@ -158,6 +162,8 @@ namespace EasyAbp.Abp.SettingUi
                     continue;
                 }
 
+                CheckSettingIsVisible(visibleSettingInfos, setting);
+
                 // new value is null.
                 if (kv.Value.IsNullOrEmpty())
                 {
@@ -170,36 +176,29 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 var value = kv.Value;
-                var definition = definitions.SelectMany(x => x.SettingInfos).FirstOrDefault(x => x.Name == name);
+                var definition = visibleSettingInfos[setting.Name];
 
-                if (definition is not null)
+                if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
+                    ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
-                        ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
+                    if (DateTime.TryParse(value, out var dateTime))
                     {
-                        if (DateTime.TryParse(value, out var dateTime))
+                        // If the DateTime has no timezone info (most cases from input)
+                        if (dateTime.Kind == DateTimeKind.Unspecified)
                         {
-                            // If the DateTime has no timezone info (most cases from input)
-                            if (dateTime.Kind == DateTimeKind.Unspecified)
+                            // Try to get user's timezone
+                            var userTz = _currentTimezoneProvider.TimeZone;
+                            if (!userTz.IsNullOrWhiteSpace())
                             {
-                                // Try to get user's timezone
-                                var userTz = _currentTimezoneProvider.TimeZone;
-                                if (!userTz.IsNullOrWhiteSpace())
+                                try
                                 {
-                                    try
-                                    {
-                                        var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
-                                        // Treat the input as user's local time and convert to UTC
-                                        value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
-                                    }
-                                    catch
-                                    {
-                                        // skip handling this...
-                                    }
+                                    var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
+                                    // Treat the input as user's local time and convert to UTC
+                                    value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
                                 }
-                                else
+                                catch
                                 {
-                                    value = Clock.Normalize(dateTime).ToString("O");
+                                    // skip handling this...
                                 }
                             }
                             else
@@ -207,9 +206,19 @@ namespace EasyAbp.Abp.SettingUi
                                 value = Clock.Normalize(dateTime).ToString("O");
                             }
                         }
+                        else
+                        {
+                            value = Clock.Normalize(dateTime).ToString("O");
+                        }
                     }
                 }
-                await SetSettingAsync(setting, value); // todo: needs permission check?
+
+                pendingValues.Add(new KeyValuePair<SettingDefinition, string>(setting, value));
+            }
+
+            foreach (var pendingValue in pendingValues)
+            {
+                await SetSettingAsync(pendingValue.Key, pendingValue.Value);
             }
         }
 

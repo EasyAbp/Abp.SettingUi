@@ -113,5 +113,62 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _settingManager.Received(1).SetForCurrentTenantAsync(PublicSetting, null);
             await _settingManager.Received(1).SetForCurrentTenantAsync(SecretSetting, null);
         }
+
+        [Fact]
+        public async Task Set_Should_Require_The_Setting_Page_Permission()
+        {
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.SetSettingValuesAsync(
+                new Dictionary<string, string> { { "setting_Test_Public", "changed" } }));
+
+            await ShouldNotHaveWrittenAnySettingAsync();
+        }
+
+        [Fact]
+        public async Task Set_Should_Write_Visible_Settings_And_Skip_Undefined_Names()
+        {
+            GrantSettingPageOnly();
+
+            await _service.SetSettingValuesAsync(new Dictionary<string, string>
+            {
+                { "setting_Test_Public", "changed" },
+                { "setting_Not_A_Defined_Setting", "ignored" },
+                { "__RequestVerificationToken", "ignored" }
+            });
+
+            await _settingManager.Received(1).SetForCurrentTenantAsync(PublicSetting, "changed");
+            await _settingManager.Received(1).SetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(),
+                Arg.Any<string>(), Arg.Any<bool>());
+        }
+
+        [Fact]
+        public async Task Set_Should_Reject_A_Setting_The_User_Is_Not_Shown()
+        {
+            GrantSettingPageOnly();
+
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.SetSettingValuesAsync(
+                new Dictionary<string, string>
+                {
+                    { "setting_Test_Public", "changed" },
+                    { "setting_Test_Secret", "stolen" }
+                }));
+
+            // Nothing is written, not even the visible setting posted before the hidden one.
+            await ShouldNotHaveWrittenAnySettingAsync();
+        }
+
+        [Fact]
+        public async Task Set_Should_Write_A_Setting_Its_Group_Permissions_Show()
+        {
+            GrantSecuredGroups();
+
+            await _service.SetSettingValuesAsync(new Dictionary<string, string>
+            {
+                { "setting_Test_Public", "changed" },
+                { "setting_Test_Secret", "changed too" }
+            });
+
+            await _settingManager.Received(1).SetForCurrentTenantAsync(PublicSetting, "changed");
+            await _settingManager.Received(1).SetForCurrentTenantAsync(SecretSetting, "changed too");
+        }
     }
 }
