@@ -300,6 +300,46 @@ For now SettingUi supports following setting types:
 
 This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample).
 
+## Validate setting values
+
+The input types above only validate in the browser. To validate a value on the server before it is saved, implement `ISettingUiValueValidator` (namespace `EasyAbp.Abp.SettingUi.Validation`) and register it in the dependency injection container:
+
+* `MyAbpApp.Application` project - `Settings/ConnectionPortSettingUiValueValidator` class
+
+    ``` csharp
+    [ExposeServices(typeof(ISettingUiValueValidator))]
+    public class ConnectionPortSettingUiValueValidator : ISettingUiValueValidator, ITransientDependency
+    {
+        private readonly IStringLocalizer<MyAbpAppResource> _localizer;
+
+        public ConnectionPortSettingUiValueValidator(IStringLocalizer<MyAbpAppResource> localizer)
+        {
+            _localizer = localizer;
+        }
+
+        public Task ValidateAsync(SettingUiValueValidationContext context)
+        {
+            if (context.SettingDefinition.Name != "Connection.Port")
+            {
+                return Task.CompletedTask; // Not a setting this validator handles
+            }
+
+            if (!int.TryParse(context.Value, out var port) || port < 1 || port > 65535)
+            {
+                context.Errors.Add(new ValidationResult(
+                    _localizer["InvalidPort"], // e.g. "The port must be a number between 1 and 65535."
+                    new[] { context.SettingDefinition.Name }));
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+    ```
+
+* Every registered validator is called for every value a save is about to write (`context.Value` is the value as it will be stored, and can be empty), so return without adding errors for the settings you do not handle.
+* The values of one save are all validated before any of them is written. If any validator adds an error, the errors are thrown together as an `AbpValidationException` and nothing is saved; the page shows the messages to the user. A validator may also throw a `UserFriendlyException` or `BusinessException` itself, with the same effect.
+* Resetting settings is not validated: it restores the default value of the setting definition.
+
 # Localization
 
 The SettingUi module uses ABP's localization system to display the localization information of the settings.The languages currently supported are:
@@ -352,7 +392,7 @@ public override void Define(IPermissionDefinitionContext context)
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted. This applies wherever the permission is defined in the permission tree, also when there is no Group1 permission (before version 3.0 it was only enforced as a child of a defined Group1 permission).
 
 Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
 ``` csharp
@@ -365,8 +405,12 @@ public override void Define(IPermissionDefinitionContext context)
 
 In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
 
+> Name the setting permission exactly `SettingUi.{Group1}.{Group2}.{SettingName}`. Before version 3.0 a setting used the first SettingUi permission whose name merely ended with the setting name, so a permission of one setting could hide or show another (`Ip` and `Server.Ip`, for example). Now the exactly named permission is used when it is defined. Otherwise, for compatibility, every SettingUi permission whose name ends with the setting name must be granted, and a warning asks you to rename it; a setting is unrestricted only when no permission matches at all. Override `SettingUiAppService.GetSettingPermissionName` to use another naming scheme.
+
 
 Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.
+
+The same permissions also control which settings can be changed: saving or resetting a setting requires `SettingUi.ShowSettingPage`, and a request that names a setting the user is not shown (hidden by a group or setting permission, `DisableDefaultGroup` or `ExcludeInVisibleToClientSettings`) is rejected as unauthorized without changing anything.
 
 The following figure is a screenshot of Setting Ui permissions, and the displayed result:
 

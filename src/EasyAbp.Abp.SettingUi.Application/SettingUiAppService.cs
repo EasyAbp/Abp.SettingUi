@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
@@ -7,9 +8,11 @@ using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Extensions;
 using EasyAbp.Abp.SettingUi.Localization;
 using EasyAbp.Abp.SettingUi.Options;
+using EasyAbp.Abp.SettingUi.Validation;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Volo.Abp.Application.Services;
@@ -21,10 +24,12 @@ using Volo.Abp.Localization;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
 using Volo.Abp.Timing;
+using Volo.Abp.Validation;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
 {
+    [Authorize(SettingUiPermissions.ShowSettingPage)]
     public class SettingUiAppService : ApplicationService, ISettingUiAppService
     {
         private readonly AbpSettingUiOptions _options;
@@ -110,9 +115,10 @@ namespace EasyAbp.Abp.SettingUi
                     var settingInfos = new List<SettingInfo>();
                     foreach (var settingInfoGroup in settingInfoGroups)
                     {
-                        if (definedSettingUiGroupPermission == null
-                            || definedSettingUiGroupPermission.Children.All(p =>
-                                p.Name != settingInfoGroup.Permission) || await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission) //Group2 permission check
+                        // Group2 permission check: enforced wherever SettingUi.{Group1}.{Group2} is defined in the
+                        // permission tree, with or without a Group1 permission as its parent.
+                        if (definedSettingUiPermissions.All(p => p.Name != settingInfoGroup.Permission)
+                            || await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission)
                         )
                         {
                             settingInfos.AddRange(settingInfoGroup.SettingInfoList);
@@ -139,7 +145,11 @@ namespace EasyAbp.Abp.SettingUi
 
         public virtual async Task SetSettingValuesAsync(Dictionary<string, string> settingValues)
         {
-            var definitions = await GroupSettingDefinitionsAsync();
+            // Only the settings the caller is shown can be changed; computed once for the whole request.
+            var visibleSettingInfos = await GetVisibleSettingInfosAsync();
+
+            // Check every posted setting before writing any, so a rejected request changes nothing.
+            var pendingValues = new List<KeyValuePair<SettingDefinition, string>>();
 
             foreach (var kv in settingValues)
             {
@@ -158,6 +168,8 @@ namespace EasyAbp.Abp.SettingUi
                     continue;
                 }
 
+                CheckSettingIsVisible(visibleSettingInfos, setting);
+
                 // new value is null.
                 if (kv.Value.IsNullOrEmpty())
                 {
@@ -170,37 +182,29 @@ namespace EasyAbp.Abp.SettingUi
                 }
 
                 var value = kv.Value;
-                var definition = definitions.SelectMany(x => x.SettingInfos).FirstOrDefault(x => x.Name == name);
+                var definition = visibleSettingInfos[setting.Name];
 
-                if (definition is not null)
+                if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
+                    ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
-                        ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
+                    if (DateTime.TryParse(value, out var dateTime))
                     {
-                        if (DateTime.TryParse(value, out var dateTime))
+                        // If the DateTime has no timezone info (most cases from input)
+                        if (dateTime.Kind == DateTimeKind.Unspecified)
                         {
-                            // If the DateTime has no timezone info (most cases from input)
-                            if (dateTime.Kind == DateTimeKind.Unspecified)
+                            // Try to get user's timezone
+                            var userTz = _currentTimezoneProvider.TimeZone;
+                            if (!userTz.IsNullOrWhiteSpace())
                             {
-                                // Try to get user's timezone
-                                var userTz = _currentTimezoneProvider.TimeZone;
-                                if (!userTz.IsNullOrWhiteSpace())
+                                try
                                 {
-                                    try
-                                    {
-                                        var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
-                                        // Treat the input as user's local time and convert to UTC
-                                        value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
-                                        return;
-                                    }
-                                    catch
-                                    {
-                                        // skip handling this...
-                                    }
+                                    var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
+                                    // Treat the input as user's local time and convert to UTC
+                                    value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
                                 }
-                                else
+                                catch
                                 {
-                                    value = Clock.Normalize(dateTime).ToString("O");
+                                    // skip handling this...
                                 }
                             }
                             else
@@ -208,14 +212,41 @@ namespace EasyAbp.Abp.SettingUi
                                 value = Clock.Normalize(dateTime).ToString("O");
                             }
                         }
+                        else
+                        {
+                            value = Clock.Normalize(dateTime).ToString("O");
+                        }
                     }
                 }
-                await SetSettingAsync(setting, value); // todo: needs permission check?
+
+                pendingValues.Add(new KeyValuePair<SettingDefinition, string>(setting, value));
+            }
+
+            // Validate all values before writing any, so an invalid value saves nothing.
+            var validationErrors = new List<ValidationResult>();
+            foreach (var pendingValue in pendingValues)
+            {
+                await ValidateSettingValueAsync(pendingValue.Key, pendingValue.Value, validationErrors);
+            }
+
+            if (validationErrors.Any())
+            {
+                throw new AbpValidationException(validationErrors);
+            }
+
+            foreach (var pendingValue in pendingValues)
+            {
+                await SetSettingAsync(pendingValue.Key, pendingValue.Value);
             }
         }
 
         public virtual async Task ResetSettingValuesAsync(List<string> settingNames)
         {
+            // Same authorization as showing the page: only the settings the caller is shown can be reset.
+            var visibleSettingInfos = await GetVisibleSettingInfosAsync();
+
+            // Check every requested name before resetting any, so a rejected request changes nothing.
+            var settings = new List<SettingDefinition>();
             foreach (var name in settingNames)
             {
                 var setting = await _settingDefinitionManager.GetOrNullAsync(name);
@@ -224,8 +255,56 @@ namespace EasyAbp.Abp.SettingUi
                     continue;
                 }
 
+                CheckSettingIsVisible(visibleSettingInfos, setting);
+                settings.Add(setting);
+            }
+
+            foreach (var setting in settings)
+            {
                 await SetSettingAsync(setting, null); // use fallback value
             }
+        }
+
+        /// <summary>
+        /// Returns the settings the current user is shown by <see cref="GroupSettingDefinitionsAsync"/>, by name.
+        /// Throws <see cref="AbpAuthorizationException"/> if the user may not see the setting page at all.
+        /// </summary>
+        protected virtual async Task<Dictionary<string, SettingInfo>> GetVisibleSettingInfosAsync()
+        {
+            return (await GroupSettingDefinitionsAsync())
+                .SelectMany(group => group.SettingInfos)
+                .ToDictionary(settingInfo => settingInfo.Name);
+        }
+
+        /// <summary>
+        /// A defined setting the page does not show the current user (hidden by a group or setting permission,
+        /// by <see cref="AbpSettingUiOptions.DisableDefaultGroup"/> or by
+        /// <see cref="AbpSettingUiOptions.ExcludeInVisibleToClientSettings"/>) cannot be changed either.
+        /// </summary>
+        protected virtual void CheckSettingIsVisible(Dictionary<string, SettingInfo> visibleSettingInfos, SettingDefinition setting)
+        {
+            if (!visibleSettingInfos.ContainsKey(setting.Name))
+            {
+                throw new AbpAuthorizationException($"Authorization failed! The setting '{setting.Name}' is not available to the current user.");
+            }
+        }
+
+        /// <summary>
+        /// Runs every registered <see cref="ISettingUiValueValidator"/> on a value
+        /// <see cref="SetSettingValuesAsync"/> is about to write, and adds their errors to <paramref name="errors"/>.
+        /// </summary>
+        protected virtual async Task ValidateSettingValueAsync(SettingDefinition setting, [CanBeNull] string value,
+            List<ValidationResult> errors)
+        {
+            var validators = LazyServiceProvider.LazyGetRequiredService<IEnumerable<ISettingUiValueValidator>>();
+
+            var context = new SettingUiValueValidationContext(setting, value);
+            foreach (var validator in validators)
+            {
+                await validator.ValidateAsync(context);
+            }
+
+            errors.AddRange(context.Errors);
         }
 
         protected virtual Task SetSettingAsync(SettingDefinition setting, [CanBeNull] string value)
@@ -265,16 +344,6 @@ namespace EasyAbp.Abp.SettingUi
             {
 				var si =  await CreateSettingInfoAsync(settingDefinition);
 
-                var definedPermission = permissionDefinitions.FirstOrDefault(p => p.Name.EndsWith(si.Name));
-                if (definedPermission != null)
-                {
-                    si.Permission = definedPermission.Name;
-                    if (!await AuthorizationService.IsGrantedAsync(si.Permission))
-                    {
-                        continue;
-                    }
-                }
-
                 if (settingProperties.ContainsKey(si.Name))
                 {
                     // This Setting is defined in the property file,
@@ -308,10 +377,80 @@ namespace EasyAbp.Abp.SettingUi
                     si.Properties[SettingUiConst.Type] = SettingUiConst.DefaultType;
                 }
 
+                // Setting permission check, once the groups are known
+                var permissionNames = FindSettingPermissionNames(si, permissionDefinitions);
+                if (permissionNames.Any())
+                {
+                    si.Permission = permissionNames.First();
+                    if (!await IsGrantedAllAsync(permissionNames))
+                    {
+                        continue;
+                    }
+                }
+
                 settingInfos.Add(si);
             }
 
             return settingInfos;
+        }
+
+        /// <summary>
+        /// The name of the permission that, when defined, must be granted to show a setting:
+        /// <c>SettingUi.{Group1}.{Group2}.{SettingName}</c>, for example
+        /// <c>SettingUi.System.Password.Abp.Identity.Password.RequiredLength</c>.
+        /// </summary>
+        protected virtual string GetSettingPermissionName(SettingInfo settingInfo)
+        {
+            return $"{SettingUiPermissions.GroupName}.{settingInfo.Properties[SettingUiConst.Group1]}." +
+                   $"{settingInfo.Properties[SettingUiConst.Group2]}.{settingInfo.Name}";
+        }
+
+        /// <summary>
+        /// The permissions that must all be granted to show a setting; empty if the setting is unrestricted.
+        /// <para>
+        /// The permission named <see cref="GetSettingPermissionName"/> is used when it is defined. Otherwise, for
+        /// compatibility with version 2.10 and earlier, every SettingUi permission whose name ends with the setting name
+        /// is used and a warning is logged so the application can rename it. Requiring all of them, where 2.10 used
+        /// whichever came first, never shows a setting that 2.10 hid, and does not depend on definition order.
+        /// </para>
+        /// </summary>
+        protected virtual List<string> FindSettingPermissionNames(SettingInfo settingInfo,
+            IList<PermissionDefinition> permissionDefinitions)
+        {
+            var expectedPermissionName = GetSettingPermissionName(settingInfo);
+            if (permissionDefinitions.Any(p => p.Name == expectedPermissionName))
+            {
+                return new List<string> { expectedPermissionName };
+            }
+
+            var legacyPermissionNames = permissionDefinitions
+                .Where(p => p.Name != SettingUiPermissions.ShowSettingPage && p.Name.EndsWith(settingInfo.Name))
+                .Select(p => p.Name)
+                .ToList();
+
+            if (legacyPermissionNames.Any())
+            {
+                Logger.LogWarning(
+                    "The setting {SettingName} is protected by {LegacyPermissionNames} only because the permission name " +
+                    "ends with the setting name. This is deprecated: name the setting permission {ExpectedPermissionName} " +
+                    "(SettingUi.{{Group1}}.{{Group2}}.{{SettingName}}).",
+                    settingInfo.Name, string.Join(", ", legacyPermissionNames), expectedPermissionName);
+            }
+
+            return legacyPermissionNames;
+        }
+
+        protected virtual async Task<bool> IsGrantedAllAsync(IEnumerable<string> permissionNames)
+        {
+            foreach (var permissionName in permissionNames)
+            {
+                if (!await AuthorizationService.IsGrantedAsync(permissionName))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected virtual async Task<SettingInfo> CreateSettingInfoAsync(SettingDefinition settingDefinition)

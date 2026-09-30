@@ -10,6 +10,7 @@ using Shouldly;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
+using Volo.Abp.Timing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -42,15 +43,20 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 .WithProperty(SettingUiConst.Type, SettingUiConst.Components.Number);
             var setting2 = new SettingDefinition("Test.Setting2", "2");
             var setting3 = new SettingDefinition("Test.Setting3", "3", isEncrypted: true);
+            var setting4 = new SettingDefinition("Test.Setting4")
+                .WithProperty(SettingUiConst.Group1, "TestGroup3")
+                .WithProperty(SettingUiConst.Type, SettingUiConst.Components.DateTime);
             settingDefinitionManager.GetAllAsync().Returns(new List<SettingDefinition>
             {
                 setting1,
                 setting2,
-                setting3
+                setting3,
+                setting4
             });
             settingDefinitionManager.GetOrNullAsync("Test.Setting1").Returns(setting1);
             settingDefinitionManager.GetOrNullAsync("Test.Setting2").Returns(setting2);
             settingDefinitionManager.GetOrNullAsync("Test.Setting3").Returns(setting3);
+            settingDefinitionManager.GetOrNullAsync("Test.Setting4").Returns(setting4);
             services.AddSingleton(settingDefinitionManager);
 
             // Mock ISettingManager
@@ -141,6 +147,25 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _settingManager.Received().SetGlobalAsync("Test.Setting1", "value1");
             await _settingManager.Received().SetGlobalAsync("Test.Setting2", "value2");
             await _settingManager.DidNotReceive().SetGlobalAsync("RequestToken", "value3");
+        }
+
+        [Fact]
+        public async Task DateTime_Value_In_The_User_Time_Zone_Should_Be_Saved_As_Utc()
+        {
+            // Arrange
+            GetRequiredService<ICurrentTimezoneProvider>().TimeZone = "Europe/Paris";
+            var settingValues = new Dictionary<string, string>
+            {
+                {"setting_Test_Setting4", "2026-01-15 10:00:00" },
+                {"setting_Test_Setting1", "value1" },    // A setting posted after the dateTime one
+            };
+
+            // Act
+            await _service.SetSettingValuesAsync(settingValues);
+
+            // Assert
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting4", "2026-01-15T09:00:00.0000000Z");
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
         }
 
         [Fact]
