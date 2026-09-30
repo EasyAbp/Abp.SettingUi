@@ -191,7 +191,6 @@ namespace EasyAbp.Abp.SettingUi
                                         var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
                                         // Treat the input as user's local time and convert to UTC
                                         value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
-                                        return;
                                     }
                                     catch
                                     {
