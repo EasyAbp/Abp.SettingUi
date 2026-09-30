@@ -392,7 +392,7 @@ public override void Define(IPermissionDefinitionContext context)
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted. This applies wherever the permission is defined in the permission tree, also when there is no Group1 permission (before version 2.11 it was only enforced as a child of a defined Group1 permission).
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted. This applies wherever the permission is defined in the permission tree, also when there is no Group1 permission (before version 3.0 it was only enforced as a child of a defined Group1 permission).
 
 Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
 ``` csharp
@@ -405,7 +405,7 @@ public override void Define(IPermissionDefinitionContext context)
 
 In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2.SettingName` is found, the setting in Group2 in Group1 will only be displayed after the permission is explicitly granted.
 
-> Name the setting permission exactly `SettingUi.{Group1}.{Group2}.{SettingName}`. Before version 2.11 a setting used the first SettingUi permission whose name merely ended with the setting name, so a permission of one setting could hide or show another (`Ip` and `Server.Ip`, for example). Now the exactly named permission is used when it is defined. Otherwise, for compatibility, every SettingUi permission whose name ends with the setting name must be granted, and a warning asks you to rename it; a setting is unrestricted only when no permission matches at all. Override `SettingUiAppService.GetSettingPermissionName` to use another naming scheme.
+> Name the setting permission exactly `SettingUi.{Group1}.{Group2}.{SettingName}`. Before version 3.0 a setting used the first SettingUi permission whose name merely ended with the setting name, so a permission of one setting could hide or show another (`Ip` and `Server.Ip`, for example). Now the exactly named permission is used when it is defined. Otherwise, for compatibility, every SettingUi permission whose name ends with the setting name must be granted, and a warning asks you to rename it; a setting is unrestricted only when no permission matches at all. Override `SettingUiAppService.GetSettingPermissionName` to use another naming scheme.
 
 
 Through the above three-level permission definition way, we can arbitrarily control the display of settings in SettingUi.

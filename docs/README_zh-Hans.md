@@ -395,7 +395,7 @@ public override void Define(IPermissionDefinitionContext context)
 }
 ```
 
-这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示. 无论该权限定义在权限树的什么位置都会生效, 即使没有定义Group1的权限也是如此(2.11版本之前, 只有作为已定义的Group1权限的子权限时才会生效).
+这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示. 无论该权限定义在权限树的什么位置都会生效, 即使没有定义Group1的权限也是如此(3.0版本之前, 只有作为已定义的Group1权限的子权限时才会生效).
 
 当然, 我们也可继续添加精确控制某一设置的权限, 如"系统" -> "密码" -> "要求长度", 需要继续添加后缀为设置名称的权限, 代码如下:
 ``` csharp
@@ -408,7 +408,7 @@ public override void Define(IPermissionDefinitionContext context)
 
 这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2.SettingName`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2中的SettingName才会显示.
 
-> 设置权限请精确命名为`SettingUi.{Group1}.{Group2}.{SettingName}`. 2.11版本之前, 设置会使用第一个名称以该设置名结尾的SettingUi权限, 因此一个设置的权限可能会隐藏或显示另一个设置(例如`Ip`和`Server.Ip`). 现在如果定义了精确命名的权限, 就使用该权限. 否则为了兼容, 所有名称以该设置名结尾的SettingUi权限都必须被授予, 同时会记录一条警告提示你重命名; 只有没有任何权限匹配时, 该设置才不受限制. 如需使用其他命名方式, 请重写`SettingUiAppService.GetSettingPermissionName`.
+> 设置权限请精确命名为`SettingUi.{Group1}.{Group2}.{SettingName}`. 3.0版本之前, 设置会使用第一个名称以该设置名结尾的SettingUi权限, 因此一个设置的权限可能会隐藏或显示另一个设置(例如`Ip`和`Server.Ip`). 现在如果定义了精确命名的权限, 就使用该权限. 否则为了兼容, 所有名称以该设置名结尾的SettingUi权限都必须被授予, 同时会记录一条警告提示你重命名; 只有没有任何权限匹配时, 该设置才不受限制. 如需使用其他命名方式, 请重写`SettingUiAppService.GetSettingPermissionName`.
 
 
 通过以上3级的权限定义方式, 我们就可以在SettingUi中任意控制设置的显示了.
