@@ -302,6 +302,46 @@
 
 到这里教程就结束了. 通过本教程, 你应该可以轻松地使用SettingUi来管理你的设置了. 教程的源码可以在[sample文件夹](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)中找到.
 
+## 校验设置值
+
+上面的输入类型只在浏览器中校验. 如果需要在保存前于服务端校验设置值, 请实现`ISettingUiValueValidator`(命名空间`EasyAbp.Abp.SettingUi.Validation`), 并将其注册到依赖注入容器中:
+
+* `MyAbpApp.Application`项目 - `Settings/ConnectionPortSettingUiValueValidator`类
+
+    ``` csharp
+    [ExposeServices(typeof(ISettingUiValueValidator))]
+    public class ConnectionPortSettingUiValueValidator : ISettingUiValueValidator, ITransientDependency
+    {
+        private readonly IStringLocalizer<MyAbpAppResource> _localizer;
+
+        public ConnectionPortSettingUiValueValidator(IStringLocalizer<MyAbpAppResource> localizer)
+        {
+            _localizer = localizer;
+        }
+
+        public Task ValidateAsync(SettingUiValueValidationContext context)
+        {
+            if (context.SettingDefinition.Name != "Connection.Port")
+            {
+                return Task.CompletedTask; // 不是本校验器负责的设置
+            }
+
+            if (!int.TryParse(context.Value, out var port) || port < 1 || port > 65535)
+            {
+                context.Errors.Add(new ValidationResult(
+                    _localizer["InvalidPort"], // 例如 "端口必须是1到65535之间的数字."
+                    new[] { context.SettingDefinition.Name }));
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+    ```
+
+* 每次保存时, 所有已注册的校验器都会收到本次将要写入的每一个值(`context.Value`是即将存储的值, 可能为空), 因此对于不由你负责的设置, 请直接返回, 不要添加错误.
+* 一次保存中的所有值都会先完成校验, 然后才会写入任何一个值. 只要有校验器添加了错误, 所有错误会合并为一个`AbpValidationException`抛出, 且不会保存任何值; 页面会向用户显示这些错误信息. 校验器也可以自行抛出`UserFriendlyException`或`BusinessException`, 效果相同.
+* 重置设置不会触发校验: 重置只是恢复设置定义的默认值.
+
 # 本地化
 
 SettingUi模块使用ABP的本地化系统来显示设置的本地化信息. 现在支持的语言有:
@@ -355,7 +395,7 @@ public override void Define(IPermissionDefinitionContext context)
 }
 ```
 
-这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示.
+这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2才会显示. 无论该权限定义在权限树的什么位置都会生效, 即使没有定义Group1的权限也是如此(2.11版本之前, 只有作为已定义的Group1权限的子权限时才会生效).
 
 当然, 我们也可继续添加精确控制某一设置的权限, 如"系统" -> "密码" -> "要求长度", 需要继续添加后缀为设置名称的权限, 代码如下:
 ``` csharp
@@ -368,8 +408,12 @@ public override void Define(IPermissionDefinitionContext context)
 
 这样当SettingUi遍历设置时, 如果发现有`SettingUi.Group1.Group2.SettingName`形式的权限, 则只有显示的赋予该权限后, 分组Group1中的Group2中的SettingName才会显示.
 
+> 设置权限请精确命名为`SettingUi.{Group1}.{Group2}.{SettingName}`. 2.11版本之前, 设置会使用第一个名称以该设置名结尾的SettingUi权限, 因此一个设置的权限可能会隐藏或显示另一个设置(例如`Ip`和`Server.Ip`). 现在如果定义了精确命名的权限, 就使用该权限. 否则为了兼容, 所有名称以该设置名结尾的SettingUi权限都必须被授予, 同时会记录一条警告提示你重命名; 只有没有任何权限匹配时, 该设置才不受限制. 如需使用其他命名方式, 请重写`SettingUiAppService.GetSettingPermissionName`.
+
 
 通过以上3级的权限定义方式, 我们就可以在SettingUi中任意控制设置的显示了.
+
+同样的权限也控制哪些设置可以被修改: 保存或重置设置需要`SettingUi.ShowSettingPage`权限, 如果请求中包含了用户看不到的设置(被分组或设置权限、`DisableDefaultGroup`或`ExcludeInVisibleToClientSettings`隐藏), 请求会以未授权被拒绝, 且不会修改任何内容.
 
 下图是Setting Ui权限的截图, 和显示的结果:
 
