@@ -216,6 +216,11 @@ namespace EasyAbp.Abp.SettingUi
 
         public virtual async Task ResetSettingValuesAsync(List<string> settingNames)
         {
+            // Same authorization as showing the page: only the settings the caller is shown can be reset.
+            var visibleSettingInfos = await GetVisibleSettingInfosAsync();
+
+            // Check every requested name before resetting any, so a rejected request changes nothing.
+            var settings = new List<SettingDefinition>();
             foreach (var name in settingNames)
             {
                 var setting = await _settingDefinitionManager.GetOrNullAsync(name);
@@ -224,7 +229,37 @@ namespace EasyAbp.Abp.SettingUi
                     continue;
                 }
 
+                CheckSettingIsVisible(visibleSettingInfos, setting);
+                settings.Add(setting);
+            }
+
+            foreach (var setting in settings)
+            {
                 await SetSettingAsync(setting, null); // use fallback value
+            }
+        }
+
+        /// <summary>
+        /// Returns the settings the current user is shown by <see cref="GroupSettingDefinitionsAsync"/>, by name.
+        /// Throws <see cref="AbpAuthorizationException"/> if the user may not see the setting page at all.
+        /// </summary>
+        protected virtual async Task<Dictionary<string, SettingInfo>> GetVisibleSettingInfosAsync()
+        {
+            return (await GroupSettingDefinitionsAsync())
+                .SelectMany(group => group.SettingInfos)
+                .ToDictionary(settingInfo => settingInfo.Name);
+        }
+
+        /// <summary>
+        /// A defined setting the page does not show the current user (hidden by a group or setting permission,
+        /// by <see cref="AbpSettingUiOptions.DisableDefaultGroup"/> or by
+        /// <see cref="AbpSettingUiOptions.ExcludeInVisibleToClientSettings"/>) cannot be changed either.
+        /// </summary>
+        protected virtual void CheckSettingIsVisible(Dictionary<string, SettingInfo> visibleSettingInfos, SettingDefinition setting)
+        {
+            if (!visibleSettingInfos.ContainsKey(setting.Name))
+            {
+                throw new AbpAuthorizationException($"Authorization failed! The setting '{setting.Name}' is not available to the current user.");
             }
         }
 
