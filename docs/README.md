@@ -392,7 +392,7 @@ public override void Define(IPermissionDefinitionContext context)
 }
 ```
 
-In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted.
+In this way, when SettingUi enumerates the settings, if a permission in the form of `SettingUi.Group1.Group2` is found, the Group2 in Group1 will only be displayed after the permission is explicitly granted. This applies wherever the permission is defined in the permission tree, also when there is no Group1 permission (before version 2.11 it was only enforced as a child of a defined Group1 permission).
 
 Of course, we can also continue to add a permission to precisely control a specified setting, such as "System" -> "Password" -> "Required Length", we need to add a permission with the setting name as the suffix, the code is as follows:
 ``` csharp

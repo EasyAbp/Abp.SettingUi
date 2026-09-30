@@ -115,9 +115,10 @@ namespace EasyAbp.Abp.SettingUi
                     var settingInfos = new List<SettingInfo>();
                     foreach (var settingInfoGroup in settingInfoGroups)
                     {
-                        if (definedSettingUiGroupPermission == null
-                            || definedSettingUiGroupPermission.Children.All(p =>
-                                p.Name != settingInfoGroup.Permission) || await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission) //Group2 permission check
+                        // Group2 permission check: enforced wherever SettingUi.{Group1}.{Group2} is defined in the
+                        // permission tree, with or without a Group1 permission as its parent.
+                        if (definedSettingUiPermissions.All(p => p.Name != settingInfoGroup.Permission)
+                            || await AuthorizationService.IsGrantedAsync(settingInfoGroup.Permission)
                         )
                         {
                             settingInfos.AddRange(settingInfoGroup.SettingInfoList);

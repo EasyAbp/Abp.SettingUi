@@ -5,8 +5,9 @@ namespace EasyAbp.Abp.SettingUi.Authorization
 {
     /// <summary>
     /// Permissions for the settings of <see cref="SettingUi.SettingUiAppServiceAuthorization_Tests"/>,
-    /// <see cref="SettingUi.SettingUiSettingPermission_Tests"/> and
-    /// <see cref="SettingUi.SettingUiLegacySettingPermission_Tests"/>. Most are named by the documented convention:
+    /// <see cref="SettingUi.SettingUiSettingPermission_Tests"/>,
+    /// <see cref="SettingUi.SettingUiLegacySettingPermission_Tests"/> and
+    /// <see cref="SettingUi.SettingUiGroupPermission_Tests"/>. Most are named by the documented convention:
     /// SettingUi.{Group1}, SettingUi.{Group1}.{Group2} and SettingUi.{Group1}.{Group2}.{SettingName}; the Legacy ones
     /// only end with the setting name, which is all version 2.10 required.
     /// </summary>
@@ -28,6 +29,15 @@ namespace EasyAbp.Abp.SettingUi.Authorization
         public const string LegacyTwinSetting = SettingUiPermissions.GroupName + ".Legacy.Twin.Setting";
         public const string OtherTwinSetting = SettingUiPermissions.GroupName + ".Other.Twin.Setting";
 
+        // A Group2 permission with no Group1 permission, defined at the top level of the permission group
+        public const string OrphanFilesGroup = SettingUiPermissions.GroupName + ".Orphan.Files";
+        // A Group1 permission and a Group2 permission that is not its child
+        public const string SplitGroup = SettingUiPermissions.GroupName + ".Split";
+        public const string SplitFilesGroup = SplitGroup + ".Files";
+        // The usual Group1 permission with its Group2 permission as a child
+        public const string NestedGroup = SettingUiPermissions.GroupName + ".Nested";
+        public const string NestedFilesGroup = NestedGroup + ".Files";
+
         public override void Define(IPermissionDefinitionContext context)
         {
             var showSettingPage = context.GetPermissionOrNull(SettingUiPermissions.ShowSettingPage);
@@ -44,6 +54,15 @@ namespace EasyAbp.Abp.SettingUi.Authorization
             {
                 showSettingPage.AddChild(name, new FixedLocalizableString(name));
             }
+
+            context.GetGroup(SettingUiPermissions.GroupName)
+                .AddPermission(OrphanFilesGroup, new FixedLocalizableString(OrphanFilesGroup));
+
+            showSettingPage.AddChild(SplitGroup, new FixedLocalizableString(SplitGroup));
+            showSettingPage.AddChild(SplitFilesGroup, new FixedLocalizableString(SplitFilesGroup));
+
+            showSettingPage.AddChild(NestedGroup, new FixedLocalizableString(NestedGroup))
+                .AddChild(NestedFilesGroup, new FixedLocalizableString(NestedFilesGroup));
         }
     }
 }
