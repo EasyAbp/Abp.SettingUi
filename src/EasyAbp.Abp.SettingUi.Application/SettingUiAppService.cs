@@ -25,6 +25,7 @@ using Volo.Abp.VirtualFileSystem;
 
 namespace EasyAbp.Abp.SettingUi
 {
+    [Authorize(SettingUiPermissions.ShowSettingPage)]
     public class SettingUiAppService : ApplicationService, ISettingUiAppService
     {
         private readonly AbpSettingUiOptions _options;

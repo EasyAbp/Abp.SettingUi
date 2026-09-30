@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
@@ -169,6 +172,23 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
             await _settingManager.Received(1).SetForCurrentTenantAsync(PublicSetting, "changed");
             await _settingManager.Received(1).SetForCurrentTenantAsync(SecretSetting, "changed too");
+        }
+
+        [Theory]
+        [InlineData(typeof(SettingUiAppService))]
+        [InlineData(typeof(SettingUiController))]
+        public void Every_Endpoint_Should_Require_The_Setting_Page_Permission(Type type)
+        {
+            // Enforced by ABP's authorization interceptor (app service) and ASP.NET Core (controller) before any
+            // method runs, so an anonymous or unauthorized call fails with 401/403 whatever the method does.
+            type.GetCustomAttributes<AuthorizeAttribute>(true)
+                .ShouldContain(attribute => attribute.Policy == SettingUiPermissions.ShowSettingPage);
+        }
+
+        [Fact]
+        public async Task GroupSettingDefinitions_Should_Require_The_Setting_Page_Permission()
+        {
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.GroupSettingDefinitionsAsync());
         }
     }
 }

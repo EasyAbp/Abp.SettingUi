@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
 using EasyAbp.Abp.SettingUi.Localization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
@@ -11,6 +13,7 @@ namespace EasyAbp.Abp.SettingUi
     [RemoteService(Name = SettingUiRemoteServiceConsts.RemoteServiceName)]
     [Area(SettingUiRemoteServiceConsts.ModuleName)]
     [Route("api/setting-ui")] 
+    [Authorize(SettingUiPermissions.ShowSettingPage)]
     public class SettingUiController : AbpController, ISettingUiAppService
     {
         private readonly ISettingUiAppService _service;
