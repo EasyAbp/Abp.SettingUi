@@ -1,0 +1,17 @@
+﻿@using EasyAbp.Abp.SettingUi.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Volo.Abp.MultiTenancy
+@model SettingHtmlInfo
+@inject IHtmlLocalizer<SettingUiResource> L
+@inject ICurrentTenant CurrentTenant
+@*
+    Where the value comes from, and a reset of a value set here. Index.js updates both after a save
+    (see valueSourceKey there, which mirrors SettingHtmlInfo.GetValueSourceKey).
+*@
+@{
+    var valueSourceKey = Model.GetValueSourceKey(CurrentTenant.IsAvailable);
+}
+<span class="badge rounded-pill fw-normal @(Model.IsValueSetHere ? "text-bg-primary" : "text-bg-light border") setting-ui-value-source"
+      title="@L["ValueSource:Title"]">@(valueSourceKey == null ? Model.ValueProviderName : L["ValueSource:" + valueSourceKey].Value)</span>
+<button type="button" class="btn btn-link btn-sm p-0 setting-ui-reset-setting @(Model.IsValueSetHere ? "" : "d-none")"
+        data-setting-name="@Model.Name">@L["ResetSetting"]</button>
