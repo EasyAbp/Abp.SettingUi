@@ -316,7 +316,7 @@ A setting defined with `isEncrypted: true` is shown as a password box, whatever 
 
 * Left empty, the box **keeps** the current value, on the host and on the tenant side alike. Typing a value replaces it. "Reset" deletes it.
 * The eye button loads the value the first time it is clicked and shows it. A loaded value that is saved unchanged is skipped like any other.
-* A tenant is shown only its own value, never the one of the host, the configuration or the default value.
+* A tenant is shown only its own value, never the one of the host, the configuration or the default value. The badge still tells a tenant without its own value where the inherited value comes from.
 
 The value is loaded with `ISettingUiAppService.GetSettingValueAsync(name)`, available as `POST /api/setting-ui/get-setting-value?name={settingName}` and in the C# and JavaScript client proxies (`easyAbp.abp.settingUi.settingUi.getSettingValue`). It requires the same permissions as saving the setting, and it is a `POST` so that ABP writes an audit log for it (ABP does not audit `GET` requests by default).
 

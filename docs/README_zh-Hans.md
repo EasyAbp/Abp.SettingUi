@@ -318,7 +318,7 @@
 
 * 输入框留空则**保持**当前值, 宿主端和租户端都是如此. 输入新值则替换它. "重置"会删除它.
 * 第一次点击眼睛按钮时会加载并显示该值. 加载后未修改就保存的值, 和其他值一样会被跳过.
-* 租户只能看到自己的值, 永远看不到宿主, 配置或默认值.
+* 租户只能看到自己的值, 永远看不到宿主, 配置或默认值. 租户没有自己的值时, 徽章仍会显示其继承值的来源.
 
 该值通过`ISettingUiAppService.GetSettingValueAsync(name)`加载, 对应的接口为`POST /api/setting-ui/get-setting-value?name={settingName}`, C#和JavaScript客户端代理中也提供了该方法(`easyAbp.abp.settingUi.settingUi.getSettingValue`). 它需要与保存该设置相同的权限; 使用`POST`是为了让ABP为它记录审计日志(ABP默认不审计`GET`请求).
 

@@ -215,10 +215,12 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 card[S.Secret].ValueProviderName.ShouldBe(TenantSettingValueProvider.ProviderName);
                 card[S.Secret].IsValueSetHere.ShouldBeTrue();
 
-                // A tenant is shown only its own encrypted value, never the one of the host or the configuration.
+                // A tenant is shown only its own encrypted value, never the one of the host or the configuration,
+                // but it is told where the value it inherits comes from.
                 card[S.KeyVaultSecret].Value.ShouldBeNull();
                 card[S.KeyVaultSecret].HasValue.ShouldBeFalse();
-                card[S.KeyVaultSecret].ValueProviderName.ShouldBeNull();
+                card[S.KeyVaultSecret].ValueProviderName.ShouldBe(ConfigurationSettingValueProvider.ProviderName);
+                card[S.KeyVaultSecret].IsValueSetHere.ShouldBeFalse();
                 (await Service.GetSettingValueAsync(S.KeyVaultSecret)).ShouldBeNull();
             }
 

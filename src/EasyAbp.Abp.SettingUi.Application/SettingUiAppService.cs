@@ -680,12 +680,14 @@ namespace EasyAbp.Abp.SettingUi
         [ItemCanBeNull]
         protected virtual async Task<string> GetSettingValueProviderNameAsync(SettingDefinition settingDefinition)
         {
-            /* Only the tenant's own value of an encrypted setting is shown to a tenant. */
-            if (settingDefinition.IsEncrypted && CurrentTenant.IsAvailable)
+            /*
+             * Only the tenant's own value of an encrypted setting is shown to a tenant. Without one, the tenant still
+             * uses the inherited value, so its source is reported (the value itself is not) by the walk below.
+             */
+            if (settingDefinition.IsEncrypted && CurrentTenant.IsAvailable &&
+                await _settingManager.GetOrNullForCurrentTenantAsync(settingDefinition.Name, false) != null)
             {
-                return await _settingManager.GetOrNullForCurrentTenantAsync(settingDefinition.Name, false) != null
-                    ? TenantSettingValueProvider.ProviderName
-                    : null;
+                return TenantSettingValueProvider.ProviderName;
             }
 
             var providerNames = Enumerable.Reverse(SettingValueProviderManager.Providers).Select(p => p.Name);
