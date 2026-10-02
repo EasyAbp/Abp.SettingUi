@@ -53,7 +53,9 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             _settingManager = Substitute.For<ISettingManager>();
             services.AddSingleton(_settingManager);
 
-            services.AddSingleton(Substitute.For<ISettingProvider>());
+            var settingProvider = Substitute.For<ISettingProvider>();
+            settingProvider.GetOrNullAsync(SecretSetting).Returns("secret value");
+            services.AddSingleton(settingProvider);
         }
 
         private void GrantSettingPageOnly()
@@ -172,6 +174,29 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
             await _settingManager.Received(1).SetForCurrentTenantAsync(PublicSetting, "changed");
             await _settingManager.Received(1).SetForCurrentTenantAsync(SecretSetting, "changed too");
+        }
+
+        [Fact]
+        public async Task GetSettingValue_Should_Require_The_Setting_Page_Permission()
+        {
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.GetSettingValueAsync(PublicSetting));
+        }
+
+        [Fact]
+        public async Task GetSettingValue_Should_Reject_A_Setting_The_User_Is_Not_Shown()
+        {
+            GrantSettingPageOnly();
+
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.GetSettingValueAsync(SecretSetting));
+            await Should.ThrowAsync<AbpAuthorizationException>(() => _service.GetSettingValueAsync("Not.A.Defined.Setting"));
+        }
+
+        [Fact]
+        public async Task GetSettingValue_Should_Return_A_Setting_Its_Group_Permissions_Show()
+        {
+            GrantSecuredGroups();
+
+            (await _service.GetSettingValueAsync(SecretSetting)).ShouldBe("secret value");
         }
 
         [Theory]

@@ -178,7 +178,11 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             var setting3 = result.First(x => x.GroupName == SettingUiConst.DefaultGroup).SettingInfos
                 .First(x => x.Name == "Test.Setting3");
 
-            setting3.Value.ShouldBe("3");
+            // The list never carries an encrypted value; the page loads it on demand.
+            setting3.IsEncrypted.ShouldBeTrue();
+            setting3.Value.ShouldBeNull();
+            setting3.HasValue.ShouldBeTrue();
+            (await _service.GetSettingValueAsync("Test.Setting3")).ShouldBe("3");
 
             using var changeTenant = currentTenant.Change(Guid.NewGuid());
 
@@ -187,7 +191,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             setting3 = result.First(x => x.GroupName == SettingUiConst.DefaultGroup).SettingInfos
                 .First(x => x.Name == "Test.Setting3");
 
-            setting3.Value.ShouldBeNullOrEmpty();
+            setting3.Value.ShouldBeNull();
+            (await _service.GetSettingValueAsync("Test.Setting3")).ShouldBeNullOrEmpty();
         }
 
         [Fact]

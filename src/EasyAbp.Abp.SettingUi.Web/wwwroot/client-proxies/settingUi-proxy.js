@@ -36,6 +36,13 @@
       }, ajaxParams));
     };
 
+    easyAbp.abp.settingUi.settingUi.getSettingValue = function(name, ajaxParams) {
+      return abp.ajax($.extend(true, {
+        url: abp.appPath + 'api/setting-ui/get-setting-value' + abp.utils.buildQueryString([{ name: 'name', value: name }]) + '',
+        type: 'POST'
+      }, { dataType: 'text' }, ajaxParams));
+    };
+
   })();
 
 })();
