@@ -26,6 +26,24 @@
         "TwoFactor": "Two Factor",
         "Optional": "Optional",
         "Disabled": "Disabled",
-        "Forced": "Forced"
+        "Forced": "Forced",
+        "ValueSource:Default": "Default",
+        "ValueSource:Configuration": "Configuration",
+        "ValueSource:InheritedFromHost": "Inherited from host",
+        "ValueSource:Global": "Global",
+        "ValueSource:Tenant": "Tenant",
+        "ValueSource:User": "User",
+        "ValueSource:SetHere": "Set here",
+        "ValueSource:NotSet": "Not set",
+        "ValueSource:Title": "Where the value comes from",
+        "ResetSetting": "Reset",
+        "ResetSettingConfirm": "Reset '{0}' so it inherits its value again?",
+        "ShowValue": "Show the value",
+        "HideValue": "Hide the value",
+        "EncryptedValueKept": "A value is set. Leave this box empty to keep it.",
+        "EncryptedValueNotSet": "No value is set.",
+        "Validation:Number": "{0} must be a whole number.",
+        "Validation:Date": "{0} must be a valid date.",
+        "Validation:DateTime": "{0} must be a valid date and time."
     }
 }

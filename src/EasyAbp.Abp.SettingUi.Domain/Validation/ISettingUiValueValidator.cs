@@ -8,7 +8,12 @@ namespace EasyAbp.Abp.SettingUi.Validation
     /// Register implementations in the dependency injection container (for example with
     /// <c>ITransientDependency</c> and <c>[ExposeServices(typeof(ISettingUiValueValidator))]</c>). Every registered
     /// validator is called for every value <c>ISettingUiAppService.SetSettingValuesAsync</c> is about to write, so a
-    /// validator should return without adding errors for settings it does not handle.
+    /// validator should return without adding errors for settings it does not handle. Only the values the user changed
+    /// are written, so only those are validated; a cleared box is validated as <c>null</c>.
+    /// </para>
+    /// <para>
+    /// <see cref="SettingUiTypeValueValidator"/> is registered by default and checks the values of the
+    /// <c>number</c>, <c>date</c> and <c>dateTime</c> types.
     /// </para>
     /// <para>
     /// Add a <see cref="System.ComponentModel.DataAnnotations.ValidationResult"/> with a localized message to

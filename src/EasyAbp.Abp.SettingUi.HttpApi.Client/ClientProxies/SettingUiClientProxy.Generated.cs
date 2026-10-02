@@ -37,5 +37,13 @@ namespace EasyAbp.Abp.SettingUi.ClientProxies
                 { typeof(List<String>), settingNames }
             });
         }
+
+        public virtual async Task<string> GetSettingValueAsync(string name)
+        {
+            return await RequestAsync<string>(nameof(GetSettingValueAsync), new ClientProxyRequestTypeValue
+            {
+                { typeof(string), name }
+            });
+        }
     }
 }

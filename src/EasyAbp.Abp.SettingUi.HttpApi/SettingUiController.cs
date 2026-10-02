@@ -43,5 +43,16 @@ namespace EasyAbp.Abp.SettingUi
         {
             return _service.ResetSettingValuesAsync(settingNames);
         }
+
+        /// <summary>
+        /// A POST, though it changes nothing: it can return a secret, and ABP does not write audit logs for GET
+        /// requests by default, nor should the response be cached.
+        /// </summary>
+        [HttpPost]
+        [Route("get-setting-value")]
+        public virtual Task<string> GetSettingValueAsync(string name)
+        {
+            return _service.GetSettingValueAsync(name);
+        }
     }
 }

@@ -13,9 +13,15 @@
             <abp-card-body>
                 @foreach (var settingHtmlInfo in group)
                 {
-                    <div class="mb-3">
-                        <label class="form-label" for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
-                        @await Html.PartialAsync($"~/Pages/Components/SettingUi/Partials/_{settingHtmlInfo.Type.ToPascalCase()}.cshtml", settingHtmlInfo)
+                    // An encrypted setting is a password box whatever its type, so the page never holds the secret
+                    // until the user asks to see it.
+                    var partialName = settingHtmlInfo.IsEncrypted ? "Encrypted" : settingHtmlInfo.Type.ToPascalCase();
+                    <div class="mb-3 setting-ui-setting" data-setting-name="@settingHtmlInfo.Name">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                            <label class="form-label mb-0" for="@settingHtmlInfo.Name">@settingHtmlInfo.DisplayName</label>
+                            @await Html.PartialAsync("~/Pages/Components/SettingUi/Partials/_ValueSource.cshtml", settingHtmlInfo)
+                        </div>
+                        @await Html.PartialAsync($"~/Pages/Components/SettingUi/Partials/_{partialName}.cshtml", settingHtmlInfo)
                     </div>
                 }
                 <hr class="my-3">

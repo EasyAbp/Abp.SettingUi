@@ -1,0 +1,21 @@
+﻿@using EasyAbp.Abp.SettingUi.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@model SettingHtmlInfo
+@inject IHtmlLocalizer<SettingUiResource> L
+@*
+    An encrypted setting: the page is not sent its value. Left empty, the box keeps the current value; the eye loads
+    the value (Index.js, getSettingValue) and shows it.
+*@
+@if (!Model.Description.IsNullOrEmpty())
+{
+<p class="form-text mt-0 mb-2">@Model.Description</p>
+}
+<div class="input-group">
+    <input type="password" id="@Model.Name" name="@Model.FormName" value="" class="form-control" autocomplete="new-password"
+           placeholder="@(Model.HasValue ? L["EncryptedValueKept"].Value : L["EncryptedValueNotSet"].Value)"
+           data-setting-ui-has-value="@(Model.HasValue ? "true" : "false")"/>
+    <button type="button" class="btn btn-outline-secondary setting-ui-reveal" data-setting-name="@Model.Name"
+            title="@L["ShowValue"]" aria-label="@L["ShowValue"]">
+        <i class="fa fa-eye" aria-hidden="true"></i>
+    </button>
+</div>
