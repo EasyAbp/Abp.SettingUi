@@ -45,6 +45,9 @@ namespace EasyAbp.Abp.SettingUi
         private readonly ICurrentTimezoneProvider _currentTimezoneProvider;
         private readonly IPermissionDefinitionManager _permissionDefinitionManager;
 
+        protected ISettingValueProviderManager SettingValueProviderManager =>
+            LazyServiceProvider.LazyGetRequiredService<ISettingValueProviderManager>();
+
         public SettingUiAppService(
             IOptions<AbpSettingUiOptions> options,
             IStringLocalizer<SettingUiResource> localizer,
@@ -440,19 +443,36 @@ namespace EasyAbp.Abp.SettingUi
 
         protected virtual Task SetSettingAsync(SettingDefinition setting, [CanBeNull] string value)
         {
+            switch (GetManagingProviderName(setting))
+            {
+                case UserSettingValueProvider.ProviderName:
+                    return _settingManager.SetForCurrentUserAsync(setting.Name, value);
+                case GlobalSettingValueProvider.ProviderName:
+                    return _settingManager.SetGlobalAsync(setting.Name, value);
+                default:
+                    return _settingManager.SetForCurrentTenantAsync(setting.Name, value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the setting value provider the page saves a setting to: the current user (<c>U</c>), the
+        /// global value (<c>G</c>), or the current tenant (<c>T</c>, the host's own value on the host side).
+        /// </summary>
+        protected virtual string GetManagingProviderName(SettingDefinition setting)
+        {
             if (setting.Providers.Any(p => p == UserSettingValueProvider.ProviderName))
             {
-                return _settingManager.SetForCurrentUserAsync(setting.Name, value);
+                return UserSettingValueProvider.ProviderName;
             }
 
             if (setting.Providers.Any(p => p == GlobalSettingValueProvider.ProviderName))
             {
-                return _settingManager.SetGlobalAsync(setting.Name, value);
+                return GlobalSettingValueProvider.ProviderName;
             }
 
             return ShouldManageAsGlobal(setting)
-                ? _settingManager.SetGlobalAsync(setting.Name, value)
-                : _settingManager.SetForCurrentTenantAsync(setting.Name, value);
+                ? GlobalSettingValueProvider.ProviderName
+                : TenantSettingValueProvider.ProviderName;
         }
 
         protected virtual IDictionary<string, IDictionary<string, string>> GetMergedSettingPropertiesAsync()
@@ -614,6 +634,7 @@ namespace EasyAbp.Abp.SettingUi
             }
 
             var value = await GetSettingValueAsync(settingDefinition);
+            var valueProviderName = await GetSettingValueProviderNameAsync(settingDefinition);
 
             var si = new SettingInfo
             {
@@ -625,6 +646,9 @@ namespace EasyAbp.Abp.SettingUi
                 Properties = new ExtraPropertyDictionary(),
                 IsEncrypted = settingDefinition.IsEncrypted,
                 HasValue = value != null,
+                ValueProviderName = valueProviderName,
+                IsValueSetHere = valueProviderName != null &&
+                                 valueProviderName == GetManagingProviderName(settingDefinition),
             };
 
             // Copy properties from SettingDefinition
@@ -647,6 +671,61 @@ namespace EasyAbp.Abp.SettingUi
             return ShouldManageAsGlobal(settingDefinition)
                 ? await _settingManager.GetOrNullGlobalAsync(settingDefinition.Name)
                 : await SettingProvider.GetOrNullAsync(settingDefinition.Name);
+        }
+
+        /// <summary>
+        /// The name of the setting value provider the value of <see cref="GetSettingValueAsync(SettingDefinition)"/>
+        /// comes from, or <c>null</c> when no provider has a value. Looks the value up the same way.
+        /// </summary>
+        [ItemCanBeNull]
+        protected virtual async Task<string> GetSettingValueProviderNameAsync(SettingDefinition settingDefinition)
+        {
+            /* Only the tenant's own value of an encrypted setting is shown to a tenant. */
+            if (settingDefinition.IsEncrypted && CurrentTenant.IsAvailable)
+            {
+                return await _settingManager.GetOrNullForCurrentTenantAsync(settingDefinition.Name, false) != null
+                    ? TenantSettingValueProvider.ProviderName
+                    : null;
+            }
+
+            var providerNames = Enumerable.Reverse(SettingValueProviderManager.Providers).Select(p => p.Name);
+
+            if (ShouldManageAsGlobal(settingDefinition))
+            {
+                // The global value, falling back like SettingManager.GetOrNullGlobalAsync does.
+                providerNames = providerNames.SkipWhile(p => p != GlobalSettingValueProvider.ProviderName);
+                if (!settingDefinition.IsInherited)
+                {
+                    providerNames = providerNames.Take(1);
+                }
+
+                foreach (var providerName in providerNames)
+                {
+                    if (await _settingManager.GetOrNullAsync(settingDefinition.Name, providerName, null, false) != null)
+                    {
+                        return providerName;
+                    }
+                }
+
+                return null;
+            }
+
+            // The effective value, walking the providers from the highest priority down like SettingProvider does.
+            var providers = Enumerable.Reverse(SettingValueProviderManager.Providers);
+            if (settingDefinition.Providers.Any())
+            {
+                providers = providers.Where(p => settingDefinition.Providers.Contains(p.Name));
+            }
+
+            foreach (var provider in providers)
+            {
+                if (await provider.GetOrNullAsync(settingDefinition) != null)
+                {
+                    return provider.Name;
+                }
+            }
+
+            return null;
         }
 
         protected virtual bool ShouldManageAsGlobal(SettingDefinition settingDefinition)

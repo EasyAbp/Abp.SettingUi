@@ -145,13 +145,17 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             {
                 var card = await GetCardAsync();
                 card[S.Text].Value.ShouldBe("tenant text");
+                card[S.Text].IsValueSetHere.ShouldBeTrue();
 
                 await SaveAsync(S.Text, "");
                 await SaveAsync(S.Number, "");
 
                 card = await GetCardAsync();
                 card[S.Text].Value.ShouldBe("host text");
+                card[S.Text].ValueProviderName.ShouldBe(GlobalSettingValueProvider.ProviderName);
+                card[S.Text].IsValueSetHere.ShouldBeFalse();
                 card[S.Number].Value.ShouldBe("5");
+                card[S.Number].ValueProviderName.ShouldBe(DefaultValueSettingValueProvider.ProviderName);
             }
 
             // The rows are deleted, not set to an empty string; the host value is untouched.
@@ -208,16 +212,20 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 card[S.Secret].IsEncrypted.ShouldBeTrue();
                 card[S.Secret].Value.ShouldBeNull();
                 card[S.Secret].HasValue.ShouldBeTrue();
+                card[S.Secret].ValueProviderName.ShouldBe(TenantSettingValueProvider.ProviderName);
+                card[S.Secret].IsValueSetHere.ShouldBeTrue();
 
                 // A tenant is shown only its own encrypted value, never the one of the host or the configuration.
                 card[S.KeyVaultSecret].Value.ShouldBeNull();
                 card[S.KeyVaultSecret].HasValue.ShouldBeFalse();
+                card[S.KeyVaultSecret].ValueProviderName.ShouldBeNull();
                 (await Service.GetSettingValueAsync(S.KeyVaultSecret)).ShouldBeNull();
             }
 
             var hostCard = await GetCardAsync();
             hostCard[S.KeyVaultSecret].Value.ShouldBeNull();
             hostCard[S.KeyVaultSecret].HasValue.ShouldBeTrue();
+            hostCard[S.KeyVaultSecret].ValueProviderName.ShouldBe(ConfigurationSettingValueProvider.ProviderName);
             hostCard[S.Secret].HasValue.ShouldBeFalse();
         }
 
@@ -333,6 +341,48 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 (await SettingManager.GetOrNullForTenantAsync(S.Number, TenantId, false)).ShouldBeNull();
                 (await SettingManager.GetOrNullForTenantAsync(S.Date, TenantId, false)).ShouldBeNull();
                 (await SettingManager.GetOrNullForTenantAsync(S.DateTime, TenantId, false)).ShouldBeNull();
+            }
+        }
+
+        [Fact]
+        public async Task The_Value_Source_Should_Be_Reported()
+        {
+            var text = (await GetCardAsync())[S.Text];
+            text.ValueProviderName.ShouldBe(DefaultValueSettingValueProvider.ProviderName);
+            text.IsValueSetHere.ShouldBeFalse();
+
+            await SetConfigurationValueAsync(S.Text, "configured text");
+            text = (await GetCardAsync())[S.Text];
+            text.Value.ShouldBe("configured text");
+            text.ValueProviderName.ShouldBe(ConfigurationSettingValueProvider.ProviderName);
+            text.IsValueSetHere.ShouldBeFalse();
+
+            await SettingManager.SetGlobalAsync(S.Text, "global text");
+
+            // The host saves its own (tenant provider) value unless it manages the global values.
+            text = (await GetCardAsync())[S.Text];
+            text.ValueProviderName.ShouldBe(GlobalSettingValueProvider.ProviderName);
+            text.IsValueSetHere.ShouldBeFalse();
+
+            Options.ManageGlobalSettingsOnHostSide = true;
+            text = (await GetCardAsync())[S.Text];
+            text.Value.ShouldBe("global text");
+            text.ValueProviderName.ShouldBe(GlobalSettingValueProvider.ProviderName);
+            text.IsValueSetHere.ShouldBeTrue();
+
+            using (AsTenant())
+            {
+                text = (await GetCardAsync())[S.Text];
+                text.Value.ShouldBe("global text");
+                text.ValueProviderName.ShouldBe(GlobalSettingValueProvider.ProviderName);
+                text.IsValueSetHere.ShouldBeFalse();
+
+                await SaveAsync(S.Text, "tenant text");
+
+                text = (await GetCardAsync())[S.Text];
+                text.Value.ShouldBe("tenant text");
+                text.ValueProviderName.ShouldBe(TenantSettingValueProvider.ProviderName);
+                text.IsValueSetHere.ShouldBeTrue();
             }
         }
     }

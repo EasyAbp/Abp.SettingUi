@@ -40,5 +40,18 @@ namespace EasyAbp.Abp.SettingUi.Dto
         /// <see cref="Value"/> is not sent).
         /// </summary>
         public bool HasValue { get; set; }
+
+        /// <summary>
+        /// The name of the setting value provider the shown value comes from, using ABP's provider names:
+        /// <c>D</c> (default value), <c>C</c> (configuration), <c>G</c> (global), <c>T</c> (tenant) or <c>U</c> (user).
+        /// <c>null</c> when no provider has a value.
+        /// </summary>
+        public string ValueProviderName { get; set; }
+
+        /// <summary>
+        /// Whether the shown value is stored by the provider the page saves to (the current tenant, the host's global
+        /// value when it is managed as global, or the current user), so a reset makes the setting inherit again.
+        /// </summary>
+        public bool IsValueSetHere { get; set; }
     }
 }

@@ -69,6 +69,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             settingProvider.GetOrNullAsync("Test.Setting2").Returns(Task.FromResult("2"));
             settingProvider.GetOrNullAsync("Test.Setting3").Returns(Task.FromResult("3"));
             services.AddSingleton(settingProvider);
+            // Read by the setting value providers, to tell where each value comes from.
+            services.AddSingleton(Substitute.For<ISettingStore>());
 
             // Mock IOptions<AbpSettingUiOptions>
             _options = Substitute.For<IOptions<AbpSettingUiOptions>>();

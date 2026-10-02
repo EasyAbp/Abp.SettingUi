@@ -56,6 +56,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             var settingProvider = Substitute.For<ISettingProvider>();
             settingProvider.GetOrNullAsync(SecretSetting).Returns("secret value");
             services.AddSingleton(settingProvider);
+            // Read by the setting value providers, to tell where each value comes from.
+            services.AddSingleton(Substitute.For<ISettingStore>());
         }
 
         private void GrantSettingPageOnly()
