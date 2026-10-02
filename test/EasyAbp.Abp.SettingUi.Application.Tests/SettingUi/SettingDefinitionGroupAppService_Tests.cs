@@ -126,7 +126,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             // Arrange
             var settingValues = new Dictionary<string, string>
             {
-                {"setting_Test_Setting1", "value1" },
+                {"setting_Test_Setting1", "10" },
                 {"setting_Test_Setting2", "value2" },
                 {"RequestToken", "value3" },    // This is a invalid setting name from frontend
             };
@@ -135,7 +135,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _service.SetSettingValuesAsync(settingValues);
 
             // Assert
-            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "10");
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting2", "value2");
             await _settingManager.DidNotReceive().SetForCurrentTenantAsync("RequestToken", "value3");
 
@@ -144,7 +144,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             await _service.SetSettingValuesAsync(settingValues);
 
             // Assert
-            await _settingManager.Received().SetGlobalAsync("Test.Setting1", "value1");
+            await _settingManager.Received().SetGlobalAsync("Test.Setting1", "10");
             await _settingManager.Received().SetGlobalAsync("Test.Setting2", "value2");
             await _settingManager.DidNotReceive().SetGlobalAsync("RequestToken", "value3");
         }
@@ -157,7 +157,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             var settingValues = new Dictionary<string, string>
             {
                 {"setting_Test_Setting4", "2026-01-15 10:00:00" },
-                {"setting_Test_Setting1", "value1" },    // A setting posted after the dateTime one
+                {"setting_Test_Setting1", "10" },    // A setting posted after the dateTime one
             };
 
             // Act
@@ -165,7 +165,7 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
             // Assert
             await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting4", "2026-01-15T09:00:00.0000000Z");
-            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "value1");
+            await _settingManager.Received().SetForCurrentTenantAsync("Test.Setting1", "10");
         }
 
         [Fact]

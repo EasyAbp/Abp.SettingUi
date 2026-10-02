@@ -11,6 +11,10 @@ namespace EasyAbp.Abp.SettingUi.Validation
     /// validator should return without adding errors for settings it does not handle.
     /// </para>
     /// <para>
+    /// <see cref="SettingUiTypeValueValidator"/> is registered by default and checks the values of the
+    /// <c>number</c>, <c>date</c> and <c>dateTime</c> types.
+    /// </para>
+    /// <para>
     /// Add a <see cref="System.ComponentModel.DataAnnotations.ValidationResult"/> with a localized message to
     /// <see cref="SettingUiValueValidationContext.Errors"/> for each problem. After all values of the request are
     /// validated, the errors of all settings are thrown together as one <c>AbpValidationException</c> and nothing is

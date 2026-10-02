@@ -26,6 +26,9 @@
         "TwoFactor": "Two Factor",
         "Optional": "Optional",
         "Disabled": "Disabled",
-        "Forced": "Forced"
+        "Forced": "Forced",
+        "Validation:Number": "{0} must be a whole number.",
+        "Validation:Date": "{0} must be a valid date.",
+        "Validation:DateTime": "{0} must be a valid date and time."
     }
 }

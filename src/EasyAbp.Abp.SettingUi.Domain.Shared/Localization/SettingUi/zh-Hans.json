@@ -26,6 +26,9 @@
     "TwoFactor": "双因素认证",
     "Optional": "可选",
     "Disabled": "禁用",
-    "Forced": "强制"
+    "Forced": "强制",
+    "Validation:Number": "{0} 必须是整数.",
+    "Validation:Date": "{0} 必须是有效的日期.",
+    "Validation:DateTime": "{0} 必须是有效的日期和时间."
   }
 }
