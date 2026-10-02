@@ -5,9 +5,11 @@
 
     // Reloads the page and opens the current tab again.
     var reload_fn = function () {
-        // get the index of current selected tab
-        var index = $("a.nav-link.active").parents().index()
-        location.href = "#" + index;
+        // get the index of current selected tab (the theme can have other active nav links, e.g. in its menu)
+        var index = $("#tabs-nav .nav-item .nav-link").index($("#tabs-nav .nav-item .nav-link.active"));
+        if (index >= 0) {
+            location.href = "#" + index;
+        }
         location.reload();
     }
 
@@ -159,6 +161,8 @@
                 return;
             }
 
+            // The call can take a moment (it is audited): show it is loading and ignore more clicks meanwhile.
+            $button.prop("disabled", true).find("i").removeClass("fa-eye").addClass("fa-spinner fa-spin");
             service.getSettingValue($button.attr("data-setting-name"))
                 .then(function (value) {
                     $input.data("settingUiLoaded", true);
@@ -166,6 +170,12 @@
                         $input.val(value || "");
                     }
                     show();
+                })
+                .always(function () {
+                    $button.prop("disabled", false).find("i").removeClass("fa-spinner fa-spin");
+                    if (!$button.find("i").hasClass("fa-eye-slash")) {
+                        $button.find("i").addClass("fa-eye");
+                    }
                 });
         });
     }
