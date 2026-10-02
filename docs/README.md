@@ -21,6 +21,8 @@ An [ABP](http://abp.io) module used to manage ABP settings
 * Group settings
 * Display settings with appropriate input controls
 * Control display of settings by permissions
+* Save only the values that were changed, and show where each value comes from
+* Keep encrypted settings masked until they are asked for
 
 ## Installation
 
@@ -300,9 +302,41 @@ For now SettingUi supports following setting types:
 
 This is the end of the tutorial. Through this tutorial, you should be able to easily manage your settings using SettingUi. The source of the tutorial can be found in the [sample folder](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample).
 
+## Saving setting values
+
+Each card of the page has its own "Save" button, which posts every box of the card. SettingUi writes only what the user changed:
+
+* A value equal to the one the page showed is skipped, so saving a card never pins a copy of an inherited value (a default, a configuration or Key Vault value, or the host's value seen from a tenant). Values are compared as their type: `True` and `true` are the same checkbox value, and a `number`, `date` or `dateTime` value can come back in another format.
+* Line endings are normalized to `\n` before a value is compared and stored. A browser posts a textarea with `\r\n` line endings.
+* **An empty box resets the setting**, like the "Reset" button: the stored value is deleted and the setting inherits its value again. An empty string can no longer be stored through the page; this also applies to the empty option of a `select`. Before version 3.1 an empty box stored `""`, which hid every inherited value and broke the consumers of a number setting.
+
+### Encrypted settings
+
+A setting defined with `isEncrypted: true` is shown as a password box, whatever its type, and the setting list (`GroupSettingDefinitionsAsync`) never carries its value: `SettingInfo.Value` is `null` and `SettingInfo.HasValue` tells whether one is set.
+
+* Left empty, the box **keeps** the current value, on the host and on the tenant side alike. Typing a value replaces it. "Reset" deletes it.
+* The eye button loads the value the first time it is clicked and shows it. A loaded value that is saved unchanged is skipped like any other.
+* A tenant is shown only its own value, never the one of the host, the configuration or the default value.
+
+The value is loaded with `ISettingUiAppService.GetSettingValueAsync(name)`, available as `POST /api/setting-ui/get-setting-value?name={settingName}` and in the C# and JavaScript client proxies (`easyAbp.abp.settingUi.settingUi.getSettingValue`). It requires the same permissions as saving the setting, and it is a `POST` so that ABP writes an audit log for it (ABP does not audit `GET` requests by default).
+
+### Where a value comes from
+
+Each setting shows a badge for the source of its value: *Default*, *Configuration*, *Global* (on the host), *Inherited from host* (a global value seen from a tenant), *Set here*, or *Not set*. A value is *set here* when it is stored by the provider the page saves to: the tenant on the tenant side, the global value on the host when `ManageGlobalSettingsOnHostSide` is enabled (otherwise the host's own value), and the user for a user setting. Such a value has a "Reset" link that resets this setting only.
+
+`SettingInfo.ValueProviderName` carries the name of the provider (`D`, `C`, `G`, `T` or `U`, or `null` when no provider has a value) and `SettingInfo.IsValueSetHere` whether it is the one the page saves to.
+
+> If you override `Pages/Components/SettingUi/Default.cshtml`, render `Partials/_ValueSource.cshtml` next to the label and `Partials/_Encrypted.cshtml` for an encrypted setting, as the module's own view does.
+
 ## Validate setting values
 
-The input types above only validate in the browser. To validate a value on the server before it is saved, implement `ISettingUiValueValidator` (namespace `EasyAbp.Abp.SettingUi.Validation`) and register it in the dependency injection container:
+The values of the `number`, `date` and `dateTime` types are also validated on the server: a `number` must be a whole number (in the invariant culture, as the browser's number box accepts no decimals by default), and a `date` or `dateTime` must be a valid date. This is done by `SettingUiTypeValueValidator`, which is registered by default. To accept other values, remove it in the `ConfigureServices` method of your module and register your own validator, which can derive from it and override `IsValidNumber` or `IsValidDateTime`:
+
+``` csharp
+context.Services.RemoveAll(s => s.ImplementationType == typeof(SettingUiTypeValueValidator));
+```
+
+To validate other values on the server before they are saved, implement `ISettingUiValueValidator` (namespace `EasyAbp.Abp.SettingUi.Validation`) and register it in the dependency injection container:
 
 * `MyAbpApp.Application` project - `Settings/ConnectionPortSettingUiValueValidator` class
 
@@ -336,9 +370,17 @@ The input types above only validate in the browser. To validate a value on the s
     }
     ```
 
-* Every registered validator is called for every value a save is about to write (`context.Value` is the value as it will be stored, and can be empty), so return without adding errors for the settings you do not handle.
+* Every registered validator is called for every value a save is about to write (`context.Value` is the value as it will be stored, or `null` when the box was cleared to reset the setting), so return without adding errors for the settings you do not handle. Only the values the user changed are written, so only those are validated. `context.Type`, `context.Properties` and `context.DisplayName` give the SettingUi type, properties and localized name of the setting.
 * The values of one save are all validated before any of them is written. If any validator adds an error, the errors are thrown together as an `AbpValidationException` and nothing is saved; the page shows the messages to the user. A validator may also throw a `UserFriendlyException` or `BusinessException` itself, with the same effect.
 * Resetting settings is not validated: it restores the default value of the setting definition.
+
+## Upgrading from 3.0
+
+* `GroupSettingDefinitionsAsync` no longer returns the value of an encrypted setting: use `SettingInfo.HasValue`, and `GetSettingValueAsync` to read it.
+* An empty value posted to `SetSettingValuesAsync` resets a setting instead of storing `""`, and an empty value of an encrypted setting keeps it, also on the host (where 3.0 stored `""`). Values equal to the shown ones are not written.
+* `number`, `date` and `dateTime` values are validated on the server. A number with decimals is refused: give such a setting another type, or replace `SettingUiTypeValueValidator` (see [Validate setting values](#validate-setting-values)).
+* `SettingInfo` has new members (`IsEncrypted`, `HasValue`, `ValueProviderName`, `IsValueSetHere`), and `SettingUiValueValidationContext` new properties (`Type`, `Properties`, `DisplayName`); existing code keeps compiling.
+* A value an earlier version stored as `""` shows as an empty box, so it is reset the next time its card is saved (an encrypted one is kept until it is reset). A value stored with `\r\n` line endings stays until it is changed or reset.
 
 # Localization
 

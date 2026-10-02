@@ -19,6 +19,8 @@
 * 设置分组
 * 为不同设置显示适当的控件
 * 可通过权限控制设置的显示
+* 只保存被修改的值, 并显示每个值的来源
+* 加密的设置默认隐藏, 需要时才加载
 
 ## 在线演示
 
@@ -302,9 +304,41 @@
 
 到这里教程就结束了. 通过本教程, 你应该可以轻松地使用SettingUi来管理你的设置了. 教程的源码可以在[sample文件夹](https://github.com/EasyAbp/Abp.SettingUi/tree/master/sample)中找到.
 
+## 保存设置值
+
+页面上的每张卡片都有自己的"保存"按钮, 它会提交卡片中的所有输入框. SettingUi只写入用户修改过的值:
+
+* 与页面显示的值相同的值会被跳过, 因此保存卡片永远不会固定一份继承来的值的副本(默认值, 配置或Key Vault中的值, 或租户看到的宿主值). 值按其类型比较: `True`和`true`是同一个复选框值, `number`, `date`或`dateTime`的值也可能以另一种格式提交回来.
+* 在比较和存储之前, 换行符会统一为`\n`. 浏览器提交文本域(textarea)时使用`\r\n`换行.
+* **清空输入框即重置该设置**, 与"重置"按钮效果相同: 已存储的值被删除, 设置重新继承它的值. 通过页面已无法存储空字符串; `select`的空选项同样如此. 3.1版本之前, 空输入框会存储`""`, 这会遮蔽所有继承的值, 并导致数字类型设置的使用方出错.
+
+### 加密的设置
+
+使用`isEncrypted: true`定义的设置无论类型如何都显示为密码框, 并且设置列表(`GroupSettingDefinitionsAsync`)永远不包含它的值: `SettingInfo.Value`为`null`, `SettingInfo.HasValue`表示是否已设置值.
+
+* 输入框留空则**保持**当前值, 宿主端和租户端都是如此. 输入新值则替换它. "重置"会删除它.
+* 第一次点击眼睛按钮时会加载并显示该值. 加载后未修改就保存的值, 和其他值一样会被跳过.
+* 租户只能看到自己的值, 永远看不到宿主, 配置或默认值.
+
+该值通过`ISettingUiAppService.GetSettingValueAsync(name)`加载, 对应的接口为`POST /api/setting-ui/get-setting-value?name={settingName}`, C#和JavaScript客户端代理中也提供了该方法(`easyAbp.abp.settingUi.settingUi.getSettingValue`). 它需要与保存该设置相同的权限; 使用`POST`是为了让ABP为它记录审计日志(ABP默认不审计`GET`请求).
+
+### 值的来源
+
+每个设置都会显示一个标记, 表示其值的来源: *默认值*, *配置*, *全局*(宿主端), *继承自宿主*(租户看到的全局值), *在此设置*或*未设置*. 当值由页面保存的目标提供者存储时, 即为*在此设置*: 租户端为租户, 宿主端启用`ManageGlobalSettingsOnHostSide`时为全局值(否则为宿主自己的值), 用户设置则为用户. 这样的值旁边有一个"重置"链接, 只重置这一个设置.
+
+`SettingInfo.ValueProviderName`是提供者的名称(`D`, `C`, `G`, `T`或`U`, 没有提供者有值时为`null`), `SettingInfo.IsValueSetHere`表示它是否就是页面保存的目标提供者.
+
+> 如果你重写了`Pages/Components/SettingUi/Default.cshtml`, 请像模块自己的视图一样, 在标签旁渲染`Partials/_ValueSource.cshtml`, 并为加密的设置渲染`Partials/_Encrypted.cshtml`.
+
 ## 校验设置值
 
-上面的输入类型只在浏览器中校验. 如果需要在保存前于服务端校验设置值, 请实现`ISettingUiValueValidator`(命名空间`EasyAbp.Abp.SettingUi.Validation`), 并将其注册到依赖注入容器中:
+`number`, `date`和`dateTime`类型的值也会在服务端校验: `number`必须是整数(使用固定区域性(invariant culture), 因为浏览器的数字输入框默认不接受小数), `date`或`dateTime`必须是有效的日期. 这由默认注册的`SettingUiTypeValueValidator`完成. 如需接受其他值, 请在你的模块的`ConfigureServices`方法中移除它, 再注册你自己的校验器(可以继承它并重写`IsValidNumber`或`IsValidDateTime`):
+
+``` csharp
+context.Services.RemoveAll(s => s.ImplementationType == typeof(SettingUiTypeValueValidator));
+```
+
+如果需要在保存前于服务端校验其他设置值, 请实现`ISettingUiValueValidator`(命名空间`EasyAbp.Abp.SettingUi.Validation`), 并将其注册到依赖注入容器中:
 
 * `MyAbpApp.Application`项目 - `Settings/ConnectionPortSettingUiValueValidator`类
 
@@ -338,9 +372,17 @@
     }
     ```
 
-* 每次保存时, 所有已注册的校验器都会收到本次将要写入的每一个值(`context.Value`是即将存储的值, 可能为空), 因此对于不由你负责的设置, 请直接返回, 不要添加错误.
+* 每次保存时, 所有已注册的校验器都会收到本次将要写入的每一个值(`context.Value`是即将存储的值, 输入框被清空以重置设置时为`null`), 因此对于不由你负责的设置, 请直接返回, 不要添加错误. 只有用户修改过的值才会被写入, 因此也只有这些值会被校验. `context.Type`, `context.Properties`和`context.DisplayName`提供设置的SettingUi类型, 属性和本地化名称.
 * 一次保存中的所有值都会先完成校验, 然后才会写入任何一个值. 只要有校验器添加了错误, 所有错误会合并为一个`AbpValidationException`抛出, 且不会保存任何值; 页面会向用户显示这些错误信息. 校验器也可以自行抛出`UserFriendlyException`或`BusinessException`, 效果相同.
 * 重置设置不会触发校验: 重置只是恢复设置定义的默认值.
+
+## 从3.0升级
+
+* `GroupSettingDefinitionsAsync`不再返回加密设置的值: 请使用`SettingInfo.HasValue`, 并通过`GetSettingValueAsync`读取它.
+* 提交给`SetSettingValuesAsync`的空值会重置设置而不是存储`""`; 加密设置的空值会保持原值, 宿主端也是如此(3.0会存储`""`). 与显示值相同的值不会被写入.
+* `number`, `date`和`dateTime`的值会在服务端校验. 带小数的数字会被拒绝: 请为这样的设置使用其他类型, 或替换`SettingUiTypeValueValidator`(参见[校验设置值](#校验设置值)).
+* `SettingInfo`新增了成员(`IsEncrypted`, `HasValue`, `ValueProviderName`, `IsValueSetHere`), `SettingUiValueValidationContext`新增了属性(`Type`, `Properties`, `DisplayName`); 已有代码仍可编译.
+* 早期版本存储为`""`的值会显示为空输入框, 因此下次保存所在卡片时会被重置(加密的值则保留到被重置为止). 带有`\r\n`换行符的值会一直保留, 直到被修改或重置.
 
 # 本地化
 
