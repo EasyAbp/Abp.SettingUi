@@ -51,6 +51,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
             services.AddSingleton(_settingManager);
 
             services.AddSingleton(Substitute.For<ISettingProvider>());
+            // Read by the setting value providers, to tell where each value comes from.
+            services.AddSingleton(Substitute.For<ISettingStore>());
         }
 
         [Fact]

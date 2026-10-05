@@ -102,6 +102,43 @@
               },
               "allowAnonymous": null,
               "implementFrom": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
+            },
+            "GetSettingValueAsyncByName": {
+              "uniqueName": "GetSettingValueAsyncByName",
+              "name": "GetSettingValueAsync",
+              "httpMethod": "POST",
+              "url": "api/setting-ui/get-setting-value",
+              "supportedVersions": [],
+              "parametersOnMethod": [
+                {
+                  "name": "name",
+                  "typeAsString": "System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e",
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null
+                }
+              ],
+              "parameters": [
+                {
+                  "nameOnMethod": "name",
+                  "name": "name",
+                  "jsonName": null,
+                  "type": "System.String",
+                  "typeSimple": "string",
+                  "isOptional": false,
+                  "defaultValue": null,
+                  "constraintTypes": null,
+                  "bindingSourceId": "ModelBinding",
+                  "descriptorName": ""
+                }
+              ],
+              "returnValue": {
+                "type": "System.String",
+                "typeSimple": "string"
+              },
+              "allowAnonymous": null,
+              "implementFrom": "EasyAbp.Abp.SettingUi.ISettingUiAppService"
             }
           }
         }

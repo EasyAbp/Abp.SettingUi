@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Volo.Abp;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Authorization;
 using Volo.Abp.Authorization.Permissions;
@@ -42,6 +44,9 @@ namespace EasyAbp.Abp.SettingUi
         private readonly ITimezoneProvider _timezoneProvider;
         private readonly ICurrentTimezoneProvider _currentTimezoneProvider;
         private readonly IPermissionDefinitionManager _permissionDefinitionManager;
+
+        protected ISettingValueProviderManager SettingValueProviderManager =>
+            LazyServiceProvider.LazyGetRequiredService<ISettingValueProviderManager>();
 
         public SettingUiAppService(
             IOptions<AbpSettingUiOptions> options,
@@ -170,53 +175,34 @@ namespace EasyAbp.Abp.SettingUi
 
                 CheckSettingIsVisible(visibleSettingInfos, setting);
 
-                // new value is null.
-                if (kv.Value.IsNullOrEmpty())
+                var settingInfo = visibleSettingInfos[setting.Name];
+                var value = NormalizeLineEndings(kv.Value);
+
+                if (value.IsNullOrEmpty())
                 {
-                    // it's an encrypted setting value, and it's currently on the tenant side.
-                    if (setting.IsEncrypted && CurrentTenant.IsAvailable)
+                    if (setting.IsEncrypted)
                     {
-                        // don't update.
+                        // An encrypted setting is shown as an empty password box: left empty, it keeps its value.
                         continue;
                     }
+
+                    // A cleared box resets the setting, so it inherits its value again. A stored empty string would
+                    // hide the configuration, host and default values, and break the consumers of a number setting.
+                    value = null;
                 }
 
-                var value = kv.Value;
-                var definition = visibleSettingInfos[setting.Name];
-
-                if (definition.Properties.TryGetValue(SettingUiConst.Type, out var type) &&
-                    ((string)type).Equals("dateTime", StringComparison.InvariantCultureIgnoreCase))
+                if (value != null && IsSettingUiType(settingInfo, SettingUiConst.Components.DateTime))
                 {
-                    if (DateTime.TryParse(value, out var dateTime))
-                    {
-                        // If the DateTime has no timezone info (most cases from input)
-                        if (dateTime.Kind == DateTimeKind.Unspecified)
-                        {
-                            // Try to get user's timezone
-                            var userTz = _currentTimezoneProvider.TimeZone;
-                            if (!userTz.IsNullOrWhiteSpace())
-                            {
-                                try
-                                {
-                                    var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
-                                    // Treat the input as user's local time and convert to UTC
-                                    value = TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
-                                }
-                                catch
-                                {
-                                    // skip handling this...
-                                }
-                            }
-                            else
-                            {
-                                value = Clock.Normalize(dateTime).ToString("O");
-                            }
-                        }
-                        else
-                        {
-                            value = Clock.Normalize(dateTime).ToString("O");
-                        }
-                    }
+                    value = NormalizeDateTimeValue(value);
+                }
+
+                // The page posts every box of a card: write only the values the user changed. ABP's SettingManager
+                // skips a value equal to the inherited one, but not an encrypted value, an empty one, or one with
+                // other line endings, so an untouched box would otherwise pin a copy of the inherited value.
+                var displayedValue = await GetDisplayedSettingValueAsync(setting, settingInfo);
+                if (IsSameSettingValue(settingInfo, displayedValue, value))
+                {
+                    continue;
                 }
 
                 pendingValues.Add(new KeyValuePair<SettingDefinition, string>(setting, value));
@@ -226,7 +212,8 @@ namespace EasyAbp.Abp.SettingUi
             var validationErrors = new List<ValidationResult>();
             foreach (var pendingValue in pendingValues)
             {
-                await ValidateSettingValueAsync(pendingValue.Key, pendingValue.Value, validationErrors);
+                await ValidateSettingValueAsync(pendingValue.Key, visibleSettingInfos[pendingValue.Key.Name],
+                    pendingValue.Value, validationErrors);
             }
 
             if (validationErrors.Any())
@@ -265,6 +252,24 @@ namespace EasyAbp.Abp.SettingUi
             }
         }
 
+        public virtual async Task<string> GetSettingValueAsync(string name)
+        {
+            Check.NotNullOrWhiteSpace(name, nameof(name));
+
+            // Same authorization as saving: only the value of a setting the caller is shown can be read.
+            var visibleSettingInfos = await GetVisibleSettingInfosAsync();
+
+            var setting = await _settingDefinitionManager.GetOrNullAsync(name);
+            if (setting == null)
+            {
+                throw new AbpAuthorizationException($"Authorization failed! The setting '{name}' is not available to the current user.");
+            }
+
+            CheckSettingIsVisible(visibleSettingInfos, setting);
+
+            return await GetSettingValueAsync(setting);
+        }
+
         /// <summary>
         /// Returns the settings the current user is shown by <see cref="GroupSettingDefinitionsAsync"/>, by name.
         /// Throws <see cref="AbpAuthorizationException"/> if the user may not see the setting page at all.
@@ -293,12 +298,24 @@ namespace EasyAbp.Abp.SettingUi
         /// Runs every registered <see cref="ISettingUiValueValidator"/> on a value
         /// <see cref="SetSettingValuesAsync"/> is about to write, and adds their errors to <paramref name="errors"/>.
         /// </summary>
-        protected virtual async Task ValidateSettingValueAsync(SettingDefinition setting, [CanBeNull] string value,
+        protected virtual Task ValidateSettingValueAsync(SettingDefinition setting, [CanBeNull] string value,
             List<ValidationResult> errors)
+        {
+            return ValidateSettingValueAsync(setting, null, value, errors);
+        }
+
+        /// <summary>
+        /// Runs every registered <see cref="ISettingUiValueValidator"/> on a value
+        /// <see cref="SetSettingValuesAsync"/> is about to write, and adds their errors to <paramref name="errors"/>.
+        /// The validators see the SettingUi properties and display name of <paramref name="settingInfo"/>.
+        /// </summary>
+        protected virtual async Task ValidateSettingValueAsync(SettingDefinition setting,
+            [CanBeNull] SettingInfo settingInfo, [CanBeNull] string value, List<ValidationResult> errors)
         {
             var validators = LazyServiceProvider.LazyGetRequiredService<IEnumerable<ISettingUiValueValidator>>();
 
-            var context = new SettingUiValueValidationContext(setting, value);
+            var context = new SettingUiValueValidationContext(setting, value, settingInfo?.Properties,
+                settingInfo?.DisplayName);
             foreach (var validator in validators)
             {
                 await validator.ValidateAsync(context);
@@ -307,21 +324,155 @@ namespace EasyAbp.Abp.SettingUi
             errors.AddRange(context.Errors);
         }
 
+        /// <summary>
+        /// The value the page showed for a setting, which a posted value is compared with:
+        /// <see cref="SettingInfo.Value"/>, or for an encrypted setting the value the page loads on demand.
+        /// </summary>
+        protected virtual async Task<string> GetDisplayedSettingValueAsync(SettingDefinition setting, SettingInfo settingInfo)
+        {
+            var value = setting.IsEncrypted ? await GetSettingValueAsync(setting) : settingInfo.Value;
+            return NormalizeLineEndings(value);
+        }
+
+        /// <summary>
+        /// Whether a posted value is the value the page showed, so saving it would change nothing. Both are
+        /// normalized already. Values are compared as the type of the setting: a checkbox posts <c>true</c> where
+        /// <c>True</c> may be stored, and a date can come back in another format.
+        /// </summary>
+        protected virtual bool IsSameSettingValue(SettingInfo settingInfo, [CanBeNull] string displayedValue,
+            [CanBeNull] string postedValue)
+        {
+            if (displayedValue == null || postedValue == null)
+            {
+                return displayedValue == postedValue;
+            }
+
+            if (string.Equals(displayedValue, postedValue, StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            if (IsSettingUiType(settingInfo, SettingUiConst.Components.Checkbox))
+            {
+                return bool.TryParse(displayedValue.Trim(), out var displayedBool) &&
+                       bool.TryParse(postedValue.Trim(), out var postedBool) &&
+                       displayedBool == postedBool;
+            }
+
+            if (IsSettingUiType(settingInfo, SettingUiConst.Components.Number))
+            {
+                return decimal.TryParse(displayedValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var displayedNumber) &&
+                       decimal.TryParse(postedValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var postedNumber) &&
+                       displayedNumber == postedNumber;
+            }
+
+            if (IsSettingUiType(settingInfo, SettingUiConst.Components.DateTime))
+            {
+                // The posted value is normalized to UTC already; the shown one is normalized the same way here.
+                return TryParseDateTime(NormalizeDateTimeValue(displayedValue), out var displayedDateTime) &&
+                       TryParseDateTime(postedValue, out var postedDateTime) &&
+                       displayedDateTime.ToUniversalTime() == postedDateTime.ToUniversalTime();
+            }
+
+            if (IsSettingUiType(settingInfo, SettingUiConst.Components.Date))
+            {
+                return TryParseDateTime(displayedValue, out var displayedDate) &&
+                       TryParseDateTime(postedValue, out var postedDate) &&
+                       displayedDate == postedDate;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Turns CRLF and lone CR line endings into LF. A form posts a textarea with CRLF line endings, whatever the
+        /// stored value used.
+        /// </summary>
+        [CanBeNull]
+        protected virtual string NormalizeLineEndings([CanBeNull] string value)
+        {
+            return value?.Replace("\r\n", "\n").Replace('\r', '\n');
+        }
+
+        /// <summary>
+        /// Converts a <c>dateTime</c> value to UTC in the round-trip format. A value without time zone information
+        /// is read in the time zone of the current user. A value that cannot be parsed is returned unchanged.
+        /// </summary>
+        protected virtual string NormalizeDateTimeValue(string value)
+        {
+            if (!DateTime.TryParse(value, out var dateTime))
+            {
+                return value;
+            }
+
+            // If the DateTime has no timezone info (most cases from input)
+            if (dateTime.Kind == DateTimeKind.Unspecified)
+            {
+                // Try to get user's timezone
+                var userTz = _currentTimezoneProvider.TimeZone;
+                if (!userTz.IsNullOrWhiteSpace())
+                {
+                    try
+                    {
+                        var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
+                        // Treat the input as user's local time and convert to UTC
+                        return TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
+                    }
+                    catch
+                    {
+                        // skip handling this...
+                        return value;
+                    }
+                }
+            }
+
+            return Clock.Normalize(dateTime).ToString("O");
+        }
+
+        private static bool TryParseDateTime(string value, out DateTime dateTime)
+        {
+            return DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out dateTime) ||
+                   DateTime.TryParse(value, out dateTime);
+        }
+
+        protected virtual bool IsSettingUiType(SettingInfo settingInfo, string type)
+        {
+            return settingInfo.Properties.TryGetValue(SettingUiConst.Type, out var settingType) &&
+                   string.Equals(settingType?.ToString(), type, StringComparison.InvariantCultureIgnoreCase);
+        }
+
         protected virtual Task SetSettingAsync(SettingDefinition setting, [CanBeNull] string value)
+        {
+            switch (GetManagingProviderName(setting))
+            {
+                case UserSettingValueProvider.ProviderName:
+                    return _settingManager.SetForCurrentUserAsync(setting.Name, value);
+                case GlobalSettingValueProvider.ProviderName:
+                    return _settingManager.SetGlobalAsync(setting.Name, value);
+                default:
+                    return _settingManager.SetForCurrentTenantAsync(setting.Name, value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the setting value provider the page saves a setting to: the current user (<c>U</c>), the
+        /// global value (<c>G</c>), or the current tenant (<c>T</c>, the host's own value on the host side).
+        /// </summary>
+        protected virtual string GetManagingProviderName(SettingDefinition setting)
         {
             if (setting.Providers.Any(p => p == UserSettingValueProvider.ProviderName))
             {
-                return _settingManager.SetForCurrentUserAsync(setting.Name, value);
+                return UserSettingValueProvider.ProviderName;
             }
 
             if (setting.Providers.Any(p => p == GlobalSettingValueProvider.ProviderName))
             {
-                return _settingManager.SetGlobalAsync(setting.Name, value);
+                return GlobalSettingValueProvider.ProviderName;
             }
 
             return ShouldManageAsGlobal(setting)
-                ? _settingManager.SetGlobalAsync(setting.Name, value)
-                : _settingManager.SetForCurrentTenantAsync(setting.Name, value);
+                ? GlobalSettingValueProvider.ProviderName
+                : TenantSettingValueProvider.ProviderName;
         }
 
         protected virtual IDictionary<string, IDictionary<string, string>> GetMergedSettingPropertiesAsync()
@@ -483,14 +634,21 @@ namespace EasyAbp.Abp.SettingUi
             }
 
             var value = await GetSettingValueAsync(settingDefinition);
+            var valueProviderName = await GetSettingValueProviderNameAsync(settingDefinition);
 
             var si = new SettingInfo
             {
                 Name = name,
                 DisplayName = displayName,
                 Description = description,
-                Value = value,
+                // The page loads the value of an encrypted setting on demand, so a secret is not sent with the list.
+                Value = settingDefinition.IsEncrypted ? null : value,
                 Properties = new ExtraPropertyDictionary(),
+                IsEncrypted = settingDefinition.IsEncrypted,
+                HasValue = value != null,
+                ValueProviderName = valueProviderName,
+                IsValueSetHere = valueProviderName != null &&
+                                 valueProviderName == GetManagingProviderName(settingDefinition),
             };
 
             // Copy properties from SettingDefinition
@@ -513,6 +671,63 @@ namespace EasyAbp.Abp.SettingUi
             return ShouldManageAsGlobal(settingDefinition)
                 ? await _settingManager.GetOrNullGlobalAsync(settingDefinition.Name)
                 : await SettingProvider.GetOrNullAsync(settingDefinition.Name);
+        }
+
+        /// <summary>
+        /// The name of the setting value provider the value of <see cref="GetSettingValueAsync(SettingDefinition)"/>
+        /// comes from, or <c>null</c> when no provider has a value. Looks the value up the same way.
+        /// </summary>
+        [ItemCanBeNull]
+        protected virtual async Task<string> GetSettingValueProviderNameAsync(SettingDefinition settingDefinition)
+        {
+            /*
+             * Only the tenant's own value of an encrypted setting is shown to a tenant. Without one, the tenant still
+             * uses the inherited value, so its source is reported (the value itself is not) by the walk below.
+             */
+            if (settingDefinition.IsEncrypted && CurrentTenant.IsAvailable &&
+                await _settingManager.GetOrNullForCurrentTenantAsync(settingDefinition.Name, false) != null)
+            {
+                return TenantSettingValueProvider.ProviderName;
+            }
+
+            var providerNames = Enumerable.Reverse(SettingValueProviderManager.Providers).Select(p => p.Name);
+
+            if (ShouldManageAsGlobal(settingDefinition))
+            {
+                // The global value, falling back like SettingManager.GetOrNullGlobalAsync does.
+                providerNames = providerNames.SkipWhile(p => p != GlobalSettingValueProvider.ProviderName);
+                if (!settingDefinition.IsInherited)
+                {
+                    providerNames = providerNames.Take(1);
+                }
+
+                foreach (var providerName in providerNames)
+                {
+                    if (await _settingManager.GetOrNullAsync(settingDefinition.Name, providerName, null, false) != null)
+                    {
+                        return providerName;
+                    }
+                }
+
+                return null;
+            }
+
+            // The effective value, walking the providers from the highest priority down like SettingProvider does.
+            var providers = Enumerable.Reverse(SettingValueProviderManager.Providers);
+            if (settingDefinition.Providers.Any())
+            {
+                providers = providers.Where(p => settingDefinition.Providers.Contains(p.Name));
+            }
+
+            foreach (var provider in providers)
+            {
+                if (await provider.GetOrNullAsync(settingDefinition) != null)
+                {
+                    return provider.Name;
+                }
+            }
+
+            return null;
         }
 
         protected virtual bool ShouldManageAsGlobal(SettingDefinition settingDefinition)
