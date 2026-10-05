@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Authorization;
 using EasyAbp.Abp.SettingUi.Dto;
@@ -191,11 +192,6 @@ namespace EasyAbp.Abp.SettingUi
                     value = null;
                 }
 
-                if (value != null && IsSettingUiType(settingInfo, SettingUiConst.Components.DateTime))
-                {
-                    value = NormalizeDateTimeValue(value);
-                }
-
                 // The page posts every box of a card: write only the values the user changed. ABP's SettingManager
                 // skips a value equal to the inherited one, but not an encrypted value, an empty one, or one with
                 // other line endings, so an untouched box would otherwise pin a copy of the inherited value.
@@ -203,6 +199,11 @@ namespace EasyAbp.Abp.SettingUi
                 if (IsSameSettingValue(settingInfo, displayedValue, value))
                 {
                     continue;
+                }
+
+                if (value != null && IsSettingUiType(settingInfo, SettingUiConst.Components.DateTime))
+                {
+                    value = NormalizeDateTimeValue(value);
                 }
 
                 pendingValues.Add(new KeyValuePair<SettingDefinition, string>(setting, value));
@@ -335,9 +336,10 @@ namespace EasyAbp.Abp.SettingUi
         }
 
         /// <summary>
-        /// Whether a posted value is the value the page showed, so saving it would change nothing. Both are
-        /// normalized already. Values are compared as the type of the setting: a checkbox posts <c>true</c> where
-        /// <c>True</c> may be stored, and a date can come back in another format.
+        /// Whether a posted value is the value the page showed, so saving it would change nothing. Both have their
+        /// line endings normalized; a <c>dateTime</c> value is compared as posted, before
+        /// <see cref="NormalizeDateTimeValue"/>. Values are compared as the type of the setting: a checkbox posts
+        /// <c>true</c> where <c>True</c> may be stored, and a date can come back in another format.
         /// </summary>
         protected virtual bool IsSameSettingValue(SettingInfo settingInfo, [CanBeNull] string displayedValue,
             [CanBeNull] string postedValue)
@@ -368,10 +370,21 @@ namespace EasyAbp.Abp.SettingUi
 
             if (IsSettingUiType(settingInfo, SettingUiConst.Components.DateTime))
             {
-                // The posted value is normalized to UTC already; the shown one is normalized the same way here.
+                // The picker shows whole seconds, so an untouched box posts a stored fraction of a second as zero.
+                if (TryParseDateTimeValue(displayedValue, out var displayedWallClock) &&
+                    displayedWallClock.Kind == DateTimeKind.Unspecified &&
+                    TryParseOffsetWallClock(postedValue, out var postedWallClock))
+                {
+                    // A value stored without time zone information is shown as that wall clock in the browser's
+                    // time zone, which the server does not know, and the page posts the instant it shows with the
+                    // browser's offset: the box is untouched when the wall clocks are the same.
+                    return TruncateToSeconds(displayedWallClock) == TruncateToSeconds(postedWallClock);
+                }
+
                 return TryParseDateTime(NormalizeDateTimeValue(displayedValue), out var displayedDateTime) &&
-                       TryParseDateTime(postedValue, out var postedDateTime) &&
-                       displayedDateTime.ToUniversalTime() == postedDateTime.ToUniversalTime();
+                       TryParseDateTime(NormalizeDateTimeValue(postedValue), out var postedDateTime) &&
+                       TruncateToSeconds(displayedDateTime.ToUniversalTime()) ==
+                       TruncateToSeconds(postedDateTime.ToUniversalTime());
             }
 
             if (IsSettingUiType(settingInfo, SettingUiConst.Components.Date))
@@ -395,38 +408,93 @@ namespace EasyAbp.Abp.SettingUi
         }
 
         /// <summary>
-        /// Converts a <c>dateTime</c> value to UTC in the round-trip format. A value without time zone information
-        /// is read in the time zone of the current user. A value that cannot be parsed is returned unchanged.
+        /// Converts a <c>dateTime</c> value to UTC in the round-trip format. A value with time zone information
+        /// (<c>Z</c> or an offset), which is what the setting page posts, is kept as that instant whatever the
+        /// time zone settings. A value without it, as an API client may post, is read in the time zone of the
+        /// current user. A value that cannot be parsed is returned unchanged.
         /// </summary>
         protected virtual string NormalizeDateTimeValue(string value)
         {
-            if (!DateTime.TryParse(value, out var dateTime))
+            if (!TryParseDateTimeValue(value, out var dateTime))
             {
                 return value;
             }
 
-            // If the DateTime has no timezone info (most cases from input)
-            if (dateTime.Kind == DateTimeKind.Unspecified)
+            // The page shows a value in the browser's time zone and posts the instant it shows. The current
+            // user's time zone comes from the Abp.Timing.TimeZone setting before the browser's, so reading the
+            // value in it would save another instant than the one shown whenever the two zones differ.
+            if (dateTime.Kind != DateTimeKind.Unspecified)
             {
-                // Try to get user's timezone
-                var userTz = _currentTimezoneProvider.TimeZone;
-                if (!userTz.IsNullOrWhiteSpace())
+                return dateTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+            }
+
+            // No time zone information (posted by an API client, or by a page older than 3.1.1): read the value
+            // in the current user's time zone.
+            var userTz = _currentTimezoneProvider.TimeZone;
+            if (!userTz.IsNullOrWhiteSpace())
+            {
+                try
                 {
-                    try
-                    {
-                        var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
-                        // Treat the input as user's local time and convert to UTC
-                        return TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
-                    }
-                    catch
-                    {
-                        // skip handling this...
-                        return value;
-                    }
+                    var tzInfo = _timezoneProvider.GetTimeZoneInfo(userTz);
+                    // Treat the input as user's local time and convert to UTC
+                    return TimeZoneInfo.ConvertTimeToUtc(dateTime, tzInfo).ToString("O");
+                }
+                catch
+                {
+                    // skip handling this...
+                    return value;
                 }
             }
 
             return Clock.Normalize(dateTime).ToString("O");
+        }
+
+        /// <summary>
+        /// Parses a <c>dateTime</c> value: in the invariant culture when it is ISO 8601, otherwise in the current
+        /// culture. A value with time zone information comes back in UTC or local time, one without it as
+        /// <see cref="DateTimeKind.Unspecified"/>.
+        /// </summary>
+        private static bool TryParseDateTimeValue(string value, out DateTime dateTime)
+        {
+            return TryParseIsoDateTime(value, out dateTime) || DateTime.TryParse(value, out dateTime);
+        }
+
+        /// <summary>
+        /// The wall clock of an ISO 8601 value with <c>Z</c> or an offset, in that offset: <c>08:10:20</c> for
+        /// <c>2000-01-01T08:10:20.000+08:00</c>.
+        /// </summary>
+        private static bool TryParseOffsetWallClock(string value, out DateTime wallClock)
+        {
+            wallClock = default;
+            if (!TryParseIsoDateTime(value, out var dateTime) || dateTime.Kind == DateTimeKind.Unspecified ||
+                !DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var offset))
+            {
+                return false;
+            }
+
+            wallClock = offset.DateTime;
+            return true;
+        }
+
+        /// <summary>
+        /// Parses an ISO 8601 value (<c>2026-01-15T09:00:00.000Z</c>) in the invariant culture, so the culture of
+        /// the request cannot change it. A value with <c>Z</c> or an offset comes back in UTC, one without either
+        /// as <see cref="DateTimeKind.Unspecified"/>. Any other format is left to the current culture.
+        /// </summary>
+        private static bool TryParseIsoDateTime(string value, out DateTime dateTime)
+        {
+            dateTime = default;
+            return value != null && IsoDateTimeRegex.IsMatch(value) &&
+                   DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal,
+                       out dateTime);
+        }
+
+        private static readonly Regex IsoDateTimeRegex = new(@"^\s*\d{4}-\d{2}-\d{2}(?:[T ]|\s*$)",
+            RegexOptions.Compiled);
+
+        private static DateTime TruncateToSeconds(DateTime dateTime)
+        {
+            return dateTime.AddTicks(-(dateTime.Ticks % TimeSpan.TicksPerSecond));
         }
 
         private static bool TryParseDateTime(string value, out DateTime dateTime)
