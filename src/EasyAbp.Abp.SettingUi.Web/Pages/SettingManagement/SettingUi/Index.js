@@ -71,12 +71,40 @@
                         .attr("placeholder", l(settingInfo.hasValue ? "EncryptedValueKept" : "EncryptedValueNotSet"))
                         .removeData("settingUiLoaded");
                     setRevealed($(this).find(".setting-ui-reveal"), false);
+                } else if ($input.is("input[data-datepicker]")) {
+                    // A date picker is set through its hidden input, which formats the box and reads an instant
+                    // in the browser's time zone, as when the page is rendered.
+                    if ($input.val() === "" && settingInfo.value !== null) {
+                        $input.closest("abp-date-picker").find("input[type=hidden][data-date]").val(settingInfo.value);
+                    }
                 } else if ($input.is("input[type=text], input[type=number], textarea, select") &&
                     $input.val() === "" && settingInfo.value !== null) {
                     // A cleared box was reset: show the value it inherits now.
                     $input.val(settingInfo.value);
                 }
             });
+        });
+    }
+
+    // A dateTime box shows its value in the browser's time zone, but its text carries no zone. The server would
+    // read it in the current user's time zone, which comes from the Abp.Timing.TimeZone setting before the
+    // browser's, and save another instant whenever the two differ. Post the instant the box shows instead, with
+    // the browser's offset: a value stored without a zone is shown as its wall clock, and the offset lets the
+    // server see that an untouched box still shows it.
+    var setDateTimeInstants = function (form, input) {
+        $(form).find("input[data-setting-ui-date-time]").each(function () {
+            var $box = $(this);
+            // serializeFormToObject camel-cases the names; a form name has no dots, so only its first letter.
+            var key = abp.utils.toCamelCase(this.name);
+            if (!$box.val() || !$box.data("format") || !input.hasOwnProperty(key)) {
+                return; // an empty box resets the setting
+            }
+
+            // The picker writes the box in this format and reads it back the same way, in the browser's time zone.
+            var instant = moment($box.val(), $box.data("format"));
+            if (instant.isValid()) {
+                input[key] = instant.toISOString(true); // 2026-01-15T17:00:00.000+08:00
+            }
         });
     }
 
@@ -95,6 +123,7 @@
             }
 
             var input = $(e.currentTarget).serializeFormToObject();
+            setDateTimeInstants(e.currentTarget, input);
             service.setSettingValues(input)
                 .then(function (result) {
                     //abp.notify.success(l("SuccessfullySaved"));

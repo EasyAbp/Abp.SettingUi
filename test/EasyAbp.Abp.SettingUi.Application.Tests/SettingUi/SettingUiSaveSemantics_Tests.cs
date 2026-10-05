@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyAbp.Abp.SettingUi.Dto;
@@ -14,6 +15,7 @@ using Volo.Abp.Localization;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.SettingManagement;
 using Volo.Abp.Settings;
+using Volo.Abp.Timing;
 using Volo.Abp.Validation;
 using Xunit;
 using S = EasyAbp.Abp.SettingUi.Settings.SaveSemanticsSettingDefinitionProvider;
@@ -45,6 +47,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
         private AbpSettingUiOptions Options => GetRequiredService<IOptions<AbpSettingUiOptions>>().Value;
 
+        private ICurrentTimezoneProvider CurrentTimezoneProvider => GetRequiredService<ICurrentTimezoneProvider>();
+
         private IDisposable AsTenant() => GetRequiredService<ICurrentTenant>().Change(TenantId);
 
         private static string FormKey(string settingName) => "setting_" + settingName.Replace('.', '_');
@@ -59,7 +63,8 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
 
         /// <summary>
         /// What the page posts when the user saves the card without touching it: an empty password box for an
-        /// encrypted setting, <c>true</c> or <c>false</c> for a checkbox, and CRLF line endings.
+        /// encrypted setting, <c>true</c> or <c>false</c> for a checkbox, the instant a dateTime box shows, and CRLF
+        /// line endings.
         /// </summary>
         private static Dictionary<string, string> PostedUnchanged(IEnumerable<SettingInfo> settingInfos)
         {
@@ -75,8 +80,33 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                     return settingInfo.Value?.ToLowerInvariant();
                 }
 
+                if ((string)settingInfo.Properties[SettingUiConst.Type] == SettingUiConst.Components.DateTime)
+                {
+                    return PostedInstant(settingInfo.Value);
+                }
+
                 return (settingInfo.Value ?? "").Replace("\n", "\r\n");
             });
+        }
+
+        /// <summary>
+        /// What the page posts for a dateTime box that shows <paramref name="value"/> in a browser at UTC+8:
+        /// moment's <c>toISOString(true)</c> of the instant it shows, in the whole seconds the picker shows. A value
+        /// with a zone is shown as that instant, one without as that wall clock in the browser's zone.
+        /// </summary>
+        private static string PostedInstant(string value)
+        {
+            if (value == null)
+            {
+                return "";
+            }
+
+            var browserOffset = TimeSpan.FromHours(8);
+            var stored = DateTime.Parse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            var shown = stored.Kind == DateTimeKind.Unspecified
+                ? new DateTimeOffset(stored, browserOffset)
+                : new DateTimeOffset(stored.ToUniversalTime()).ToOffset(browserOffset);
+            return shown.ToString("yyyy-MM-dd'T'HH:mm:ss'.000'zzz", CultureInfo.InvariantCulture);
         }
 
         private Task SaveAsync(string settingName, string value)
@@ -344,6 +374,93 @@ namespace EasyAbp.Abp.SettingUi.SettingUi
                 (await SettingManager.GetOrNullForTenantAsync(S.Date, TenantId, false)).ShouldBeNull();
                 (await SettingManager.GetOrNullForTenantAsync(S.DateTime, TenantId, false)).ShouldBeNull();
             }
+        }
+
+        // The current time zone is the Abp.Timing.TimeZone setting when it is set, before the browser's
+        // (AbpTimeZoneMiddleware), so it can differ from the zone the page showed the value in.
+        [Theory]
+        [InlineData(null)]
+        [InlineData("Europe/Brussels")]
+        [InlineData("Asia/Shanghai")]
+        public async Task A_DateTime_Value_With_A_Time_Zone_Should_Be_Saved_As_That_Instant(string currentTimeZone)
+        {
+            CurrentTimezoneProvider.TimeZone = currentTimeZone;
+
+            using (CultureHelper.Use("fr"))
+            using (AsTenant())
+            {
+                // With Z, with an offset as the page posts it, and in the round-trip format.
+                foreach (var value in new[]
+                         {
+                             "2026-02-01T10:00:00.000Z", "2026-02-01T18:00:00+08:00",
+                             "2026-02-01T11:00:00.0000000+01:00"
+                         })
+                {
+                    await SaveAsync(S.DateTime, value);
+
+                    (await SettingManager.GetOrNullForTenantAsync(S.DateTime, TenantId, false))
+                        .ShouldBe("2026-02-01T10:00:00.0000000Z");
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData("2026-02-01 18:00:00")]
+        [InlineData("2026-02-01T18:00:00")]
+        public async Task A_DateTime_Value_Without_A_Time_Zone_Should_Be_Read_In_The_Current_Time_Zone(string value)
+        {
+            // What an API client may post; the page posts an instant.
+            CurrentTimezoneProvider.TimeZone = "Asia/Shanghai";
+
+            using (AsTenant())
+            {
+                await SaveAsync(S.DateTime, value);
+            }
+
+            (await SettingManager.GetOrNullForTenantAsync(S.DateTime, TenantId, false))
+                .ShouldBe("2026-02-01T10:00:00.0000000Z");
+        }
+
+        [Theory]
+        // The picker shows whole seconds, so the page posts this value back without its fraction.
+        [InlineData(null, "2026-03-01T08:30:15.1234567Z", "2026-03-01T16:30:15.000+08:00")]
+        [InlineData("Europe/Brussels", "2026-03-01T08:30:15.1234567Z", "2026-03-01T16:30:15.000+08:00")]
+        [InlineData("Asia/Shanghai", "2026-03-01T08:30:15.1234567Z", "2026-03-01T16:30:15.000+08:00")]
+        // Stored without a zone, like a default written with DateTime.ToString("O"): shown as its wall clock.
+        [InlineData(null, "2000-01-01T08:10:20.0000000", "2000-01-01T08:10:20.000+08:00")]
+        [InlineData("Europe/Brussels", "2000-01-01T08:10:20.0000000", "2000-01-01T08:10:20.000+08:00")]
+        public async Task Saving_An_Untouched_DateTime_Box_Should_Write_Nothing_Whatever_The_Time_Zone(
+            string currentTimeZone, string storedValue, string postedValue)
+        {
+            await SettingManager.SetGlobalAsync(S.DateTime, storedValue);
+            _store.Writes.Clear();
+            CurrentTimezoneProvider.TimeZone = currentTimeZone;
+
+            using (CultureHelper.Use("zh-Hans"))
+            using (AsTenant())
+            {
+                var posted = PostedUnchanged((await GetCardAsync()).Values);
+                posted[FormKey(S.DateTime)].ShouldBe(postedValue);
+
+                await Service.SetSettingValuesAsync(posted);
+            }
+
+            _store.Writes.ShouldBeEmpty();
+        }
+
+        [Fact]
+        public async Task A_Changed_DateTime_Box_Of_A_Value_Stored_Without_A_Zone_Should_Save_The_Instant_It_Shows()
+        {
+            await SettingManager.SetGlobalAsync(S.DateTime, "2000-01-01T08:10:20.0000000");
+            CurrentTimezoneProvider.TimeZone = "Europe/Brussels";
+
+            using (AsTenant())
+            {
+                await SaveAsync(S.DateTime, "2000-01-01T09:10:20.000+08:00");
+            }
+
+            (await SettingManager.GetOrNullForTenantAsync(S.DateTime, TenantId, false))
+                .ShouldBe("2000-01-01T01:10:20.0000000Z");
         }
 
         [Fact]
